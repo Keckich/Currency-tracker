@@ -2,5 +2,4 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/CurrencyTracker/FileContentIndex
-/.vs/CurrencyTracker/v17
+/.vs/

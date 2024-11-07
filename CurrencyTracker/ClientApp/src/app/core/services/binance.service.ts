@@ -1,20 +1,20 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { webSocket } from 'rxjs/webSocket';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BinanceService {
-  private apiUrl = 'https://api.binance.com/api/v3/ticker/price';
+  private binanceSocketUrl(cryptoPair: string): string {
+    return `wss://stream.binance.com:9443/ws/${cryptoPair.toLowerCase()}@ticker`;
+  }
 
   constructor(private http: HttpClient) { }
 
-  getCryptoPrice(crypto: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}?symbol=${crypto}`);
-  }
-
-  getAPIInfo(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}`);
+  getCryptoPriceUpdates(crypto: string): Observable<any> {
+    const socket = webSocket(this.binanceSocketUrl(crypto));
+    return socket;
   }
 }

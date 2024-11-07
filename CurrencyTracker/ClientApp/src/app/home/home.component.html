@@ -1,1 +1,4 @@
-<app-chart></app-chart>
+<div *ngFor="let currency of currencies">
+  <app-chart [currencyPair]="currency"></app-chart>
+</div>
+

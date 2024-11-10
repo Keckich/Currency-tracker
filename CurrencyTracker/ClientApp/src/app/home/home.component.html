@@ -1,4 +1,7 @@
-<div *ngFor="let currency of currencies">
-  <app-chart [currencyPair]="currency"></app-chart>
+<div class="grid grid-cols-3 mb-6">
+  @for (currency of currencies; track $index) {
+    <app-chart [currencyPair]="currency" (buyEvent)="handleBuy($event)"></app-chart>
+  }
 </div>
 
+<app-trades [trades]="trades"></app-trades>

@@ -45,7 +45,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     title: {
       text: '',
     }
-    }
+  }
 
   constructor(private binanceService: BinanceService) { }
 

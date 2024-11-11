@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
-import { Trade } from '../../shared/models/trade';
+import { Trade } from '../../shared/shared.model';
 import { MatTableModule } from '@angular/material/table';
+import { Constants } from '../../shared/constants.value';
 
 @Component({
   selector: 'app-trades',
@@ -13,5 +14,5 @@ import { MatTableModule } from '@angular/material/table';
 })
 export class TradesComponent {
   @Input() trades: Trade[] = [];
-  displayedColumns: (keyof Trade)[] = ['price', 'date', 'currency', 'number'];
+  displayedColumns = Constants.DISPLAYED_COLUMNS;
 }

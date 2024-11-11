@@ -4,7 +4,7 @@ import { BinanceService } from '../../core/services/binance.service';
 import { Subscription } from 'rxjs';
 import { MatButton } from '@angular/material/button';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { Trade } from '../../shared/models/trade';
+import { ChartData, Trade } from '../../shared/shared.model';
 
 @Component({
   selector: 'app-chart',
@@ -16,22 +16,21 @@ import { Trade } from '../../shared/models/trade';
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
 })
-
 export class ChartComponent implements OnInit, OnDestroy {
-  @Input() currencyPair!: string;
-  @Output() buyEvent = new EventEmitter<Trade[]>();
-
-  trades: Trade[] = [];
   private priceObservable: Subscription = new Subscription;
 
-  public chartSeries: ApexAxisChartSeries = [
+  @Input() currencyPair!: string;
+  @Output() buyEvent = new EventEmitter<Trade[]>();
+  trades: Trade[] = [];
+
+  chartSeries: ApexAxisChartSeries = [
     {
       name: '',
-      data: [] as { x: number, y: number }[]
+      data: [] as ChartData[]
     }
   ]
 
-  public chartOptions: {
+  chartOptions: {
     chart: ApexChart,
     xaxis: ApexXAxis,
     title: ApexTitleSubtitle,
@@ -46,7 +45,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     title: {
       text: '',
     }
-  }
+    }
 
   constructor(private binanceService: BinanceService) { }
 
@@ -58,8 +57,8 @@ export class ChartComponent implements OnInit, OnDestroy {
   }
 
   getPrice(): Subscription {
-    return this.binanceService.getCryptoPriceUpdates(this.currencyPair).subscribe(
-      data => {
+    return this.binanceService.getCryptoPriceUpdates(this.currencyPair).subscribe({
+      next: data => {
         const price = parseFloat(data.c);
         const currentTime = new Date().getTime();
         const trade: Trade = {
@@ -70,7 +69,7 @@ export class ChartComponent implements OnInit, OnDestroy {
         };
         this.trades.push(trade);
 
-        (this.chartSeries[0].data as { x: number, y: number }[]).push({ x: currentTime, y: price });
+        (this.chartSeries[0].data as ChartData[]).push({ x: currentTime, y: price });
 
         if (this.chartSeries[0].data.length > 20) {
           this.chartSeries[0].data.shift();
@@ -78,8 +77,8 @@ export class ChartComponent implements OnInit, OnDestroy {
 
         this.chartSeries = [...this.chartSeries];
       },
-      error => console.log(`Error occured: ${error}`)
-    )
+      error: error => console.log(`Error occured: ${error}`)
+    })
   }
 
   buy(): void {

@@ -29,7 +29,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ClientApp\src\app\shared\models\trade.ts" />
+    <None Remove="ClientApp\src\app\shared\constants.value.ts" />
+    <None Remove="ClientApp\src\app\shared\shared.model.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,7 +38,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <TypeScriptCompile Include="ClientApp\src\app\shared\models\trade.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\constants.value.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\shared.model.ts" />
   </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

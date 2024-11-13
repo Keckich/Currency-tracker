@@ -4,6 +4,17 @@
              [xaxis]="chartOptions.xaxis"
              [title]="chartOptions.title">
   </apx-chart>
-  <button mat-raised-button (click)="buy()" i18n="@@buyButton">Buy</button>
-  <button mat-raised-button i18n="@@sellButton">Sell</button>
+  <div class="flex gap-3">
+    <mat-form-field>
+      <mat-label i18n>Amount of crypto</mat-label>
+      <input matInput type="number" [(ngModel)]="amount" />
+      @if (amount) {
+      <button matSuffix mat-icon-button aria-label="Clear" (click)="amount=0">
+        <mat-icon>close</mat-icon>
+      </button>
+      }
+    </mat-form-field>
+    <button mat-raised-button (click)="buy()" i18n="@@buyButton">Buy</button>
+    <button mat-raised-button i18n="@@sellButton">Sell</button>
+  </div>
 </div>

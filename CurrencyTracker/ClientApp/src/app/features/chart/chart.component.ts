@@ -2,17 +2,27 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { ApexAxisChartSeries, ApexChart, ApexTitleSubtitle, ApexXAxis } from 'ng-apexcharts';
 import { BinanceService } from '../../core/services/binance.service';
 import { Subscription } from 'rxjs';
-import { MatButton } from '@angular/material/button';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartData, Trade } from '../../shared/shared.model';
 import { TradesService } from '../../core/services/trades.service';
+import { FormsModule } from '@angular/forms';
+
+import { MatButton } from '@angular/material/button';
+import { MatLabel, MatFormField } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-chart',
   standalone: true,
   imports: [
     NgApexchartsModule,
+    FormsModule,
     MatButton,
+    MatInput,
+    MatLabel,
+    MatIcon,
+    MatFormField,
   ],
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
@@ -21,6 +31,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   private priceObservable: Subscription = new Subscription;
   private currentTrade: Trade | undefined;
 
+  amount: number = 0;
   @Input() currencyPair!: string;
   @Output() buyEvent = new EventEmitter<Trade[]>();
 
@@ -66,7 +77,7 @@ export class ChartComponent implements OnInit, OnDestroy {
           price: price,
           date: new Date(),
           currency: this.currencyPair,
-          number: 1,
+          amount: this.amount,
         };
 
         (this.chartSeries[0].data as ChartData[]).push({ x: currentTime, y: price });

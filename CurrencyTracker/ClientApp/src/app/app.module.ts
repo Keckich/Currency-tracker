@@ -14,6 +14,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 import { ChartComponent } from './features/chart/chart.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { TradesComponent } from './features/trades/trades.component';
+import { CurrencyDetailComponent } from './features/currency-detail/currency-detail.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { TradesComponent } from './features/trades/trades.component';
     ApiAuthorizationModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
+      { path: 'currency/:id', component: CurrencyDetailComponent },
       /*{ path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },*/
     ])

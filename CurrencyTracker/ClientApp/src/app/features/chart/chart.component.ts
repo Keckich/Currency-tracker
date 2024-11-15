@@ -11,6 +11,7 @@ import { MatButton } from '@angular/material/button';
 import { MatLabel, MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-chart',
@@ -23,6 +24,7 @@ import { MatIcon } from '@angular/material/icon';
     MatLabel,
     MatIcon,
     MatFormField,
+    RouterLink,
   ],
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']

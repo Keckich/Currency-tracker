@@ -4,6 +4,7 @@
              [xaxis]="chartOptions.xaxis"
              [title]="chartOptions.title">
   </apx-chart>
+  <a [routerLink]="['/currency', currencyPair]" i18n>Additional Info</a>
   <div class="flex gap-3">
     <mat-form-field>
       <mat-label i18n>Amount of crypto</mat-label>

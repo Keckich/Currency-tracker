@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <Folder Include="ClientApp\src\app\core\services\" />
+    <Folder Include="ClientApp\src\app\shared\pipes\" />
   </ItemGroup>
 
   <ItemGroup>

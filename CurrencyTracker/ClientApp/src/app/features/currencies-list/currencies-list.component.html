@@ -1,0 +1,8 @@
+<app-search-control [currencies]="currenciesList" (filteredEvent)="handleSearchEvent($event)"></app-search-control>
+<mat-list role="list" class="overflow-y-auto h-64">
+  @for (currency of filteredList | sort:'symbol':'asc'; track $index) {
+    <mat-list-item role="listitem">
+      <a [routerLink]="['/currency', currency.symbol]" i18n>{{ currency.symbol }}</a>
+    </mat-list-item>
+  }
+</mat-list>

@@ -1,12 +1,14 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { webSocket } from 'rxjs/webSocket';
+import { Currency } from '../../shared/shared.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BinanceService {
+  private exchangeInfoUrl = 'https://api.binance.com/api/v3/exchangeInfo';
   private binanceSocketUrl(cryptoPair: string): string {
     return `wss://stream.binance.com:9443/ws/${cryptoPair.toLowerCase()}@ticker`;
   }
@@ -16,5 +18,13 @@ export class BinanceService {
   getCryptoPriceUpdates(crypto: string): Observable<any> {
     const socket = webSocket(this.binanceSocketUrl(crypto));
     return socket;
+  }
+
+  getCryptocurrencies(): Observable<Currency[]> {
+    return this.http.get(this.exchangeInfoUrl).pipe(
+      map((response: any) =>
+        [...response.symbols as Currency[]]
+      )
+    );
   }
 }

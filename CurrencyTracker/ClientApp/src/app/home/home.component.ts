@@ -4,6 +4,7 @@ import { ChartComponent } from '../features/chart/chart.component';
 import { TradesComponent } from '../features/trades/trades.component';
 import { Trade } from '../shared/shared.model';
 import { Constants } from '../shared/constants.value';
+import { CurrenciesListComponent } from '../features/currencies-list/currencies-list.component';
 
 @Component({
   selector: 'app-home',
@@ -11,6 +12,7 @@ import { Constants } from '../shared/constants.value';
   imports: [
     ChartComponent,
     TradesComponent,
+    CurrenciesListComponent,
     MatDivider,
   ],
   templateUrl: './home.component.html',

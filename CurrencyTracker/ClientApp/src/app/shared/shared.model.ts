@@ -9,3 +9,11 @@ export interface ChartData {
   x: number,
   y: number,
 }
+
+
+export interface Currency {
+  symbol: string,
+  status: string,
+  basseAsset: string,
+  quoteAsset: string,
+}

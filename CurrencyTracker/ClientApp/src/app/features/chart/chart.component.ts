@@ -35,7 +35,6 @@ export class ChartComponent implements OnInit, OnDestroy {
 
   amount: number = 0;
   @Input() currencyPair!: string;
-  @Output() buyEvent = new EventEmitter<Trade[]>();
 
   chartSeries: ApexAxisChartSeries = [
     {

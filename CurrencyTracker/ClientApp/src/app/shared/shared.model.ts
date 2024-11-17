@@ -5,9 +5,12 @@ export interface Trade {
   amount: number,
 }
 
-export interface ChartData {
-  x: number,
-  y: number,
+export interface CandleData {
+  startTime: number,
+  open: number,
+  high: number,
+  low: number,
+  close: number,
 }
 
 

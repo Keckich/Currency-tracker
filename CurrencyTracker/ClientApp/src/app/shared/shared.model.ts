@@ -5,14 +5,17 @@ export interface Trade {
   amount: number,
 }
 
+export interface ChartData {
+  x: number,
+  y: [number, number, number, number]
+}
+
 export interface CandleData {
-  startTime: number,
   open: number,
   high: number,
   low: number,
   close: number,
 }
-
 
 export interface Currency {
   symbol: string,

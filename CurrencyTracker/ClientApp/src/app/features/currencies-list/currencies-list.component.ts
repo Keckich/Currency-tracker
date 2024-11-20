@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { BinanceService } from '../../core/services/binance.service';
-import { Currency } from '../../shared/shared.model';
+import { Currency, SortOrder } from '../../shared/shared.model';
 import { SortPipe } from '../../shared/pipes/sort.pipe';
 
 import { MatList, MatListItem } from '@angular/material/list';
@@ -26,6 +26,7 @@ export class CurrenciesListComponent implements OnInit {
   currenciesList: Currency[] = [];
   filteredList: Currency[] = [];
   searchQuery: string = '';
+  sortOrder: SortOrder = SortOrder.Asc;
 
   ngOnInit(): void {
     this.loadCurrenciesList();

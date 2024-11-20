@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { orderBy } from 'lodash';
+import { SortOrder } from '../shared.model';
 
 @Pipe({
   name: 'sort',
@@ -7,7 +8,7 @@ import { orderBy } from 'lodash';
 })
 export class SortPipe implements PipeTransform {
 
-  transform<T>(array: T[], field: string, order: 'asc' | 'desc' = 'asc'): T[] {
+  transform<T>(array: T[], field: string, order: SortOrder = SortOrder.Asc): T[] {
     if (!array || !field) {
       return array;
     }

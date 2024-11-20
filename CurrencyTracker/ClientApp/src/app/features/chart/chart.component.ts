@@ -1,13 +1,13 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ApexAxisChartSeries, ApexChart, ApexPlotOptions, ApexTitleSubtitle, ApexXAxis, ApexYAxis } from 'ng-apexcharts';
 import { BinanceService } from '../../core/services/binance.service';
-import { Subscription } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { CandleData, ChartData, Trade } from '../../shared/shared.model';
+import { CandleData, ChartData, ChartInterval, Trade } from '../../shared/shared.model';
 import { TradesService } from '../../core/services/trades.service';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Constants } from '../../shared/constants.value';
+import { ChartOptions, Constants } from '../../shared/constants.value';
 
 import { MatButton } from '@angular/material/button';
 import { MatLabel, MatFormField } from '@angular/material/form-field';
@@ -38,8 +38,8 @@ export class ChartComponent implements OnInit, OnDestroy {
   private chartObservable: Subscription = new Subscription;
   private currentTrade: Trade | undefined;
 
-  intervals = Constants.CHART_TIME_INTERVALS;
-  selectedInterval: string = Constants.CHART_TIME_INTERVALS[0];
+  intervals: ChartInterval[] = Object.values(ChartInterval);
+  selectedInterval: ChartInterval = ChartInterval.S1;
   amount: number = 0;
   @Input() currencyPair!: string;
 
@@ -50,42 +50,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     }
   ]
 
-  chartOptions: {
-    chart: ApexChart,
-    xaxis: ApexXAxis,
-    yaxis: ApexYAxis,
-    title: ApexTitleSubtitle,
-    plotOptions: ApexPlotOptions,
-  } = {
-    chart: {
-      type: 'candlestick',
-      height: 350,
-      animations: {
-        enabled: false,
-      },
-      offsetX: 0,
-    },
-    xaxis: {
-      type: 'datetime',
-      tickPlacement: 'on',
-    },
-    yaxis: {
-      tooltip: {
-        enabled: true,
-      },
-    },
-    title: {
-      text: '',
-    },
-    plotOptions: {
-      candlestick: {
-        colors: {
-          upward: Constants.CANDLE_COLORS.green,
-          downward: Constants.CANDLE_COLORS.red,
-        },
-      }
-    }
-  }
+  chartOptions = ChartOptions;
 
   constructor(private binanceService: BinanceService, private tradesService: TradesService) { }
 
@@ -123,9 +88,10 @@ export class ChartComponent implements OnInit, OnDestroy {
   }
 
   createChart(): Subscription {
-    return this.binanceService.getCryptoCandleData(this.currencyPair, this.selectedInterval).subscribe({
-      next: data => {
-        if (data.k) {
+    return this.binanceService.getCryptoCandleData(this.currencyPair, this.selectedInterval)
+      .pipe(filter(data => data.k))
+      .subscribe({
+        next: data => {
           const kline = data.k;
           const candle = {
             x: kline.t,
@@ -143,9 +109,8 @@ export class ChartComponent implements OnInit, OnDestroy {
           }
 
           this.upateCandleChart(apexCandle);
-        }
-      },
-      error: error => console.log(`Error occured: ${error}`)
+        },
+        error: error => console.log(`Error occured: ${error}`)
     })
   }
 

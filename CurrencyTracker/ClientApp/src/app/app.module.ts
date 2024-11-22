@@ -15,6 +15,7 @@ import { ChartComponent } from './features/chart/chart.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { TradesComponent } from './features/trades/trades.component';
 import { CurrencyDetailComponent } from './features/currency-detail/currency-detail.component';
+import { Routes } from './shared/constants.value';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,7 @@ import { CurrencyDetailComponent } from './features/currency-detail/currency-det
     ApiAuthorizationModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'currency/:id', component: CurrencyDetailComponent },
+      { path: `${Routes.CURRENCY}/:id`, component: CurrencyDetailComponent },
       /*{ path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },*/
     ])

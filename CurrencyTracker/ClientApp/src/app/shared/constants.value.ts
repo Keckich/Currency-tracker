@@ -8,6 +8,10 @@ export const Constants = {
   CANDLE_CHART_SIZE: 100,
 } as const
 
+export const Routes = {
+  CURRENCY: 'currency',
+}
+
 export const ChartOptions: {
   chart: ApexChart,
   xaxis: ApexXAxis,

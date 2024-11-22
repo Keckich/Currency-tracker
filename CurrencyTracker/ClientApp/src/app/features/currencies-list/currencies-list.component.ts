@@ -4,9 +4,10 @@ import { RouterLink } from '@angular/router';
 import { BinanceService } from '../../core/services/binance.service';
 import { Currency, SortOrder } from '../../shared/shared.model';
 import { SortPipe } from '../../shared/pipes/sort.pipe';
+import { SearchControlComponent } from '../../shared/components/search-control/search-control.component';
 
 import { MatList, MatListItem } from '@angular/material/list';
-import { SearchControlComponent } from '../../shared/components/search-control/search-control.component';
+import { Routes } from '../../shared/constants.value';
 
 @Component({
   selector: 'app-currencies-list',
@@ -23,6 +24,8 @@ import { SearchControlComponent } from '../../shared/components/search-control/s
 })
 export class CurrenciesListComponent implements OnInit {
   private binanceService = inject(BinanceService);
+
+  Routes = Routes;
   currenciesList: Currency[] = [];
   filteredList: Currency[] = [];
   searchQuery: string = '';

@@ -7,7 +7,7 @@ import { CandleData, ChartData, ChartInterval, Trade } from '../../shared/shared
 import { TradesService } from '../../core/services/trades.service';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { ChartOptions, Constants } from '../../shared/constants.value';
+import { ChartOptions, Constants, Routes } from '../../shared/constants.value';
 
 import { MatButton } from '@angular/material/button';
 import { MatLabel, MatFormField } from '@angular/material/form-field';
@@ -37,7 +37,8 @@ export class ChartComponent implements OnInit, OnDestroy {
   private priceObservable: Subscription = new Subscription;
   private chartObservable: Subscription = new Subscription;
   private currentTrade: Trade | undefined;
-
+  
+  Routes = Routes;
   intervals: ChartInterval[] = Object.values(ChartInterval);
   selectedInterval: ChartInterval = ChartInterval.S1;
   amount: number = 0;

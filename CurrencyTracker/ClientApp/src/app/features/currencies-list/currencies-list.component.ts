@@ -2,7 +2,8 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { BinanceService } from '../../core/services/binance.service';
-import { Currency, SortOrder } from '../../shared/shared.model';
+import { Currency } from '../../shared/shared.model';
+import { SortOrder } from '../../shared/shared.enum';
 import { SortPipe } from '../../shared/pipes/sort.pipe';
 import { SearchControlComponent } from '../../shared/components/search-control/search-control.component';
 

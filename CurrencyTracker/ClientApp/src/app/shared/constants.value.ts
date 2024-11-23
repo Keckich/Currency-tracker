@@ -1,4 +1,5 @@
-import { ChartInterval, Trade } from "./shared.model";
+import { Trade } from "./shared.model";
+import { ChartInterval } from "./shared.enum";
 import { ApexChart, ApexPlotOptions, ApexTitleSubtitle, ApexXAxis, ApexYAxis } from 'ng-apexcharts';
 
 export const Constants = {

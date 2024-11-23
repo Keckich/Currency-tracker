@@ -3,7 +3,8 @@ import { ApexAxisChartSeries, ApexChart, ApexPlotOptions, ApexTitleSubtitle, Ape
 import { BinanceService } from '../../core/services/binance.service';
 import { Subscription, filter } from 'rxjs';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { CandleData, ChartData, ChartInterval, Trade } from '../../shared/shared.model';
+import { CandleData, ChartData, Trade } from '../../shared/shared.model';
+import { ChartInterval } from '../../shared/shared.enum';
 import { TradesService } from '../../core/services/trades.service';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';

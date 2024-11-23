@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { orderBy } from 'lodash';
-import { SortOrder } from '../shared.model';
+import { SortOrder } from '../shared.enum';
 
 @Pipe({
   name: 'sort',

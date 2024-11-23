@@ -24,6 +24,6 @@ export interface Currency {
   quoteAsset: string,
 }
 
-export interface RouteParams {
-  id: number,
+export class RouteParams {
+  id?: string | undefined = undefined;
 }

@@ -4,6 +4,7 @@ import { Constants } from '../../shared/constants.value';
 import { ChartComponent } from '../chart/chart.component';
 import { TradesComponent } from '../trades/trades.component';
 import { ActivatedRoute } from '@angular/router';
+import { RouteService } from '../../core/services/route.service';
 
 @Component({
   selector: 'app-currency-detail',
@@ -17,6 +18,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class CurrencyDetailComponent implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
+  private routeService = inject(RouteService);
 
   trades!: Trade[];
   currencyPair: string = '';
@@ -26,7 +28,7 @@ export class CurrencyDetailComponent implements OnInit {
   }
 
   loadCurrency(): string {
-    const id = this.activatedRoute.snapshot.paramMap.get('id');
+    const id = this.routeService.getParams(this.activatedRoute.snapshot.paramMap).id
     return id || '';
   }
 

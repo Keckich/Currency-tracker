@@ -29,18 +29,23 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\app\features\limit-order\validators\limit-valiators.ts" />
     <None Remove="ClientApp\src\app\shared\constants.value.ts" />
+    <None Remove="ClientApp\src\app\shared\shared.enum.ts" />
     <None Remove="ClientApp\src\app\shared\shared.model.ts" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ClientApp\src\app\core\guards\" />
     <Folder Include="ClientApp\src\app\core\services\" />
     <Folder Include="ClientApp\src\app\shared\components\" />
     <Folder Include="ClientApp\src\app\shared\pipes\" />
   </ItemGroup>
 
   <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\app\features\limit-order\validators\limit-valiators.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\constants.value.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\shared.enum.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\shared.model.ts" />
   </ItemGroup>
 

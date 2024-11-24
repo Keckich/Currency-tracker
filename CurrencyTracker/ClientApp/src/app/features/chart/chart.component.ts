@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { ApexAxisChartSeries, ApexChart, ApexPlotOptions, ApexTitleSubtitle, ApexXAxis, ApexYAxis } from 'ng-apexcharts';
 import { BinanceService } from '../../core/services/binance.service';
-import { Subscription, filter } from 'rxjs';
+import { Observable, Subscription, filter } from 'rxjs';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { CandleData, ChartData, Trade } from '../../shared/shared.model';
 import { ChartInterval } from '../../shared/shared.enum';
@@ -9,6 +9,7 @@ import { TradesService } from '../../core/services/trades.service';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ChartOptions, Constants, Routes } from '../../shared/constants.value';
+import { LimitOrderComponent } from '../limit-order/limit-order.component';
 
 import { MatButton } from '@angular/material/button';
 import { MatLabel, MatFormField } from '@angular/material/form-field';
@@ -30,16 +31,18 @@ import { MatOption, MatSelect } from '@angular/material/select';
     MatSelect,
     MatOption,
     RouterLink,
+    LimitOrderComponent,
   ],
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
 })
 export class ChartComponent implements OnInit, OnDestroy {
-  private priceObservable: Subscription = new Subscription;
-  private chartObservable: Subscription = new Subscription;
+  private priceSubscription: Subscription = new Subscription;
+  private chartSubscription: Subscription = new Subscription;
   private currentTrade: Trade | undefined;
   
   Routes = Routes;
+  price$: Observable<any> = new Observable();
   intervals: ChartInterval[] = Object.values(ChartInterval);
   selectedInterval: ChartInterval = ChartInterval.S1;
   amount: number = 0;
@@ -64,12 +67,14 @@ export class ChartComponent implements OnInit, OnDestroy {
     this.chartSeries[0].name = this.getChartTitle();
     this.chartOptions.title.text = this.getChartTitle();
     
-    this.priceObservable = this.getPrice();
-    this.chartObservable = this.createChart();
+    this.priceSubscription = this.getPrice();
+    this.chartSubscription = this.createChart();
   }
 
   getPrice(): Subscription {
-    return this.binanceService.getCryptoPriceUpdates(this.currencyPair).subscribe({
+    this.price$ = this.binanceService.getCryptoPriceUpdates(this.currencyPair);
+
+    return this.price$.subscribe({
       next: data => {
         const currentDate = new Date();
         const price = parseFloat(data.c);
@@ -139,8 +144,8 @@ export class ChartComponent implements OnInit, OnDestroy {
         data: []
       }
     ];
-    this.chartObservable.unsubscribe();
-    this.chartObservable = this.createChart();
+    this.chartSubscription.unsubscribe();
+    this.chartSubscription = this.createChart();
   }
 
   buy(): void {
@@ -148,12 +153,12 @@ export class ChartComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.priceObservable) {
-      this.priceObservable.unsubscribe();
+    if (this.priceSubscription) {
+      this.priceSubscription.unsubscribe();
     }
 
-    if (this.chartObservable) {
-      this.chartObservable.unsubscribe();
+    if (this.chartSubscription) {
+      this.chartSubscription.unsubscribe();
     }
   }
 }

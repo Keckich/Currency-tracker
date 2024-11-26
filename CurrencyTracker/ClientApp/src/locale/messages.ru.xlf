@@ -34,6 +34,82 @@
           <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="3350676806684249188" datatype="html">
+        <source>Interval</source>
+        <target>Интервал</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/chart/chart.component.html</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="chartTitle" datatype="html">
+        <source>
+          <x id="PH" equiv-text="this.currencyPair"/> Price
+        </source>
+        <target>
+          <x id="PH" equiv-text="this.currencyPair"/> Цена
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/chart/chart.component.ts</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1743736226132646071" datatype="html">
+        <source>Take-profit</source>
+        <target>Тейк-профит</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/limit-order/limit-order.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="upperLimitPlaceholder" datatype="html">
+        <source>Upper limit</source>
+        <target>Верхний лимит</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/limit-order/limit-order.component.html</context>
+          <context context-type="linenumber">4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2888448472951900718" datatype="html">
+        <source>Stop-loss</source>
+        <target>Стоп-лосс</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/limit-order/limit-order.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="lowerLimitPlaceholder" datatype="html">
+        <source>Lower limit</source>
+        <target>Нижний лимит</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/limit-order/limit-order.component.html</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="errorTakeProfit" datatype="html">
+        <source>
+          Take-profit should be more than <x id="PH" equiv-text="currentPrice"/>
+        </source>
+        <target>
+          Тейк-профит должен быть больше, чем <x id="PH" equiv-text="currentPrice"/>
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/limit-order/validators/limit-valiators.ts</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="errorStopLoss" datatype="html">
+        <source>
+          Stop-loss should be less than <x id="PH" equiv-text="currentPrice"/>
+        </source>
+        <target>
+          Стоп-лосс должен быть меньше, чем <x id="PH" equiv-text="currentPrice"/>
+        </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/limit-order/validators/limit-valiators.ts</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="1488566043032617704" datatype="html">
         <source> No. </source>
         <target>Номер</target>
@@ -80,6 +156,70 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/nav-menu/nav-menu.component.html</context>
           <context context-type="linenumber">28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="searchCurrencyPlaceholder" datatype="html">
+        <source>Search currency</source>
+        <target>Поиск валюты</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/search-control/search-control.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="chartIntervalS1" datatype="html">
+        <source>1s</source>
+        <target>1с</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
+          <context context-type="linenumber">16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="chartIntervalM1" datatype="html">
+        <source>1m</source>
+        <target>1м</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="chartIntervalM15" datatype="html">
+        <source>15m</source>
+        <target>15м</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="chartIntervalH1" datatype="html">
+        <source>1h</source>
+        <target>1ч</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="chartIntervalH4" datatype="html">
+        <source>4h</source>
+        <target>4ч</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="chartIntervalH12" datatype="html">
+        <source>12h</source>
+        <target>12ч</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="chartIntervalD1" datatype="html">
+        <source>1d</source>
+        <target>1д</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
+          <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
     </body>

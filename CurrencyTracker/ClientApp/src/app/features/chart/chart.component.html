@@ -21,7 +21,7 @@
       <mat-label i18n>Interval</mat-label>
       <mat-select [(value)]="selectedInterval" (selectionChange)="onIntervalChange($event)">
         @for (interval of intervals; track $index) {
-          <mat-option [value]="interval">{{ interval }}</mat-option>
+        <mat-option [value]="interval.value">{{ interval.display }}</mat-option>
         }
       </mat-select>
     </mat-form-field>

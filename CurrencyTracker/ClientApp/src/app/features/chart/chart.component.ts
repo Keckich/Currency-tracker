@@ -4,7 +4,7 @@ import { BinanceService } from '../../core/services/binance.service';
 import { Observable, Subscription, filter } from 'rxjs';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { CandleData, ChartData, Trade } from '../../shared/shared.model';
-import { ChartInterval } from '../../shared/shared.enum';
+import { ChartIntervals } from '../../shared/constants.value';
 import { TradesService } from '../../core/services/trades.service';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -43,8 +43,8 @@ export class ChartComponent implements OnInit, OnDestroy {
   
   Routes = Routes;
   price$: Observable<any> = new Observable();
-  intervals: ChartInterval[] = Object.values(ChartInterval);
-  selectedInterval: ChartInterval = ChartInterval.S1;
+  intervals = Object.entries(ChartIntervals).map(([key, { value, display }]) => ({ key, value, display }));
+  selectedInterval: string = ChartIntervals.S1.value;
   amount: number = 0;
   @Input() currencyPair!: string;
 
@@ -60,7 +60,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   constructor(private binanceService: BinanceService, private tradesService: TradesService) { }
 
   private getChartTitle(): string {
-    return `${this.currencyPair} Price`;
+    return $localize`:@@chartTitle:${this.currencyPair} Price`;
   }
 
   ngOnInit(): void {

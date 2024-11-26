@@ -1,3 +1,5 @@
+import { ɵ$localize } from '@angular/localize';
+
 import { AbstractControl, ValidationErrors, ValidatorFn } from "@angular/forms";
 
 export function takeProfitValidator(currentPrice: number): ValidatorFn {
@@ -5,7 +7,7 @@ export function takeProfitValidator(currentPrice: number): ValidatorFn {
     const enteredValue = control.value;
     if (enteredValue != null && enteredValue < currentPrice) {
       return {
-        takeProfitInvalid: `Take profit should be more than ${currentPrice}`
+        takeProfitInvalid: $localize`:@@errorTakeProfit:Take-profit should be more than ${currentPrice}`
       }
     }
     return null;
@@ -17,7 +19,7 @@ export function stopLossValidator(currentPrice: number): ValidatorFn {
     const enteredValue = control.value;
     if (enteredValue != null && enteredValue > currentPrice) {
       return {
-        stopLossInvalid: `Stop loss should be less than ${currentPrice}`
+        stopLossInvalid: $localize`:@@errorStopLoss:Stop-loss should be less than ${currentPrice}`
       }
     }
     return null;

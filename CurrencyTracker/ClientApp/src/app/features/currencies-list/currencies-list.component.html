@@ -2,7 +2,7 @@
 <mat-list role="list" class="overflow-y-auto h-64">
   @for (currency of filteredList | sort:'symbol':sortOrder; track $index) {
     <mat-list-item role="listitem">
-      <a [routerLink]="['/', Routes.CURRENCY, currency.symbol]" i18n>{{ currency.symbol }}</a>
+      <a [routerLink]="['/', Routes.CURRENCY, currency.symbol]">{{ currency.symbol }}</a>
     </mat-list-item>
   }
 </mat-list>

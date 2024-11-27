@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { FormGroup, FormControl, FormsModule, ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
@@ -25,6 +25,7 @@ import { CommonModule } from '@angular/common';
 export class LimitOrderComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
 
+  @Output() isValidChange = new EventEmitter<boolean>();
   @Input() price$!: Observable<any>;
 
   limitsForm = this.formBuilder.group({
@@ -33,6 +34,10 @@ export class LimitOrderComponent implements OnInit {
   })
 
   ngOnInit(): void {
+    this.limitsForm.statusChanges.subscribe(() => {
+      this.isValidChange.emit(this.limitsForm.valid);
+    })
+
     this.price$.subscribe({
       next: data => {
         const price = parseFloat(data.c);
@@ -49,6 +54,14 @@ export class LimitOrderComponent implements OnInit {
         this.limitsForm.get('takeProfit')?.updateValueAndValidity();
         this.limitsForm.get('stopLoss')?.updateValueAndValidity();
       }
+    })
+  }
+
+  showErrors(): void {
+    Object.keys(this.limitsForm.controls).forEach(controlName => {
+      const control = this.limitsForm.get(controlName);
+      control?.markAsTouched();
+      control?.updateValueAndValidity();
     })
   }
 }

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ApexAxisChartSeries, ApexChart, ApexPlotOptions, ApexTitleSubtitle, ApexXAxis, ApexYAxis } from 'ng-apexcharts';
 import { BinanceService } from '../../core/services/binance.service';
 import { Observable, Subscription, filter } from 'rxjs';
@@ -16,6 +16,8 @@ import { MatLabel, MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatIcon } from '@angular/material/icon';
 import { MatOption, MatSelect } from '@angular/material/select';
+import { MatCheckbox } from '@angular/material/checkbox';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-chart',
@@ -23,6 +25,7 @@ import { MatOption, MatSelect } from '@angular/material/select';
   imports: [
     NgApexchartsModule,
     FormsModule,
+    CommonModule,
     MatButton,
     MatInput,
     MatLabel,
@@ -30,6 +33,7 @@ import { MatOption, MatSelect } from '@angular/material/select';
     MatFormField,
     MatSelect,
     MatOption,
+    MatCheckbox,
     RouterLink,
     LimitOrderComponent,
   ],
@@ -40,13 +44,18 @@ export class ChartComponent implements OnInit, OnDestroy {
   private priceSubscription: Subscription = new Subscription;
   private chartSubscription: Subscription = new Subscription;
   private currentTrade: Trade | undefined;
-  
+
+  // TODO: add another component to divide chart and buying func
   Routes = Routes;
   price$: Observable<any> = new Observable();
   intervals = Object.entries(ChartIntervals).map(([key, { value, display }]) => ({ key, value, display }));
   selectedInterval: string = ChartIntervals.S1.value;
+  // TODO: add validation for more than 0
   amount: number = 0;
+  isLimitSectionOpened: boolean = false;
+  isLimitOrderValid: boolean = false;
   @Input() currencyPair!: string;
+  @ViewChild(LimitOrderComponent) limitOrderComponent!: LimitOrderComponent;
 
   chartSeries: ApexAxisChartSeries = [
     {
@@ -149,7 +158,16 @@ export class ChartComponent implements OnInit, OnDestroy {
   }
 
   buy(): void {
-    this.tradesService.addTrade(this.currentTrade);
+    if (this.isLimitSectionOpened && !this.isLimitOrderValid) {
+      this.limitOrderComponent.showErrors();
+    }
+    if (!this.isLimitSectionOpened || (this.isLimitSectionOpened && this.isLimitOrderValid)) {
+      this.tradesService.addTrade(this.currentTrade);
+    }
+  }
+
+  onLimitOrderValidityChange(isValid: boolean): void {
+    this.isLimitOrderValid = isValid;
   }
 
   ngOnDestroy(): void {

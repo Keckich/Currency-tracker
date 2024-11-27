@@ -26,5 +26,6 @@
       </mat-select>
     </mat-form-field>
   </div>
-  <app-limit-order [price$]="price$"></app-limit-order>
+  <mat-checkbox [(ngModel)]="isLimitSectionOpened">TP/SL</mat-checkbox>
+  <app-limit-order *ngIf="isLimitSectionOpened" (isValidChange)="onLimitOrderValidityChange($event)" [price$]="price$"></app-limit-order>
 </div>

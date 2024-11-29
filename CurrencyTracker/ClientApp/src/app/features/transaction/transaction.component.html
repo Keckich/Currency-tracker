@@ -1,0 +1,21 @@
+<div class="flex gap-3 mb-2">
+  <form [formGroup]="transactionForm">
+    <mat-form-field>
+      <mat-label i18n>Amount of crypto</mat-label>
+      <input matInput type="number" formControlName="amount" />
+      <mat-error *ngIf="transactionForm.get('amount')?.errors">
+        <ng-container>{{ transactionForm.get('amount')?.errors?.moreThanInvalid }}</ng-container>
+      </mat-error>
+
+      @if (this.transactionForm.get('amount')?.value) {
+      <button matSuffix mat-icon-button aria-label="Clear" (click)="this.transactionForm.get('amount')?.setValue(0)">
+        <mat-icon>close</mat-icon>
+      </button>
+      }
+    </mat-form-field>
+    <button mat-raised-button (click)="buy()" i18n="@@buyButton">Buy</button>
+    <button mat-raised-button i18n="@@sellButton">Sell</button>
+  </form>
+</div>
+<mat-checkbox [(ngModel)]="isLimitSectionOpened">TP/SL</mat-checkbox>
+<app-limit-order *ngIf="isLimitSectionOpened" (isValidChange)="onLimitOrderValidityChange($event)" [price$]="price$"></app-limit-order>

@@ -33,6 +33,7 @@
     <None Remove="ClientApp\src\app\shared\constants.value.ts" />
     <None Remove="ClientApp\src\app\shared\shared.enum.ts" />
     <None Remove="ClientApp\src\app\shared\shared.model.ts" />
+    <None Remove="ClientApp\src\app\shared\validators\number-validators.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,6 +48,7 @@
     <TypeScriptCompile Include="ClientApp\src\app\shared\constants.value.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\shared.enum.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\shared.model.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\shared\validators\number-validators.ts" />
   </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

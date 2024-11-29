@@ -18,6 +18,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatOption, MatSelect } from '@angular/material/select';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
+import { TransactionComponent } from '../transaction/transaction.component';
 
 @Component({
   selector: 'app-chart',
@@ -26,36 +27,24 @@ import { CommonModule } from '@angular/common';
     NgApexchartsModule,
     FormsModule,
     CommonModule,
-    MatButton,
     MatInput,
     MatLabel,
-    MatIcon,
     MatFormField,
     MatSelect,
     MatOption,
-    MatCheckbox,
     RouterLink,
-    LimitOrderComponent,
+    TransactionComponent,
   ],
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
 })
 export class ChartComponent implements OnInit, OnDestroy {
-  private priceSubscription: Subscription = new Subscription;
   private chartSubscription: Subscription = new Subscription;
-  private currentTrade: Trade | undefined;
 
-  // TODO: add another component to divide chart and buying func
   Routes = Routes;
-  price$: Observable<any> = new Observable();
   intervals = Object.entries(ChartIntervals).map(([key, { value, display }]) => ({ key, value, display }));
   selectedInterval: string = ChartIntervals.S1.value;
-  // TODO: add validation for more than 0
-  amount: number = 0;
-  isLimitSectionOpened: boolean = false;
-  isLimitOrderValid: boolean = false;
   @Input() currencyPair!: string;
-  @ViewChild(LimitOrderComponent) limitOrderComponent!: LimitOrderComponent;
 
   chartSeries: ApexAxisChartSeries = [
     {
@@ -76,31 +65,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     this.chartSeries[0].name = this.getChartTitle();
     this.chartOptions.title.text = this.getChartTitle();
     
-    this.priceSubscription = this.getPrice();
     this.chartSubscription = this.createChart();
-  }
-
-  getPrice(): Subscription {
-    this.price$ = this.binanceService.getCryptoPriceUpdates(this.currencyPair);
-
-    return this.price$.subscribe({
-      next: data => {
-        const currentDate = new Date();
-        const price = parseFloat(data.c);
-
-        this.setCurrentTradeValue(currentDate, price);
-      },
-      error: error => console.log(`Error occured: ${error}`)
-    })
-  }
-
-  private setCurrentTradeValue(currentDate: Date, price: number): void {
-    this.currentTrade = {
-      price: price,
-      date: currentDate,
-      currency: this.currencyPair,
-      amount: this.amount,
-    };
   }
 
   createChart(): Subscription {
@@ -157,24 +122,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     this.chartSubscription = this.createChart();
   }
 
-  buy(): void {
-    if (this.isLimitSectionOpened && !this.isLimitOrderValid) {
-      this.limitOrderComponent.showErrors();
-    }
-    if (!this.isLimitSectionOpened || (this.isLimitSectionOpened && this.isLimitOrderValid)) {
-      this.tradesService.addTrade(this.currentTrade);
-    }
-  }
-
-  onLimitOrderValidityChange(isValid: boolean): void {
-    this.isLimitOrderValid = isValid;
-  }
-
   ngOnDestroy(): void {
-    if (this.priceSubscription) {
-      this.priceSubscription.unsubscribe();
-    }
-
     if (this.chartSubscription) {
       this.chartSubscription.unsubscribe();
     }

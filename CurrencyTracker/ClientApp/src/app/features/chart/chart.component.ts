@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild, inject } from '@angular/core';
 import { ApexAxisChartSeries, ApexChart, ApexPlotOptions, ApexTitleSubtitle, ApexXAxis, ApexYAxis } from 'ng-apexcharts';
 import { BinanceService } from '../../core/services/binance.service';
 import { Observable, Subscription, filter } from 'rxjs';
@@ -19,6 +19,7 @@ import { MatOption, MatSelect } from '@angular/material/select';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { TransactionComponent } from '../transaction/transaction.component';
+import { IntervalListComponent } from '../interval-list/interval-list.component';
 
 @Component({
   selector: 'app-chart',
@@ -34,15 +35,17 @@ import { TransactionComponent } from '../transaction/transaction.component';
     MatOption,
     RouterLink,
     TransactionComponent,
+    IntervalListComponent
   ],
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
 })
 export class ChartComponent implements OnInit, OnDestroy {
+  private binanceService = inject(BinanceService);
+  private tradesService = inject(TradesService);
   private chartSubscription: Subscription = new Subscription;
 
   Routes = Routes;
-  intervals = Object.entries(ChartIntervals).map(([key, { value, display }]) => ({ key, value, display }));
   selectedInterval: string = ChartIntervals.S1.value;
   @Input() currencyPair!: string;
 
@@ -54,8 +57,6 @@ export class ChartComponent implements OnInit, OnDestroy {
   ]
 
   chartOptions = ChartOptions;
-
-  constructor(private binanceService: BinanceService, private tradesService: TradesService) { }
 
   private getChartTitle(): string {
     return $localize`:@@chartTitle:${this.currencyPair} Price`;
@@ -105,9 +106,8 @@ export class ChartComponent implements OnInit, OnDestroy {
     this.chartSeries = [... this.chartSeries];
   }
 
-  onIntervalChange(event: any): void {
-    const newIntreval = event.value;
-    this.selectedInterval = newIntreval;
+  onIntervalChange(interval: string) {
+    this.selectedInterval = interval;
     this.reloadChart();
   }
 

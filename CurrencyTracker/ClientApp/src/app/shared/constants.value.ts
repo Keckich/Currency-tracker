@@ -3,7 +3,7 @@ import { ApexChart, ApexPlotOptions, ApexTitleSubtitle, ApexXAxis, ApexYAxis } f
 
 export const Constants = {
   CURRENCIES: ['BTCUSDT', 'ETHUSDT', 'BNBUSDT'],
-  DISPLAYED_COLUMNS: ['position', 'price', 'date', 'currency', 'amount'] as (keyof Trade)[],
+  DISPLAYED_COLUMNS: ['position', 'price', 'amount', 'value', 'date', 'currency','takeProfit', 'stopLoss'] as (keyof Trade)[],
   CANDLE_COLORS: { green: '#00B746', red: '#EF403C' },
   CANDLE_CHART_SIZE: 100,
 }

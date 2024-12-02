@@ -36,7 +36,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
   private binanceService = inject(BinanceService);
   private tradesService = inject(TradesService);
   private priceSubscription: Subscription = new Subscription;
-  private currentTrade!: Trade;
+  private currentTrade!: Partial<Trade>;
   private formBuilder = inject(FormBuilder);
 
   price$: Observable<any> = new Observable();
@@ -72,7 +72,6 @@ export class TransactionComponent implements OnInit, OnDestroy {
       price: price,
       date: currentDate,
       currency: this.currencyPair,
-      amount: undefined,
     };
   }
 
@@ -85,6 +84,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
     }
     if ((!this.isLimitSectionOpened || (this.isLimitSectionOpened && this.isLimitOrderValid)) && this.transactionForm.valid) {
       this.currentTrade.amount = this.transactionForm.get('amount')?.value ?? 0;
+      this.currentTrade.value = (this.currentTrade.price ?? 0) * this.currentTrade.amount;
       this.tradesService.addTrade(this.currentTrade);
     }
   }

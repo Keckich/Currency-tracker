@@ -6,10 +6,10 @@ import { Trade } from '../../shared/shared.model';
   providedIn: 'root'
 })
 export class TradesService {
-  private tradesSubject = new BehaviorSubject<Trade[]>([]);
-  trades$: Observable<Trade[]> = this.tradesSubject.asObservable();
+  private tradesSubject = new BehaviorSubject<Partial<Trade>[]>([]);
+  trades$: Observable<Partial<Trade>[]> = this.tradesSubject.asObservable();
 
-  addTrade(trade: Trade | undefined): void {
+  addTrade(trade: Partial<Trade> | undefined): void {
     if (trade) {
       const currentTrades = this.tradesSubject.value;
       this.tradesSubject.next([...currentTrades, trade]);

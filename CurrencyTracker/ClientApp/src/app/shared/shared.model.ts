@@ -2,7 +2,10 @@ export interface Trade {
   price: number,
   date: Date,
   currency: string,
-  amount: number | undefined,
+  amount: number,
+  value: number,
+  takeProfit: number | undefined,
+  stopLoss: number | undefined,
 }
 
 export interface ChartData {

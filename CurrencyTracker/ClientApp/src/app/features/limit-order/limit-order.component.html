@@ -1,6 +1,6 @@
 <form [formGroup]="limitsForm">
   <mat-form-field class="mb-4">
-    <mat-label i18n>Take-profit</mat-label>
+    <mat-label i18n="@@takeProfit">Take-profit</mat-label>
     <input matInput type="number" formControlName="takeProfit" placeholder="Upper limit" i18n-placeholder="@@upperLimitPlaceholder" />
     <mat-error *ngIf="limitsForm.get('takeProfit')?.errors">
       <ng-container>{{ limitsForm.get('takeProfit')?.errors?.takeProfitInvalid }}</ng-container>
@@ -8,7 +8,7 @@
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label i18n>Stop-loss</mat-label>
+    <mat-label i18n="@@stopLoss">Stop-loss</mat-label>
     <input matInput type="number" formControlName="stopLoss" placeholder="Lower limit" i18n-placeholder="@@lowerLimitPlaceholder" />
     <mat-error *ngIf="limitsForm.get('stopLoss')?.errors">
       <ng-container>{{ limitsForm.get('stopLoss')?.errors?.stopLossInvalid }}</ng-container>

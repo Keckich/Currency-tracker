@@ -15,7 +15,7 @@
         <target>Дополнительная информация</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/chart/chart.component.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
       <trans-unit id="chartTitle" datatype="html">
@@ -27,15 +27,19 @@
         </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/chart/chart.component.ts</context>
-          <context context-type="linenumber">61</context>
+          <context context-type="linenumber">62</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1743736226132646071" datatype="html">
+      <trans-unit id="takeProfit" datatype="html">
         <source>Take-profit</source>
         <target>Тейк-профит</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/limit-order/limit-order.component.html</context>
           <context context-type="linenumber">3</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trades/trades.component.html</context>
+          <context context-type="linenumber">27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="upperLimitPlaceholder" datatype="html">
@@ -46,12 +50,16 @@
           <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="2888448472951900718" datatype="html">
+      <trans-unit id="stopLoss" datatype="html">
         <source>Stop-loss</source>
         <target>Стоп-лосс</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/limit-order/limit-order.component.html</context>
           <context context-type="linenumber">11</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trades/trades.component.html</context>
+          <context context-type="linenumber">31</context>
         </context-group>
       </trans-unit>
       <trans-unit id="lowerLimitPlaceholder" datatype="html">
@@ -102,12 +110,28 @@
           <context context-type="linenumber">7</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="6533918067030990396" datatype="html">
+        <source>Amount</source>
+        <target>Количество</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trades/trades.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6555318547274416232" datatype="html">
+        <source>Value</source>
+        <target>Всего</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trades/trades.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="3973931101896534797" datatype="html">
         <source>Date</source>
         <target>Дата</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/trades/trades.component.html</context>
-          <context context-type="linenumber">11</context>
+          <context context-type="linenumber">19</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4327471061205783634" datatype="html">
@@ -115,15 +139,7 @@
         <target>Валюта</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/trades/trades.component.html</context>
-          <context context-type="linenumber">15</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6533918067030990396" datatype="html">
-        <source>Amount</source>
-        <target>Количество</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/trades/trades.component.html</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7831163626218670358" datatype="html">

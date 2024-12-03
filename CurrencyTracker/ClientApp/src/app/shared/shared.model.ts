@@ -27,6 +27,11 @@ export interface Currency {
   quoteAsset: string,
 }
 
+export interface AnalysisResult {
+  roi: number;
+  recommendation: string;
+}
+
 export class RouteParams {
   id?: string | undefined = undefined;
 }

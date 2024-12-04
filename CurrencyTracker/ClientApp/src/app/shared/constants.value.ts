@@ -10,6 +10,7 @@ export const Constants = {
 
 export const Routes = {
   CURRENCY: 'currency',
+  ANALYTICS: 'analytics',
 }
 
 export const ChartIntervals = {

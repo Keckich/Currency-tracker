@@ -6,6 +6,7 @@
         <app-chart [currencyPair]="currency"></app-chart>
       }
     </div>
+    <a [routerLink]="['/analytics']" [state]="{ trades: trades }" i18n>Analytics</a>
     <app-trades [trades]="trades"></app-trades>
   </div>
 </div>

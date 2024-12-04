@@ -16,6 +16,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { TradesComponent } from './features/trades/trades.component';
 import { CurrencyDetailComponent } from './features/currency-detail/currency-detail.component';
 import { Routes } from './shared/constants.value';
+import { TradeAnalyticsComponent } from './features/trade-analytics/trade-analytics.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { Routes } from './shared/constants.value';
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: `${Routes.CURRENCY}/:id`, component: CurrencyDetailComponent },
+      { path: `${Routes.ANALYTICS}`, component: TradeAnalyticsComponent },
       /*{ path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },*/
     ])

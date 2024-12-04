@@ -60,7 +60,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
       next: data => {
         const currentDate = new Date();
         const price = parseFloat(data.c);
-
+        this.tradesService.updatePrices({ [this.currencyPair]: price });
         this.setCurrentTradeValue(currentDate, price);
       },
       error: error => console.log(`Error occured: ${error}`)

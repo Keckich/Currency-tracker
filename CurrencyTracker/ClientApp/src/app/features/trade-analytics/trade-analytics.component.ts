@@ -1,9 +1,11 @@
 import { Component, Input, OnInit, inject } from '@angular/core';
 import { AnalysisResult, Trade } from '../../shared/shared.model';
 import { BinanceService } from '../../core/services/binance.service';
-import { MatTableModule } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { CommonModule } from '@angular/common';
+import { TradesService } from '../../core/services/trades.service';
+import { Constants } from '../../shared/constants.value';
 
 @Component({
   selector: 'app-trade-analytics',
@@ -18,30 +20,19 @@ import { CommonModule } from '@angular/common';
 })
 export class TradeAnalyticsComponent implements OnInit {
   private binanceService = inject(BinanceService);
-  @Input() trades: Partial<Trade & { analytics: AnalysisResult }>[] = [];
+  private tradeService = inject(TradesService);
+  trades: Partial<Trade & { analytics: AnalysisResult }>[] = [];
+  dataSource = new MatTableDataSource<Partial<Trade>>();
+  displayedColumns = ['position', 'currency', 'avgPrice', 'totalAmount', 'roi', 'recommendation'];
 
   ngOnInit(): void {
-    this.trades.forEach(trade => {
-      this.analyze(trade);
+    this.tradeService.analyzedTrades$.subscribe(data => {
+      this.dataSource.data = data.map((trade, index) => ({
+        ...trade,
+        position: index + 1,
+        recommendation: this.getRecommendation(trade.roi)
+      }));
     })
-  }
-
-  analyze(trade: Partial<Trade & { analytics: AnalysisResult }>): void {
-    let price$ = this.binanceService.getCryptoPriceUpdates(trade.currency ?? '');
-    price$.subscribe({
-      next: data => {
-        const currentPrice = parseFloat(data.c);
-        if (trade.price) {
-          const roi = ((trade.price - currentPrice) / trade.price) * 100;
-          const recommendation = this.getRecommendation(roi);
-
-          trade.analytics = {
-            roi: roi,
-            recommendation: recommendation,
-          }
-        }
-      }
-    });
   }
 
   getRecommendation(roi: number): string {

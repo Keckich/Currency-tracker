@@ -5,6 +5,7 @@ import { TradesComponent } from '../features/trades/trades.component';
 import { Trade } from '../shared/shared.model';
 import { Constants } from '../shared/constants.value';
 import { CurrenciesListComponent } from '../features/currencies-list/currencies-list.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -14,6 +15,7 @@ import { CurrenciesListComponent } from '../features/currencies-list/currencies-
     TradesComponent,
     CurrenciesListComponent,
     MatDivider,
+    RouterLink,
   ],
   templateUrl: './home.component.html',
 })

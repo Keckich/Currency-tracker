@@ -30,23 +30,7 @@ export class TradeAnalyticsComponent implements OnInit {
       this.dataSource.data = data.map((trade, index) => ({
         ...trade,
         position: index + 1,
-        recommendation: this.getRecommendation(trade.roi)
       }));
     })
-  }
-
-  getRecommendation(roi: number): string {
-    let recommendation = '';
-    if (roi > 50) {
-      recommendation = 'Sell to lock in a profit.';
-    } else if (roi > 10) {
-      recommendation = 'Keep holding, further growth is possible.';
-    } else if (roi < 0) {
-      recommendation = 'Sell to minimize losses.';
-    } else {
-      recommendation = 'Keep it if you expect the price to recover.'; 
-    }
-
-    return recommendation;
   }
 }

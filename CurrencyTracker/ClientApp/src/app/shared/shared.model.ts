@@ -28,10 +28,18 @@ export interface Currency {
 }
 
 export interface AnalysisResult {
-  roi: number;
-  recommendation: string;
+  currency: string,
+  avgPrice: number,
+  roi: number,
+  recommendation: string,
+  tradeInfo: AnalyzedTradeInfo,
+}
+
+export interface AnalyzedTradeInfo {
+  totalAmount: number,
+  totalSpent: number,
 }
 
 export class RouteParams {
-  id?: string | undefined = undefined;
+  id?: string | undefined = undefined
 }

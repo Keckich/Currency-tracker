@@ -11,6 +11,7 @@ export const Constants = {
 export const Routes = {
   CURRENCY: 'currency',
   ANALYTICS: 'analytics',
+  ACCESS_DENIED: 'access-denied'
 }
 
 export const ChartIntervals = {

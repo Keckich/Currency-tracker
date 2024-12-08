@@ -17,6 +17,8 @@ import { TradesComponent } from './features/trades/trades.component';
 import { CurrencyDetailComponent } from './features/currency-detail/currency-detail.component';
 import { Routes } from './shared/constants.value';
 import { TradeAnalyticsComponent } from './features/trade-analytics/trade-analytics.component';
+import { tradeAnalyticsGuard } from './core/guards/trade-analytics.guard';
+import { AccessDeniedComponent } from './features/access-denied/access-denied.component';
 
 @NgModule({
   declarations: [
@@ -31,9 +33,8 @@ import { TradeAnalyticsComponent } from './features/trade-analytics/trade-analyt
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: `${Routes.CURRENCY}/:id`, component: CurrencyDetailComponent },
-      { path: `${Routes.ANALYTICS}`, component: TradeAnalyticsComponent },
-      /*{ path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthorizeGuard] },*/
+      { path: `${Routes.ANALYTICS}`, component: TradeAnalyticsComponent, canActivate: [tradeAnalyticsGuard] },
+      { path: `${Routes.ACCESS_DENIED}`, component: AccessDeniedComponent },
     ])
   ],
   providers: [

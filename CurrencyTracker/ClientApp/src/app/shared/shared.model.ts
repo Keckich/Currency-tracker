@@ -1,11 +1,18 @@
+import { ValidatorFn } from "@angular/forms"
+
 export interface Trade {
+  position?: number,
   price: number,
   date: Date,
   currency: string,
   amount: number,
   value: number,
-  takeProfit: number | undefined,
-  stopLoss: number | undefined,
+  takeProfit?: number,
+  stopLoss?: number,
+}
+
+export interface Transaction {
+  amount: (number | ValidatorFn[])[],
 }
 
 export interface ChartData {
@@ -38,6 +45,11 @@ export interface AnalysisResult {
 export interface AnalyzedTradeInfo {
   totalAmount: number,
   totalSpent: number,
+}
+
+export interface LimitOrder {
+  takeProfit: number[],
+  stopLoss: number[],
 }
 
 export class RouteParams {

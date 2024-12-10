@@ -7,20 +7,20 @@ import { AnalysisResult, AnalyzedTradeInfo, Trade } from '../../shared/shared.mo
   providedIn: 'root'
 })
 export class TradesService {
-  private tradesSubject = new BehaviorSubject<Partial<Trade>[]>([]);
+  private tradesSubject = new BehaviorSubject<Trade[]>([]);
   private pricesSubject = new BehaviorSubject<Record<string, number>>({});
 
-  trades$: Observable<Partial<Trade>[]> = this.tradesSubject.asObservable();
+  trades$: Observable<Trade[]> = this.tradesSubject.asObservable();
   prices$: Observable<Record<string, number>> = this.pricesSubject.asObservable();
 
-  addTrade(trade: Partial<Trade> | undefined): void {
+  addTrade(trade: Trade | undefined): void {
     if (trade) {
       const currentTrades = this.tradesSubject.value;
       this.tradesSubject.next([...currentTrades, trade]);
     }
   }
 
-  getTrades(): Partial<Trade>[] {
+  getTrades(): Trade[] {
     return this.tradesSubject.value;
   }
 

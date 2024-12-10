@@ -45,7 +45,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   private tradesService = inject(TradesService);
   private chartSubscription: Subscription = new Subscription;
 
-  Routes = Routes;
+  readonly Routes = Routes;
   selectedInterval: string = ChartIntervals.S1.value;
   @Input() currencyPair!: string;
 
@@ -74,26 +74,31 @@ export class ChartComponent implements OnInit, OnDestroy {
       .pipe(filter(data => data.k))
       .subscribe({
         next: data => {
-          const kline = data.k;
-          const candle = {
-            x: kline.t,
-            y: {
-              open: parseFloat(kline.o),
-              high: parseFloat(kline.h),
-              low: parseFloat(kline.l),
-              close: parseFloat(kline.c),
-            } as CandleData
-          };
-
-          const apexCandle: ChartData = {
-            x: candle.x,
-            y: [candle.y.open, candle.y.high, candle.y.low, candle.y.close],
-          }
-
-          this.upateCandleChart(apexCandle);
+          const candle = this.createCandle(data);
+          this.upateCandleChart(candle);
         },
         error: error => console.log(`Error occured: ${error}`)
     })
+  }
+
+  private createCandle(data: any): ChartData {
+    const kline = data.k;
+    const candle = {
+      x: kline.t,
+      y: {
+        open: parseFloat(kline.o),
+        high: parseFloat(kline.h),
+        low: parseFloat(kline.l),
+        close: parseFloat(kline.c),
+      } as CandleData
+    };
+
+    const apexCandle: ChartData = {
+      x: candle.x,
+      y: [candle.y.open, candle.y.high, candle.y.low, candle.y.close],
+    }
+
+    return apexCandle;
   }
 
   private upateCandleChart(candle: ChartData): void {

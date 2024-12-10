@@ -1,7 +1,7 @@
 import { Component, Input, OnDestroy, OnInit, ViewChild, inject } from '@angular/core';
 import { BinanceService } from '../../core/services/binance.service';
 import { Observable, Subscription } from 'rxjs';
-import { Trade } from '../../shared/shared.model';
+import { Trade, Transaction } from '../../shared/shared.model';
 import { LimitOrderComponent } from '../limit-order/limit-order.component';
 import { TradesService } from '../../core/services/trades.service';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -36,11 +36,11 @@ export class TransactionComponent implements OnInit, OnDestroy {
   private binanceService = inject(BinanceService);
   private tradesService = inject(TradesService);
   private priceSubscription: Subscription = new Subscription;
-  private currentTrade!: Partial<Trade>;
+  private currentTrade!: Trade;
   private formBuilder = inject(FormBuilder);
 
   price$: Observable<any> = new Observable();
-  transactionForm = this.formBuilder.group({
+  transactionForm = this.formBuilder.group<Transaction>({
     amount: [0, [Validators.required, NumberValidators.moreThan(0)]]
   })
   isLimitSectionOpened: boolean = false;
@@ -68,11 +68,9 @@ export class TransactionComponent implements OnInit, OnDestroy {
   }
 
   private setCurrentTradeValue(currentDate: Date, price: number): void {
-    this.currentTrade = {
-      price: price,
-      date: currentDate,
-      currency: this.currencyPair,
-    };
+    this.currentTrade.price = price;
+    this.currentTrade.date = currentDate;
+    this.currentTrade.currency = this.currencyPair;
   }
 
   buy(): void {
@@ -82,11 +80,15 @@ export class TransactionComponent implements OnInit, OnDestroy {
     if (this.isLimitSectionOpened && !this.isLimitOrderValid) {
       this.limitOrderComponent.showErrors();
     }
-    if ((!this.isLimitSectionOpened || (this.isLimitSectionOpened && this.isLimitOrderValid)) && this.transactionForm.valid) {
-      this.currentTrade.amount = this.transactionForm.get('amount')?.value ?? 0;
+    if (this.canBuy()) {
+      this.currentTrade.amount = this.transactionForm.controls.amount.value ?? 0;
       this.currentTrade.value = (this.currentTrade.price ?? 0) * this.currentTrade.amount;
       this.tradesService.addTrade(this.currentTrade);
     }
+  }
+
+  private canBuy(): boolean {
+    return (!this.isLimitSectionOpened || (this.isLimitSectionOpened && this.isLimitOrderValid)) && this.transactionForm.valid;
   }
 
   showErrors(): void {

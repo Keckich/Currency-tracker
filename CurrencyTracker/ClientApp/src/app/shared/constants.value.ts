@@ -1,9 +1,20 @@
 import { Trade } from "./shared.model";
 import { ApexChart, ApexPlotOptions, ApexTitleSubtitle, ApexXAxis, ApexYAxis } from 'ng-apexcharts';
 
+import { nameof } from 'ts-simple-nameof';
+
 export const Constants = {
   CURRENCIES: ['BTCUSDT', 'ETHUSDT', 'BNBUSDT'],
-  DISPLAYED_COLUMNS: ['position', 'price', 'amount', 'value', 'date', 'currency','takeProfit', 'stopLoss'] as (keyof Trade)[],
+  DISPLAYED_COLUMNS: [
+    nameof<Trade>(t => t.position),
+    nameof<Trade>(t => t.price),
+    nameof<Trade>(t => t.amount),
+    nameof<Trade>(t => t.value),
+    nameof<Trade>(t => t.date),
+    nameof<Trade>(t => t.currency),
+    nameof<Trade>(t => t.takeProfit),
+    nameof<Trade>(t => t.stopLoss)
+  ] as (keyof Trade)[],
   CANDLE_COLORS: { green: '#00B746', red: '#EF403C' },
   CANDLE_CHART_SIZE: 100,
 }

@@ -5,6 +5,7 @@ import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/in
 import { Observable, Subscription } from 'rxjs';
 import { stopLossValidator, takeProfitValidator } from './validators/limit-valiators';
 import { CommonModule } from '@angular/common';
+import { LimitOrder } from '../../shared/shared.model';
 
 @Component({
   selector: 'app-limit-order',
@@ -28,7 +29,7 @@ export class LimitOrderComponent implements OnInit {
   @Output() isValidChange = new EventEmitter<boolean>();
   @Input() price$!: Observable<any>;
 
-  limitsForm = this.formBuilder.group({
+  limitsForm = this.formBuilder.group<LimitOrder>({
     takeProfit: [0],
     stopLoss: [0],
   })
@@ -41,18 +42,18 @@ export class LimitOrderComponent implements OnInit {
     this.price$.subscribe({
       next: data => {
         const price = parseFloat(data.c);
-        this.limitsForm.get('takeProfit')?.setValidators([
+        this.limitsForm.controls.takeProfit?.setValidators([
           Validators.required,
           takeProfitValidator(price),
         ]);
 
-        this.limitsForm.get('stopLoss')?.setValidators([
+        this.limitsForm.controls.stopLoss?.setValidators([
           Validators.required,
           stopLossValidator(price),
         ]);
 
-        this.limitsForm.get('takeProfit')?.updateValueAndValidity();
-        this.limitsForm.get('stopLoss')?.updateValueAndValidity();
+        this.limitsForm.controls.takeProfit?.updateValueAndValidity();
+        this.limitsForm.controls.stopLoss?.updateValueAndValidity();
       }
     })
   }

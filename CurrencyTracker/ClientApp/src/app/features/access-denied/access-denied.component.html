@@ -1,1 +1,18 @@
-<h1>{{ message }}</h1>
+<div class="error-page flex items-center justify-center">
+  <mat-card class="text-center">
+    <mat-card-header class="text-6xl font-bold text-red-500">
+      <mat-icon class="ml-2" color="warn">error</mat-icon>
+      <mat-card-title i18n>Error occured</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="mt-2 text-gray-500">
+      <p>{{ message }}</p>
+    </mat-card-content>
+    <mat-card-actions class="flex justify-end">
+      <a href="/"
+         class="mt-6 inline-block bg-blue-500 text-white px-4 py-2
+                   rounded-lg shadow hover:bg-blue-600 transition duration-300" i18n>
+        Go Back Home
+      </a>
+    </mat-card-actions>
+  </mat-card>
+</div>

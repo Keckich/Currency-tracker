@@ -19,7 +19,7 @@ import { CommonModule } from '@angular/common';
 })
 export class TradesComponent implements OnInit, AfterViewInit {
   @Input() trades: Partial<Trade>[] = [];
-  displayedColumns = Constants.DISPLAYED_COLUMNS;
+  displayedColumns = Constants.TRADE_COLUMNS;
   dataSource = new MatTableDataSource<Partial<Trade>>();
 
   @ViewChild(MatSort) sort!: MatSort;

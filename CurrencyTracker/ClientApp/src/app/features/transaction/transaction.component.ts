@@ -68,6 +68,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
   }
 
   private setCurrentTradeValue(currentDate: Date, price: number): void {
+    this.currentTrade = {} as Trade;
     this.currentTrade.price = price;
     this.currentTrade.date = currentDate;
     this.currentTrade.currency = this.currencyPair;

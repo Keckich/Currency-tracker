@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AnalysisResult, AnalyzedTradeInfo, Trade } from '../../shared/shared.model';
+import { AnalysisRecommenations } from '../../shared/constants.value';
 
 @Injectable({
   providedIn: 'root'
@@ -69,13 +70,13 @@ export class TradesService {
   getRecommendation(roi: number): string {
     let recommendation = '';
     if (roi > 50) {
-      recommendation = 'Sell to lock in a profit.';
+      recommendation = AnalysisRecommenations.SELL_PROFIT;
     } else if (roi > 10) {
-      recommendation = 'Keep holding, further growth is possible.';
+      recommendation = AnalysisRecommenations.KEEP_GROWTH;
     } else if (roi < 0) {
-      recommendation = 'Sell to minimize losses.';
+      recommendation = AnalysisRecommenations.SELL_LOSS;
     } else {
-      recommendation = 'Keep it if you expect the price to recover.';
+      recommendation = AnalysisRecommenations.KEEP_RECOVER;
     }
 
     return recommendation;

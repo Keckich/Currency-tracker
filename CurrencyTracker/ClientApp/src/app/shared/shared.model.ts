@@ -35,6 +35,7 @@ export interface Currency {
 }
 
 export interface AnalysisResult {
+  position?: number,
   currency: string,
   avgPrice: number,
   roi: number,

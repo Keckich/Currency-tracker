@@ -1,11 +1,11 @@
-import { Trade } from "./shared.model";
+import { AnalysisResult, Trade } from "./shared.model";
 import { ApexChart, ApexPlotOptions, ApexTitleSubtitle, ApexXAxis, ApexYAxis } from 'ng-apexcharts';
 
 import { nameof } from 'ts-simple-nameof';
 
 export const Constants = {
   CURRENCIES: ['BTCUSDT', 'ETHUSDT', 'BNBUSDT'],
-  DISPLAYED_COLUMNS: [
+  TRADE_COLUMNS: [
     nameof<Trade>(t => t.position),
     nameof<Trade>(t => t.price),
     nameof<Trade>(t => t.amount),
@@ -15,6 +15,14 @@ export const Constants = {
     nameof<Trade>(t => t.takeProfit),
     nameof<Trade>(t => t.stopLoss)
   ] as (keyof Trade)[],
+  ANALYSIS_COLUMNS: [
+    nameof<AnalysisResult>(t => t.position),
+    nameof<AnalysisResult>(t => t.currency),
+    nameof<AnalysisResult>(t => t.avgPrice),
+    nameof<AnalysisResult>(t => t.tradeInfo.totalAmount),
+    nameof<AnalysisResult>(t => t.roi),
+    nameof<AnalysisResult>(t => t.recommendation),
+  ] as (keyof AnalysisResult)[],
   CANDLE_COLORS: { green: '#00B746', red: '#EF403C' },
   CANDLE_CHART_SIZE: 100,
 }
@@ -33,6 +41,13 @@ export const ChartIntervals = {
   H4: { value: '4h', display: $localize`:@@chartIntervalH4:4h`},
   H12: { value: '12h', display: $localize`:@@chartIntervalH12:12h`},
   D1: { value: '1d', display: $localize`:@@chartIntervalD1:1d`},
+}
+
+export const AnalysisRecommenations = {
+  SELL_PROFIT: $localize`:@@sellProfitRecommendation:Sell to lock in a profit.`,
+  KEEP_GROWTH: $localize`:@@keepGrowthRecommendation:Keep holding, further growth is possible.`,
+  SELL_LOSS: $localize`:@@sellLossRecommendation:Sell to minimize losses.`,
+  KEEP_RECOVER: $localize`:@@keepRecoverRecommendation:Keep it if you expect the price to recover.`,
 }
 
 export const ChartOptions: {

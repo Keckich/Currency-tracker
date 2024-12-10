@@ -25,7 +25,7 @@ export class AccessDeniedComponent {
   message: string = '';
 
   constructor() {
-    const navigtion = this.router.getCurrentNavigation();
-    this.message = navigtion?.extras.state?.['message'] || 'Access denied. Please, contact administrator.'
+    const navigation = this.router.getCurrentNavigation();
+    this.message = navigation?.extras.state?.['message'] || $localize`:@@accessDeniedDefaultMessage:Access denied. Please, contact administrator.`
   }
 }

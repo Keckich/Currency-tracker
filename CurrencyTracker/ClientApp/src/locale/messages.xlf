@@ -2,6 +2,34 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-US" datatype="plaintext" original="ng2.template">
     <body>
+      <trans-unit id="accessDeniedPageMessage" datatype="html">
+        <source>You don&apos;t have access to this page. Please, made at least one trade operation.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/core/guards/trade-analytics.guard.ts</context>
+          <context context-type="linenumber">14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8795047040687500838" datatype="html">
+        <source>Error occured</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/access-denied/access-denied.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1267391936361303948" datatype="html">
+        <source> Go Back Home </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/access-denied/access-denied.component.html</context>
+          <context context-type="linenumber">13,15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="accessDeniedDefaultMessage" datatype="html">
+        <source>Access denied. Please, contact administrator.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/access-denied/access-denied.component.ts</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="4871549568291802072" datatype="html">
         <source>Additional Info</source>
         <context-group purpose="location">
@@ -66,11 +94,51 @@
           <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="1488566043032617704" datatype="html">
+      <trans-unit id="position" datatype="html">
         <source> No. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trade-analytics/trade-analytics.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/trades/trades.component.html</context>
           <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="currency" datatype="html">
+        <source>Currency</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trade-analytics/trade-analytics.component.html</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trades/trades.component.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5749966344107391749" datatype="html">
+        <source>Average Price</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trade-analytics/trade-analytics.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="amount" datatype="html">
+        <source>Amount</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trade-analytics/trade-analytics.component.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trades/trades.component.html</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4089383701259512179" datatype="html">
+        <source>Recommendation</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/trade-analytics/trade-analytics.component.html</context>
+          <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8894377483833272091" datatype="html">
@@ -78,13 +146,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/trades/trades.component.html</context>
           <context context-type="linenumber">7</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="6533918067030990396" datatype="html">
-        <source>Amount</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/trades/trades.component.html</context>
-          <context context-type="linenumber">11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6555318547274416232" datatype="html">
@@ -99,13 +160,6 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/trades/trades.component.html</context>
           <context context-type="linenumber">19</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="4327471061205783634" datatype="html">
-        <source>Currency</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/trades/trades.component.html</context>
-          <context context-type="linenumber">23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7831163626218670358" datatype="html">
@@ -129,6 +183,13 @@
           <context context-type="linenumber">17</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="7861389751355579174" datatype="html">
+        <source>Analytics</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/home/home.component.html</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="2821179408673282599" datatype="html">
         <source>Home</source>
         <context-group purpose="location">
@@ -147,49 +208,77 @@
         <source>1s</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
-          <context context-type="linenumber">16</context>
+          <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="chartIntervalM1" datatype="html">
         <source>1m</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
-          <context context-type="linenumber">17</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="chartIntervalM15" datatype="html">
         <source>15m</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
-          <context context-type="linenumber">18</context>
+          <context context-type="linenumber">39</context>
         </context-group>
       </trans-unit>
       <trans-unit id="chartIntervalH1" datatype="html">
         <source>1h</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
-          <context context-type="linenumber">19</context>
+          <context context-type="linenumber">40</context>
         </context-group>
       </trans-unit>
       <trans-unit id="chartIntervalH4" datatype="html">
         <source>4h</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="chartIntervalH12" datatype="html">
         <source>12h</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">42</context>
         </context-group>
       </trans-unit>
       <trans-unit id="chartIntervalD1" datatype="html">
         <source>1d</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="linenumber">43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="sellProfitRecommendation" datatype="html">
+        <source>Sell to lock in a profit.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
+          <context context-type="linenumber">47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="keepGrowthRecommendation" datatype="html">
+        <source>Keep holding, further growth is possible.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="sellLossRecommendation" datatype="html">
+        <source>Sell to minimize losses.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
+          <context context-type="linenumber">49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="keepRecoverRecommendation" datatype="html">
+        <source>Keep it if you expect the price to recover.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/constants.value.ts</context>
+          <context context-type="linenumber">50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="errorMoreThan" datatype="html">

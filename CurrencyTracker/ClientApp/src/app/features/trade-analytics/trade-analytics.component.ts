@@ -19,11 +19,10 @@ import { Constants } from '../../shared/constants.value';
   styleUrl: './trade-analytics.component.css'
 })
 export class TradeAnalyticsComponent implements OnInit {
+  readonly displayedColumns = Constants.ANALYSIS_COLUMNS;
   private binanceService = inject(BinanceService);
   private tradeService = inject(TradesService);
-  trades: Partial<Trade & { analytics: AnalysisResult }>[] = [];
-  dataSource = new MatTableDataSource<Partial<Trade>>();
-  displayedColumns = ['position', 'currency', 'avgPrice', 'totalAmount', 'roi', 'recommendation'];
+  dataSource = new MatTableDataSource<AnalysisResult>();
 
   ngOnInit(): void {
     this.tradeService.analyzedTrades$.subscribe(data => {

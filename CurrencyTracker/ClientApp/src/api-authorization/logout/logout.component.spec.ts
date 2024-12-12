@@ -1,15 +1,14 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
+import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LogoutComponent } from './logout.component';
 import { HomeComponent } from 'src/app/home/home.component';
-import { ActivatedRoute, convertToParamMap, Params, UrlSegment } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Params, RouterModule, UrlSegment } from '@angular/router';
 import { LogoutActions } from '../api-authorization.constants';
 
 describe('LogoutComponent', () => {
   let component: LogoutComponent;
   let fixture: ComponentFixture<LogoutComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     let tempParams: Params = { id: '1234' };
 
     let segment0: UrlSegment = new UrlSegment('segment0', {});
@@ -19,10 +18,12 @@ describe('LogoutComponent', () => {
 
     TestBed.configureTestingModule({
       imports: [
-        RouterTestingModule.withRoutes([
-        { path: 'authentication/login-failed', component: HomeComponent }
-      ])],
-      declarations: [LogoutComponent, HomeComponent],
+        HomeComponent,
+        RouterModule.forRoot([
+          { path: 'authentication/login-failed', component: HomeComponent }
+        ])
+      ],
+      declarations: [LogoutComponent],
       providers: [{
         provide: ActivatedRoute, useValue: {
           snapshot: {

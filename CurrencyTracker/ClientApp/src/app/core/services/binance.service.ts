@@ -10,10 +10,10 @@ import { Currency } from '../../shared/shared.model';
 export class BinanceService {
   private exchangeInfoUrl = 'https://api.binance.com/api/v3/exchangeInfo';
   private binanceSocketUrl(cryptoPair: string): string {
-    return `wss://stream.binance.com:9443/ws/${cryptoPair.toLowerCase()}@ticker`;
+    return `wss://stream.binance.com:9443/ws/${cryptoPair?.toLowerCase()}@ticker`;
   }
   private binanceCandleSocketUrl(cryptoPair: string, interval: string): string {
-    return `wss://stream.binance.com:9443/ws/${cryptoPair.toLowerCase()}@kline_${interval}`;
+    return `wss://stream.binance.com:9443/ws/${cryptoPair?.toLowerCase()}@kline_${interval}`;
   }
 
   constructor(private http: HttpClient) { }

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, inject, Input, OnInit, ViewChild } from '@angular/core';
 import { Trade } from '../../shared/shared.model';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -18,13 +18,13 @@ import { CommonModule } from '@angular/common';
   styleUrl: './trades.component.css'
 })
 export class TradesComponent implements OnInit, AfterViewInit {
+  private tradesService = inject(TradesService);
+  private cdr = inject(ChangeDetectorRef);
   @Input() trades: Partial<Trade>[] = [];
   displayedColumns = Constants.TRADE_COLUMNS;
   dataSource = new MatTableDataSource<Partial<Trade>>();
 
   @ViewChild(MatSort) sort!: MatSort;
-
-  constructor(private tradesService: TradesService) { }
 
   ngOnInit(): void {
     this.tradesService.trades$.subscribe({
@@ -40,5 +40,6 @@ export class TradesComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.dataSource.sort = this.sort;
     this.sort.sort({ id: 'position', start: 'desc', disableClear: true });
+    this.cdr.detectChanges();
   }
 }

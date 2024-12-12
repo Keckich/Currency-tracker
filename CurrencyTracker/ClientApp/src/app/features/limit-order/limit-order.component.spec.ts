@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LimitOrderComponent } from './limit-order.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('LimitOrderComponent', () => {
   let component: LimitOrderComponent;
@@ -8,7 +9,7 @@ describe('LimitOrderComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [LimitOrderComponent]
+      imports: [LimitOrderComponent, BrowserAnimationsModule]
     })
     .compileComponents();
 

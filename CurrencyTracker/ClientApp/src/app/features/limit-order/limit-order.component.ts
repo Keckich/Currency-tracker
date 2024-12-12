@@ -39,7 +39,7 @@ export class LimitOrderComponent implements OnInit {
       this.isValidChange.emit(this.limitsForm.valid);
     })
 
-    this.price$.subscribe({
+    this.price$?.subscribe({
       next: data => {
         const price = parseFloat(data.c);
         this.limitsForm.controls.takeProfit?.setValidators([

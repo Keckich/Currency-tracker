@@ -39,6 +39,12 @@ module.exports = function (config) {
     autoWatch: true,
     browsers: ['Chrome'],
     singleRun: false,
-    restartOnFileChange: true
+    restartOnFileChange: true,
+    files: [
+      {
+        pattern: 'src/**/*.ts',
+        type: 'js'  // to silence the warning. Means load with <script> tag
+      },
+    ]
   });
 };

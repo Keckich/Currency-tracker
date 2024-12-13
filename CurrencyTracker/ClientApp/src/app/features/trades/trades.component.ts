@@ -20,9 +20,9 @@ import { CommonModule } from '@angular/common';
 export class TradesComponent implements OnInit, AfterViewInit {
   private tradesService = inject(TradesService);
   private cdr = inject(ChangeDetectorRef);
-  @Input() trades: Partial<Trade>[] = [];
+  @Input() trades: Trade[] = [];
   displayedColumns = Constants.TRADE_COLUMNS;
-  dataSource = new MatTableDataSource<Partial<Trade>>();
+  dataSource = new MatTableDataSource<Trade>();
 
   @ViewChild(MatSort) sort!: MatSort;
 

@@ -2,6 +2,7 @@ import { AnalysisResult, Trade } from "./shared.model";
 import { ApexChart, ApexPlotOptions, ApexTitleSubtitle, ApexXAxis, ApexYAxis } from 'ng-apexcharts';
 
 import { nameof } from 'ts-simple-nameof';
+import { ChartInterval } from "./shared.enum";
 
 export const Constants = {
   CURRENCIES: ['BTCUSDT', 'ETHUSDT', 'BNBUSDT'],
@@ -33,14 +34,14 @@ export const Routes = {
   ACCESS_DENIED: 'access-denied'
 }
 
-export const ChartIntervals = {
-  S1: { value: '1s', display: $localize`:@@chartIntervalS1:1s`},
-  M1: { value: '1m', display: $localize`:@@chartIntervalM1:1m`},
-  M15: { value: '15m', display: $localize`:@@chartIntervalM15:15m`},
-  H1: { value: '1h', display: $localize`:@@chartIntervalH1:1h`},
-  H4: { value: '4h', display: $localize`:@@chartIntervalH4:4h`},
-  H12: { value: '12h', display: $localize`:@@chartIntervalH12:12h`},
-  D1: { value: '1d', display: $localize`:@@chartIntervalD1:1d`},
+export const ChartIntervals: Partial<Record<ChartInterval, string>> = {
+  [ChartInterval.S1]: $localize`:@@chartIntervalS1:1s`,
+  [ChartInterval.M1]: $localize`:@@chartIntervalS1:1m`,
+  [ChartInterval.M15]: $localize`:@@chartIntervalS1:15m`,
+  [ChartInterval.H1]: $localize`:@@chartIntervalS1:1h`,
+  [ChartInterval.H4]: $localize`:@@chartIntervalS1:4h`,
+  [ChartInterval.H12]: $localize`:@@chartIntervalS1:12h`,
+  [ChartInterval.D1]: $localize`:@@chartIntervalS1:1d`,
 }
 
 export const AnalysisRecommenations = {

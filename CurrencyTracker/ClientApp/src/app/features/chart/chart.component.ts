@@ -20,6 +20,7 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { CommonModule } from '@angular/common';
 import { TransactionComponent } from '../transaction/transaction.component';
 import { IntervalListComponent } from '../interval-list/interval-list.component';
+import { ChartInterval } from '../../shared/shared.enum';
 
 @Component({
   selector: 'app-chart',
@@ -46,7 +47,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   private chartSubscription: Subscription = new Subscription;
 
   readonly Routes = Routes;
-  selectedInterval: string = ChartIntervals.S1.value;
+  selectedInterval: string = ChartInterval.S1;
   @Input() currencyPair!: string;
 
   chartSeries: ApexAxisChartSeries = [

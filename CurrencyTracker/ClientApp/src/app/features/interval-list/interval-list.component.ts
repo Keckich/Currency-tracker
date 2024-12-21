@@ -2,6 +2,7 @@ import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
 import { ChartIntervals } from '../../shared/constants.value';
 import { CommonModule } from '@angular/common';
 import { MatList, MatListItem } from '@angular/material/list';
+import { ChartInterval } from '../../shared/shared.enum';
 
 @Component({
   selector: 'app-interval-list',
@@ -13,11 +14,14 @@ import { MatList, MatListItem } from '@angular/material/list';
   styleUrl: './interval-list.component.css'
 })
 export class IntervalListComponent {
-  @Output() intervalChange = new EventEmitter<string>();
-  intervals = Object.entries(ChartIntervals).map(([key, { value, display }]) => ({ key, value, display }));
-  selectedInterval: string = ChartIntervals.S1.value;
+  @Output() intervalChange = new EventEmitter<ChartInterval>();
+  intervals: { key: ChartInterval; value: string }[] = Object.entries(ChartIntervals).map(([key, value]) => ({
+    key: key as ChartInterval,
+    value
+  }));
+  selectedInterval: ChartInterval = ChartInterval.S1;
 
-  onIntervalSelect(interval: string): void {
+  onIntervalSelect(interval: ChartInterval): void {
     this.selectedInterval = interval;
     this.intervalChange.emit(this.selectedInterval);
   }

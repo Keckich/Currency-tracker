@@ -1,14 +1,14 @@
 <ul class="overflow-x-auto flex flex-row space-x-4">
   @for (interval of intervals; track $index) {
   <li
-                 (click)="onIntervalSelect(interval.value)"
+                 (click)="onIntervalSelect(interval.key)"
                  class="cursor-pointer hover:bg-gray-200 px-4 py-2 rounded"
                  [ngClass]="{
-                  'bg-blue-500 text-white': selectedInterval == interval.value
+                  'bg-blue-500 text-white': selectedInterval == interval.key
                  }"
                  role="listitem"
                  >
-    {{ interval.display }}
+    {{ interval.value }}
   </li>
   }
 </ul>

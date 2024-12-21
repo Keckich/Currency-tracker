@@ -17,7 +17,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './trades.component.html',
   styleUrl: './trades.component.css'
 })
-export class TradesComponent implements OnInit, AfterViewInit {
+export class TradesComponent implements OnInit {
   private tradesService = inject(TradesService);
   private cdr = inject(ChangeDetectorRef);
   @Input() trades: Trade[] = [];
@@ -33,13 +33,10 @@ export class TradesComponent implements OnInit, AfterViewInit {
           ...trade,
           position: index + 1,
         }));
+
+        this.dataSource.sort = this.sort;
+        this.sort.sort({ id: 'position', start: 'desc', disableClear: true });
       },
     });
-  }
-
-  ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.sort.sort({ id: 'position', start: 'desc', disableClear: true });
-    this.cdr.detectChanges();
   }
 }

@@ -36,7 +36,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
   private binanceService = inject(BinanceService);
   private tradesService = inject(TradesService);
   private priceSubscription: Subscription = new Subscription;
-  private currentTrade!: Trade;
+  private currentTrade: Trade = {} as Trade;
   private formBuilder = inject(FormBuilder);
 
   price$: Observable<any> = new Observable();

@@ -51,6 +51,11 @@ export const AnalysisRecommenations = {
   KEEP_RECOVER: $localize`:@@keepRecoverRecommendation:Keep it if you expect the price to recover.`,
 }
 
+export const StateMessages = {
+  ERROR_MORE_THAN: $localize`:@@errorMoreThan:Entered value should be more than {value}`,
+  ERROR_LESS_THAN: $localize`:@@errorLessThan:Entered value should be less than {value}`,
+}
+
 export const ChartOptions: {
   chart: ApexChart,
   xaxis: ApexXAxis,

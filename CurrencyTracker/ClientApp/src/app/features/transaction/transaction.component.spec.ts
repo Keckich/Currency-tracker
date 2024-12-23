@@ -40,7 +40,7 @@ describe('TransactionComponent', () => {
     input.dispatchEvent(new Event('input'));
     fixture.detectChanges();
 
-    const control = component.transactionForm.get('amount');
+    const control = component.transactionForm.controls.amount;
     control?.setErrors({ moreThan: +input.value });
     control?.markAsTouched();
     control?.updateValueAndValidity();

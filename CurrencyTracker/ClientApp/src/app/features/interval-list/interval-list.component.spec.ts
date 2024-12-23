@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { IntervalListComponent } from './interval-list.component';
+import { ChartIntervals } from '../../shared/constants.value';
+import { ChartInterval } from '../../shared/shared.enum';
+import { By } from '@angular/platform-browser';
 
 describe('IntervalListComponent', () => {
   let component: IntervalListComponent;
@@ -19,5 +22,19 @@ describe('IntervalListComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should display intervals in list', () => {
+    const intervals: { key: ChartInterval; value: string } [] = Object.entries(ChartIntervals).map(([key, value]) => ({
+      key: key as ChartInterval,
+      value
+    }));
+    fixture.detectChanges();
+
+    const listElements = fixture.debugElement.queryAll(By.css('li'));
+    expect(listElements.length).toBe(intervals.length);
+
+    const firstElement = listElements[0].nativeElement;
+    expect(firstElement.textContent).toContain(intervals[0].value);
   });
 });

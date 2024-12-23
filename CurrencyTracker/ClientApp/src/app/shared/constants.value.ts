@@ -54,6 +54,8 @@ export const AnalysisRecommenations = {
 export const StateMessages = {
   ERROR_MORE_THAN: $localize`:@@errorMoreThan:Entered value should be more than {value}`,
   ERROR_LESS_THAN: $localize`:@@errorLessThan:Entered value should be less than {value}`,
+  ERROR_PROFIT_MORE_THAN: $localize`:@@errorTakeProfit:Take-profit should be more than {currentPrice}`,
+  ERROR_LOSS_LESS_THAN: $localize`:@@errorStopLoss:Stop-loss should be less than {currentPrice}`,
 }
 
 export const ChartOptions: {

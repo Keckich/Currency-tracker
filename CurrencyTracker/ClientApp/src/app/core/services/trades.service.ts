@@ -46,26 +46,30 @@ export class TradesService {
         return groups;
       }, {} as Record<string, AnalyzedTradeInfo>);
 
-      return Object.keys(grouped).map(currency => {
-        const { totalAmount, totalSpent } = grouped[currency];
-        const avgPrice = totalSpent / totalAmount;
-        const currentPrice = prices[currency] || 0;
-        const roi = ((currentPrice - avgPrice) / avgPrice) * 100;
-        const recommendation = this.getRecommendation(roi);
-
-        return {
-          tradeInfo: {
-            totalAmount: totalAmount,
-            totalSpent: totalSpent,
-          } as AnalyzedTradeInfo,
-          currency: currency,
-          avgPrice: avgPrice,
-          roi: roi,
-          recommendation: recommendation,
-        } as AnalysisResult;
-      })
+      return this.analyzeTrades(grouped, prices);
     })
   )
+
+  analyzeTrades(grouped: Record<string, AnalyzedTradeInfo>, prices: Record<string, number>): AnalysisResult[] {
+    return Object.keys(grouped).map(currency => {
+      const { totalAmount, totalSpent } = grouped[currency];
+      const avgPrice = totalSpent / totalAmount;
+      const currentPrice = prices[currency] || 0;
+      const roi = ((currentPrice - avgPrice) / avgPrice) * 100;
+      const recommendation = this.getRecommendation(roi);
+
+      return {
+        tradeInfo: {
+          totalAmount: totalAmount,
+          totalSpent: totalSpent,
+        } as AnalyzedTradeInfo,
+        currency: currency,
+        avgPrice: avgPrice,
+        roi: roi,
+        recommendation: recommendation,
+      } as AnalysisResult;
+    })
+  }
 
   getRecommendation(roi: number): string {
     let recommendation = '';

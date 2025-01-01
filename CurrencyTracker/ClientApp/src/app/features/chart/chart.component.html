@@ -1,8 +1,12 @@
-<app-interval-list (intervalChange)="onIntervalChange($event)"></app-interval-list>
-<apx-chart [series]="chartSeries"
-           [chart]="chartOptions.chart"
-           [xaxis]="chartOptions.xaxis"
-           [title]="chartOptions.title">
-</apx-chart>
-<a [routerLink]="['/', Routes.CURRENCY, currencyPair]" i18n>Additional Info</a>
-<app-transaction [currencyPair]="currencyPair"></app-transaction>
+<div *ngIf="!isLoading">
+  <app-interval-list (intervalChange)="onIntervalChange($event)"></app-interval-list>
+  <apx-chart [series]="chartSeries"
+             [chart]="chartOptions.chart"
+             [xaxis]="chartOptions.xaxis"
+             [title]="chartOptions.title">
+  </apx-chart>
+  <a [routerLink]="['/', Routes.CURRENCY, currencyPair]" i18n>Additional Info</a>
+  <app-transaction [currencyPair]="currencyPair"></app-transaction>
+</div>
+
+<app-loading-spinner *ngIf="isLoading"></app-loading-spinner>

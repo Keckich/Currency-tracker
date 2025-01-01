@@ -21,6 +21,8 @@ import { CommonModule } from '@angular/common';
 import { TransactionComponent } from '../transaction/transaction.component';
 import { IntervalListComponent } from '../interval-list/interval-list.component';
 import { ChartInterval } from '../../shared/shared.enum';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-chart',
@@ -36,7 +38,8 @@ import { ChartInterval } from '../../shared/shared.enum';
     MatOption,
     RouterLink,
     TransactionComponent,
-    IntervalListComponent
+    IntervalListComponent,
+    LoadingSpinnerComponent,
   ],
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
@@ -44,10 +47,12 @@ import { ChartInterval } from '../../shared/shared.enum';
 export class ChartComponent implements OnInit, OnDestroy {
   private binanceService = inject(BinanceService);
   private tradesService = inject(TradesService);
+  private spinner = inject(NgxSpinnerService);
   private chartSubscription: Subscription = new Subscription;
 
   readonly Routes = Routes;
   selectedInterval: string = ChartInterval.S1;
+  isLoading: boolean = true;
   @Input() currencyPair!: string;
 
   chartSeries: ApexAxisChartSeries = [
@@ -64,6 +69,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.spinner.show();
     this.chartSeries[0].name = this.getChartTitle();
     this.chartOptions.title.text = this.getChartTitle();
     
@@ -77,8 +83,16 @@ export class ChartComponent implements OnInit, OnDestroy {
         next: data => {
           const candle = this.createCandle(data);
           this.upateCandleChart(candle);
+
+          if (this.isLoading) {
+            this.isLoading = false;
+            this.spinner.hide();
+          }
         },
-        error: error => console.log(`Error occured: ${error}`)
+        error: error => {
+          console.log(`Error occured: ${error}`);
+          this.spinner.hide();
+        }
     })
   }
 

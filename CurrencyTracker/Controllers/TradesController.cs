@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CurrencyTracker.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("[controller]")]
     public class TradesController : ControllerBase
     {
         private readonly ITradeService tradeService;

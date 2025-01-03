@@ -6,7 +6,7 @@ export const tradeAnalyticsGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const tradesService = inject(TradesService);
 
-  if (tradesService.getTrades().length > 0) {
+  if (tradesService.getTradesValue().length > 0) {
     return true;
   }
 

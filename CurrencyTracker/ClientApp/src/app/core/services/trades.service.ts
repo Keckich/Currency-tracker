@@ -1,13 +1,16 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { AnalysisResult, AnalyzedTradeInfo, Trade } from '../../shared/shared.model';
-import { AnalysisRecommenations } from '../../shared/constants.value';
+import { AnalysisRecommenations, ApiUrls } from '../../shared/constants.value';
+import { HttpClient } from '@angular/common/http';
+import { HttpService } from './http.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TradesService {
+  private httpService = inject(HttpService);
   private tradesSubject = new BehaviorSubject<Trade[]>([]);
   private pricesSubject = new BehaviorSubject<Record<string, number>>({});
 
@@ -16,12 +19,23 @@ export class TradesService {
 
   addTrade(trade: Trade | undefined): void {
     if (trade) {
-      const currentTrades = this.tradesSubject.value;
-      this.tradesSubject.next([...currentTrades, trade]);
+      this.httpService.post<Trade>(ApiUrls.TRADES, trade)
+        .pipe(
+          tap(() => {
+            this.getTrades().subscribe();
+          })
+        )
+        .subscribe();
     }
   }
 
-  getTrades(): Trade[] {
+  getTrades(): Observable<Trade[]> {
+    return this.httpService.get<Trade[]>(ApiUrls.TRADES).pipe(
+      tap(trades => this.tradesSubject.next(trades))
+    );
+  }
+
+  getTradesValue(): Trade[] {
     return this.tradesSubject.value;
   }
 

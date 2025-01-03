@@ -7,7 +7,7 @@ import { ChartInterval } from "./shared.enum";
 export const Constants = {
   CURRENCIES: ['BTCUSDT', 'ETHUSDT', 'BNBUSDT'],
   TRADE_COLUMNS: [
-    nameof<Trade>(t => t.position),
+    nameof<Trade>(t => t.id),
     nameof<Trade>(t => t.price),
     nameof<Trade>(t => t.amount),
     nameof<Trade>(t => t.value),
@@ -32,6 +32,10 @@ export const Routes = {
   CURRENCY: 'currency',
   ANALYTICS: 'analytics',
   ACCESS_DENIED: 'access-denied'
+}
+
+export const ApiUrls = {
+  TRADES: 'trades',
 }
 
 export const ChartIntervals: Partial<Record<ChartInterval, string>> = {

@@ -1,6 +1,7 @@
 import { ValidatorFn } from "@angular/forms"
 
 export interface Trade {
+  id: number,
   position?: number,
   price: number,
   date: Date,

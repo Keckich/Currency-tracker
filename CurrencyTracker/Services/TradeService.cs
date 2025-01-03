@@ -16,7 +16,7 @@ namespace CurrencyTracker.Services
 
         public async Task<IEnumerable<Trade>> GetTradesAsync()
         {
-            return await context.Trades.ToListAsync();
+            return await context.Trades.OrderByDescending(t => t.Id).ToListAsync();
         }
 
         public async Task AddTradeAsync(Trade trade)

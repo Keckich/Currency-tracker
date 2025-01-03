@@ -29,14 +29,12 @@ export class TradesComponent implements OnInit {
   ngOnInit(): void {
     this.tradesService.trades$.subscribe({
       next: trades => {
-        this.dataSource.data = trades.map((trade, index) => ({
-          ...trade,
-          position: index + 1,
-        }));
-
+        this.dataSource.data = trades;
         this.dataSource.sort = this.sort;
-        this.sort.sort({ id: 'position', start: 'desc', disableClear: true });
+        this.sort.sort({ id: 'date', start: 'desc', disableClear: true });
       },
     });
+
+    this.tradesService.getTrades().subscribe();
   }
 }

@@ -12,7 +12,7 @@
 
         public required string Currency { get; set; }
 
-        public int Amount { get; set; }
+        public double Amount { get; set; }
 
         public decimal Value { get; set; }
 

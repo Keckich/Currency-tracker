@@ -11,7 +11,7 @@ export class HttpService {
     this.baseUrl = baseUrl;
   }
 
-  public get<T>(url: string, params: any): Observable<T> {
+  public get<T>(url: string, params: any = {}): Observable<T> {
     return this.http.get<T>(this.baseUrl + url, { params: params });
   }
 

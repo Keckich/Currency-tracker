@@ -38,7 +38,7 @@ export class TradesComponent implements OnInit {
   }
 
   handlePageEvent(e: PageEvent): void {
-    this.tradesService.getTrades(e.pageIndex, e.pageSize).subscribe();
+    this.tradesService.getPaginatedTrades(e.pageIndex, e.pageSize).subscribe();
   }
 
   fetchTrades(page: number, pageSize: number): void {
@@ -51,6 +51,6 @@ export class TradesComponent implements OnInit {
       },
     });
 
-    this.tradesService.getTrades(page, pageSize).subscribe();
+    this.tradesService.getPaginatedTrades(page, pageSize).subscribe();
   }
 }

@@ -36,6 +36,7 @@ export const Routes = {
 
 export const ApiUrls = {
   TRADES: 'trades',
+  PAGINATED_TRADES: 'trades/paginated',
 }
 
 export const ChartIntervals: Partial<Record<ChartInterval, string>> = {
@@ -60,6 +61,7 @@ export const StateMessages = {
   ERROR_LESS_THAN: $localize`:@@errorLessThan:Entered value should be less than {value}`,
   ERROR_PROFIT_MORE_THAN: $localize`:@@errorTakeProfit:Take-profit should be more than {currentPrice}`,
   ERROR_LOSS_LESS_THAN: $localize`:@@errorStopLoss:Stop-loss should be less than {currentPrice}`,
+  ERROR_ACCESS_ANALYTICS_GUARD: $localize`:@@accessDeniedPageMessage:You don't have access to this page. Please, made at least one trade operation.`,
 }
 
 export const ChartOptions: {

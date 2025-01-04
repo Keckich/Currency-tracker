@@ -24,20 +24,24 @@ export class TradesService {
       this.httpService.post<Trade>(ApiUrls.TRADES, trade)
         .pipe(
           tap(() => {
-            this.getTrades(this.lastPage, this.pageSize).subscribe();
+            this.getPaginatedTrades(this.lastPage, this.pageSize).subscribe();
           })
         )
         .subscribe();
     }
   }
 
-  getTrades(page: number = 0, pageSize: number = 10): Observable<TradesPaginationData> {
+  getPaginatedTrades(page: number = 0, pageSize: number = 10): Observable<TradesPaginationData> {
     const params = { page: page, pageSize: pageSize };
     this.updatePaginationData(page, pageSize);
 
-    return this.httpService.get<TradesPaginationData>(ApiUrls.TRADES, params).pipe(
+    return this.httpService.get<TradesPaginationData>(ApiUrls.PAGINATED_TRADES, params).pipe(
       tap(trades => this.tradesSubject.next(trades))
     );
+  }
+
+  getTrades(): Observable<Trade[]> {
+    return this.httpService.get<Trade[]>(ApiUrls.TRADES);
   }
 
   updatePaginationData(page: number, pageSize: number) {
@@ -54,9 +58,8 @@ export class TradesService {
     this.pricesSubject.next({ ...currentPrices, ...prices });
   }
 
-  analyzedTrades$: Observable<AnalysisResult[]> = combineLatest([this.trades$, this.prices$]).pipe(
-    map(([tradesData, prices]) => {
-      let trades = tradesData.data;
+  analyzedTrades$: Observable<AnalysisResult[]> = combineLatest([this.getTrades(), this.prices$]).pipe(
+    map(([trades, prices]) => {
       const grouped = trades.reduce((groups, trade) => {
         const key = trade.currency;
         if (key) {

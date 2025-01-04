@@ -1,18 +1,23 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { TradesService } from '../services/trades.service';
 import { inject } from '@angular/core';
+import { map } from 'rxjs';
+import { StateMessages } from '../../shared/constants.value';
 
 export const tradeAnalyticsGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
   const tradesService = inject(TradesService);
 
-  if (tradesService.getTradesValue().length > 0) {
-    return true;
-  }
-
-  router.navigate(['/access-denied'], {
-    state: { message: $localize`:@@accessDeniedPageMessage:You don't have access to this page. Please, made at least one trade operation.` },
-  });
-
-  return false
+  return tradesService.getTrades().pipe(
+    map(trades => {
+      if (trades.length > 0) {
+        return true;
+      } else {
+        router.navigate(['/access-denied'], {
+          state: { message: StateMessages.ERROR_ACCESS_ANALYTICS_GUARD },
+        });
+        return false;
+      }
+    })
+  );
 };

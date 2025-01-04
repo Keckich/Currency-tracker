@@ -16,10 +16,18 @@ namespace CurrencyTracker.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(CancellationToken cancellationToken, [FromQuery] int page = 0, [FromQuery] int pageSize = 10)
         {
-            var trades = await tradeService.GetTradesAsync();
-            return Ok(trades);
+            var trades = await tradeService.GetPaginatedTradesAsync(cancellationToken, page, pageSize);
+            var tradesCount = tradeService.GetTrades().Count();
+            
+            var result = new
+            {
+                Data = trades,
+                TotalItems = tradesCount,
+            };
+
+            return Ok(result);
         }
 
         [HttpPost]

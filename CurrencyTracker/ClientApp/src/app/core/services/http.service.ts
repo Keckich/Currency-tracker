@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -11,8 +11,8 @@ export class HttpService {
     this.baseUrl = baseUrl;
   }
 
-  public get<T>(url: string): Observable<T> {
-    return this.http.get<T>(this.baseUrl + url);
+  public get<T>(url: string, params: any): Observable<T> {
+    return this.http.get<T>(this.baseUrl + url, { params: params });
   }
 
   public post<T>(url: string, data: any): Observable<T> {

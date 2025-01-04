@@ -4,7 +4,9 @@ namespace CurrencyTracker.Services.Interfaces
 {
     public interface ITradeService
     {
-        Task<IEnumerable<Trade>> GetTradesAsync();
+        IQueryable<Trade> GetTrades();
+
+        Task<IEnumerable<Trade>> GetPaginatedTradesAsync(CancellationToken cancellationToken, int page = 0, int pageSize = 10);
 
         Task AddTradeAsync(Trade trade);
     }

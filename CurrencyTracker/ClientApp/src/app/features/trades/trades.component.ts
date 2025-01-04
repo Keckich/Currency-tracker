@@ -5,6 +5,7 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { Constants } from '../../shared/constants.value';
 import { TradesService } from '../../core/services/trades.service';
 import { CommonModule } from '@angular/common';
+import { MatPaginator, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-trades',
@@ -13,28 +14,43 @@ import { CommonModule } from '@angular/common';
     MatTableModule,
     MatSortModule,
     CommonModule,
+    MatPaginator,
   ],
   templateUrl: './trades.component.html',
   styleUrl: './trades.component.css'
 })
 export class TradesComponent implements OnInit {
   private tradesService = inject(TradesService);
-  private cdr = inject(ChangeDetectorRef);
+
   @Input() trades: Trade[] = [];
   displayedColumns = Constants.TRADE_COLUMNS;
   dataSource = new MatTableDataSource<Trade>();
 
   @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  length: number = 0;
+  pageIndex: number = 0;
+  pageSize: number = 10;
 
   ngOnInit(): void {
+    this.fetchTrades(this.pageIndex, this.pageSize);
+    this.sort.sort({ id: 'date', start: 'desc', disableClear: true });
+  }
+
+  handlePageEvent(e: PageEvent): void {
+    this.tradesService.getTrades(e.pageIndex, e.pageSize).subscribe();
+  }
+
+  fetchTrades(page: number, pageSize: number): void {
     this.tradesService.trades$.subscribe({
       next: trades => {
-        this.dataSource.data = trades;
+        this.dataSource.data = trades.data;
         this.dataSource.sort = this.sort;
-        this.sort.sort({ id: 'date', start: 'desc', disableClear: true });
+        this.length = trades.totalItems;
+        this.paginator.length = trades.totalItems;
       },
     });
 
-    this.tradesService.getTrades().subscribe();
+    this.tradesService.getTrades(page, pageSize).subscribe();
   }
 }

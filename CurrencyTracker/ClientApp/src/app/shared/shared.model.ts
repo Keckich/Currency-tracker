@@ -12,6 +12,11 @@ export interface Trade {
   stopLoss?: number,
 }
 
+export interface TradesPaginationData {
+  data: Trade[],
+  totalItems: number,
+}
+
 export interface Transaction {
   amount: (number | ValidatorFn[])[],
 }

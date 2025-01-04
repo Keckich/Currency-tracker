@@ -1,7 +1,7 @@
 import { Inject, Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { AnalysisResult, AnalyzedTradeInfo, Trade } from '../../shared/shared.model';
+import { AnalysisResult, AnalyzedTradeInfo, Trade, TradesPaginationData } from '../../shared/shared.model';
 import { AnalysisRecommenations, ApiUrls } from '../../shared/constants.value';
 import { HttpClient } from '@angular/common/http';
 import { HttpService } from './http.service';
@@ -11,32 +11,42 @@ import { HttpService } from './http.service';
 })
 export class TradesService {
   private httpService = inject(HttpService);
-  private tradesSubject = new BehaviorSubject<Trade[]>([]);
+  private tradesSubject = new BehaviorSubject<TradesPaginationData>({ data: [], totalItems: 0 });
   private pricesSubject = new BehaviorSubject<Record<string, number>>({});
 
-  trades$: Observable<Trade[]> = this.tradesSubject.asObservable();
+  trades$: Observable<TradesPaginationData> = this.tradesSubject.asObservable();
   prices$: Observable<Record<string, number>> = this.pricesSubject.asObservable();
+  lastPage: number = 0;
+  pageSize: number = 10;
 
   addTrade(trade: Trade | undefined): void {
     if (trade) {
       this.httpService.post<Trade>(ApiUrls.TRADES, trade)
         .pipe(
           tap(() => {
-            this.getTrades().subscribe();
+            this.getTrades(this.lastPage, this.pageSize).subscribe();
           })
         )
         .subscribe();
     }
   }
 
-  getTrades(): Observable<Trade[]> {
-    return this.httpService.get<Trade[]>(ApiUrls.TRADES).pipe(
+  getTrades(page: number = 0, pageSize: number = 10): Observable<TradesPaginationData> {
+    const params = { page: page, pageSize: pageSize };
+    this.updatePaginationData(page, pageSize);
+
+    return this.httpService.get<TradesPaginationData>(ApiUrls.TRADES, params).pipe(
       tap(trades => this.tradesSubject.next(trades))
     );
   }
 
+  updatePaginationData(page: number, pageSize: number) {
+    this.lastPage = page;
+    this.pageSize = pageSize;
+  }
+
   getTradesValue(): Trade[] {
-    return this.tradesSubject.value;
+    return this.tradesSubject.value.data;
   }
 
   updatePrices(prices: Record<string, number>): void {
@@ -45,7 +55,8 @@ export class TradesService {
   }
 
   analyzedTrades$: Observable<AnalysisResult[]> = combineLatest([this.trades$, this.prices$]).pipe(
-    map(([trades, prices]) => {
+    map(([tradesData, prices]) => {
+      let trades = tradesData.data;
       const grouped = trades.reduce((groups, trade) => {
         const key = trade.currency;
         if (key) {

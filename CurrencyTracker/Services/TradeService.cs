@@ -14,9 +14,17 @@ namespace CurrencyTracker.Services
             this.context = context;
         }
 
-        public async Task<IEnumerable<Trade>> GetTradesAsync()
+        public IQueryable<Trade> GetTrades()
         {
-            return await context.Trades.OrderByDescending(t => t.Id).ToListAsync();
+            return context.Trades.OrderByDescending(t => t.Id);
+        }
+
+        public async Task<IEnumerable<Trade>> GetPaginatedTradesAsync(CancellationToken cancellationToken, int page = 0, int pageSize = 10)
+        {
+            return await GetTrades()
+                .Skip(page * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
         }
 
         public async Task AddTradeAsync(Trade trade)

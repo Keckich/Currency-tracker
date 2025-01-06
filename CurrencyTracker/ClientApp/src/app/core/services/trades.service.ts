@@ -1,16 +1,18 @@
 import { Inject, Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, combineLatest } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { AnalysisResult, AnalyzedTradeInfo, Trade, TradesPaginationData } from '../../shared/shared.model';
 import { AnalysisRecommenations, ApiUrls } from '../../shared/constants.value';
 import { HttpClient } from '@angular/common/http';
 import { HttpService } from './http.service';
+import { BinanceService } from './binance.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TradesService {
   private httpService = inject(HttpService);
+  private binanceService = inject(BinanceService);
   private tradesSubject = new BehaviorSubject<TradesPaginationData>({ data: [], totalItems: 0 });
   private pricesSubject = new BehaviorSubject<Record<string, number>>({});
 
@@ -58,7 +60,17 @@ export class TradesService {
     this.pricesSubject.next({ ...currentPrices, ...prices });
   }
 
-  analyzedTrades$: Observable<AnalysisResult[]> = combineLatest([this.getTrades(), this.prices$]).pipe(
+  analyzedTrades$: Observable<AnalysisResult[]> = this.getTrades().pipe(
+    map(trades => {
+      const currencies = Array.from(new Set(trades.map(trade => trade.currency).filter(Boolean)));
+      return { trades, currencies };
+    }),
+    switchMap(({ trades, currencies }) =>
+      combineLatest([
+        of(trades),
+        this.binanceService.getPrices(currencies)
+      ])
+    ),
     map(([trades, prices]) => {
       const grouped = trades.reduce((groups, trade) => {
         const key = trade.currency;

@@ -26,8 +26,8 @@ describe('TradesComponent', () => {
 
   it('should display trades in table', () => {
     const trades = [
-      { price: 90000, date: new Date(), currency: 'BTC', amount: 1.2, value: 90000 * 1.2 },
-      { price: 3500, date: new Date(), currency: 'ETH', amount: 0.2, value: 3500 * 0.2 }
+      { id: 1, price: 90000, date: new Date(), currency: 'BTC', amount: 1.2, value: 90000 * 1.2 },
+      { id: 2, price: 3500, date: new Date(), currency: 'ETH', amount: 0.2, value: 3500 * 0.2 }
     ]
     component.dataSource = new MatTableDataSource(trades);
     fixture.detectChanges();

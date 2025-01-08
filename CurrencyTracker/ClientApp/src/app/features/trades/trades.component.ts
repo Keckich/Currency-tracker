@@ -47,7 +47,6 @@ export class TradesComponent implements OnInit {
         this.dataSource.data = trades.data;
         this.dataSource.sort = this.sort;
         this.length = trades.totalItems;
-        this.paginator.length = trades.totalItems;
       },
     });
 

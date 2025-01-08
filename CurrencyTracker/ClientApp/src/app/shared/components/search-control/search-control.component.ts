@@ -33,7 +33,7 @@ export class SearchControlComponent implements OnInit, OnDestroy {
         distinctUntilChanged()
       )
       .subscribe(searchText => {
-        this.filteredEvent.emit(this.currencies.filter(c => searchText ? c.symbol.toLowerCase().includes(searchText.toLowerCase()) : c.symbol))
+        this.filteredEvent.emit(searchText ? this.currencies.filter(c => searchText ? c.symbol.toLowerCase().includes(searchText.toLowerCase()) : c.symbol) : [])
       })
   }
 

@@ -29,7 +29,6 @@ export class CurrenciesListComponent implements OnInit {
   Routes = Routes;
   currenciesList: Currency[] = [];
   filteredList: Currency[] = [];
-  searchQuery: string = '';
   sortOrder: SortOrder = SortOrder.Asc;
 
   ngOnInit(): void {
@@ -40,7 +39,6 @@ export class CurrenciesListComponent implements OnInit {
     this.binanceService.getCryptocurrencies().subscribe({
       next: data => {
         this.currenciesList = data;
-        this.filteredList = data;
       }
     });
   }

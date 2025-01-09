@@ -31,5 +31,9 @@ export class TradeAnalyticsComponent implements OnInit {
         position: index + 1,
       }));
     })
+
+    this.tradeService.getPnLData().subscribe(data => {
+      console.log(data)
+    })
   }
 }

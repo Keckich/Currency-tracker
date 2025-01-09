@@ -17,6 +17,12 @@ export interface TradesPaginationData {
   totalItems: number,
 }
 
+export interface PnLData {
+  date: Date,
+  currency: string,
+  pnl: number,
+}
+
 export interface Transaction {
   amount: (number | ValidatorFn[])[],
 }

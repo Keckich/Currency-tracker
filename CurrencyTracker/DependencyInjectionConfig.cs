@@ -8,6 +8,7 @@ namespace CurrencyTracker
         public static void AddApplicationServices(this IServiceCollection services)
         {
             services.AddScoped<ITradeService, TradeService>();
+            services.AddScoped<IBinanceService, BinanceService>();
         }
     }
 }

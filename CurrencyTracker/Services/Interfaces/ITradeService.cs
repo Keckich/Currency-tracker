@@ -9,5 +9,7 @@ namespace CurrencyTracker.Services.Interfaces
         Task<IEnumerable<Trade>> GetPaginatedTradesAsync(CancellationToken cancellationToken, PaginationInfo paginationInfo);
 
         Task AddTradeAsync(Trade trade);
+
+        Task<IEnumerable<PnLData>> GetPnLDataAsync();
     }
 }

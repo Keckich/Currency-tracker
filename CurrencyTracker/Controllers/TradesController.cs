@@ -1,4 +1,5 @@
 ﻿using CurrencyTracker.Models;
+using CurrencyTracker.Services;
 using CurrencyTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,6 +49,13 @@ namespace CurrencyTracker.Controllers
 
             await tradeService.AddTradeAsync(trade);
             return Ok(trade);
+        }
+
+        [HttpGet("pnl")]
+        public async Task<IActionResult> GetPnL()
+        {
+            var pnlData = await tradeService.GetPnLDataAsync();
+            return Ok(pnlData);
         }
     }
 }

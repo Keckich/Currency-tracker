@@ -1,7 +1,7 @@
 import { Inject, Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { AnalysisResult, AnalyzedTradeInfo, Trade, TradesPaginationData } from '../../shared/shared.model';
+import { AnalysisResult, AnalyzedTradeInfo, PnLData, Trade, TradesPaginationData } from '../../shared/shared.model';
 import { AnalysisRecommenations, ApiUrls } from '../../shared/constants.value';
 import { HttpClient } from '@angular/common/http';
 import { HttpService } from './http.service';
@@ -44,6 +44,10 @@ export class TradesService {
 
   getTrades(): Observable<Trade[]> {
     return this.httpService.get<Trade[]>(ApiUrls.TRADES);
+  }
+
+  getPnLData(): Observable<PnLData[]> {
+    return this.httpService.get<PnLData[]>(ApiUrls.TRADES + '/pnl');
   }
 
   updatePaginationData(page: number, pageSize: number) {

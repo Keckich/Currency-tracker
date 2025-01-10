@@ -54,7 +54,7 @@ namespace CurrencyTracker.Controllers
         [HttpGet("pnl")]
         public async Task<IActionResult> GetPnL()
         {
-            var pnlData = await tradeService.GetPnLDataAsync();
+            var pnlData = await tradeService.CalculatePnLAsync();
             return Ok(pnlData);
         }
     }

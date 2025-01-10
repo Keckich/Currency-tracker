@@ -1,7 +1,9 @@
 ﻿using CurrencyTracker.Data;
+using CurrencyTracker.Helpers;
 using CurrencyTracker.Models;
 using CurrencyTracker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 
 namespace CurrencyTracker.Services
 {
@@ -31,6 +33,44 @@ namespace CurrencyTracker.Services
                 .ToDictionary(price => price.Currency, price => price.Price);
 
             return filteredPrices;
+        }
+
+        public async Task<Dictionary<string, Dictionary<DateTime, decimal>?>> GetDailyClosingPricesAsync(IEnumerable<string> currencies, DateTime startDate, DateTime endDate)
+        {
+            var tasks = currencies.Select(async symbol =>
+            {
+                var url = $"https://api.binance.com/api/v3/klines?symbol={symbol}&interval=1d&startTime={ToUnixTimestamp(startDate)}&endTime={ToUnixTimestamp(endDate)}";
+
+                using var client = new HttpClient();
+                var response = await client.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                    throw new Exception($"Failed to fetch prices for {symbol}");
+
+                var content = await response.Content.ReadAsStringAsync();
+                var data = JsonSerializer.Deserialize<List<JsonElement[]>>(content);
+
+                return new
+                {
+                    Symbol = symbol,
+                    Prices = data?.ToDictionary(
+                        k => DateTimeOffset.FromUnixTimeMilliseconds(JsonHelper.ConvertJsonElementToLong(k[0])).DateTime,
+                        v => JsonHelper.ConvertJsonElementToDecimal(v[4])
+                    )
+                };
+            });
+
+            var results = await Task.WhenAll(tasks);
+
+            return results.ToDictionary(
+                r => r.Symbol,
+                r => r.Prices
+            );
+        }
+
+        private long ToUnixTimestamp(DateTime date)
+        {
+            return new DateTimeOffset(date).ToUnixTimeMilliseconds();
         }
     }
 }

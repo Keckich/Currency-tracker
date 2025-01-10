@@ -10,6 +10,6 @@ namespace CurrencyTracker.Services.Interfaces
 
         Task AddTradeAsync(Trade trade);
 
-        Task<IEnumerable<PnLData>> GetPnLDataAsync();
+        Task<IEnumerable<PnLData>> CalculatePnLAsync();
     }
 }

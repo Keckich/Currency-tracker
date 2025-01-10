@@ -6,6 +6,6 @@
 
         public string Currency { get; set; } = string.Empty;
 
-        public decimal PnL { get; set; }
+        public decimal Balance { get; set; }
     }
 }

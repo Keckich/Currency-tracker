@@ -1,5 +1,5 @@
 import { AnalysisResult, Trade } from "./shared.model";
-import { ApexChart, ApexPlotOptions, ApexTitleSubtitle, ApexXAxis, ApexYAxis } from 'ng-apexcharts';
+import { ApexChart, ApexFill, ApexMarkers, ApexPlotOptions, ApexStroke, ApexTitleSubtitle, ApexXAxis, ApexYAxis } from 'ng-apexcharts';
 
 import { nameof } from 'ts-simple-nameof';
 import { ChartInterval } from "./shared.enum";
@@ -24,8 +24,10 @@ export const Constants = {
     nameof<AnalysisResult>(t => t.roi),
     nameof<AnalysisResult>(t => t.recommendation),
   ] as (keyof AnalysisResult)[],
-  CANDLE_COLORS: { green: '#00B746', red: '#EF403C' },
+  CHART_COLORS: { green: '#00B746', red: '#EF403C', blue: '#00BFFF', white: '#fff' },
   CANDLE_CHART_SIZE: 100,
+  PNL_CHART_TITLE: 'PnL Data for 7 days',
+  PNL_CHART_Y_TEXT: 'Balance (USD)',
 }
 
 export const Routes = {
@@ -95,9 +97,57 @@ export const ChartOptions: {
   plotOptions: {
     candlestick: {
       colors: {
-        upward: Constants.CANDLE_COLORS.green,
-        downward: Constants.CANDLE_COLORS.red,
+        upward: Constants.CHART_COLORS.green,
+        downward: Constants.CHART_COLORS.red,
       },
+    }
+  }
+}
+
+export const PnLChartOptions: {
+  chart: ApexChart,
+  stroke: ApexStroke,
+  markers: ApexMarkers,
+  fill: ApexFill,
+  title: ApexTitleSubtitle,
+  xaxis: ApexXAxis,
+  yaxis: ApexYAxis,
+} = {
+  chart: {
+    type: "line",
+    height: 350,
+    width: '50%',
+  },
+  stroke: {
+    curve: 'smooth',
+    width: 3,
+    colors: [Constants.CHART_COLORS.blue]
+  },
+  markers: {
+    size: 5,
+    colors: [Constants.CHART_COLORS.blue],
+    strokeColors: Constants.CHART_COLORS.white,
+    strokeWidth: 2
+  },
+  fill: {
+    type: 'solid',
+    opacity: 0.2
+  },
+  title: {
+    text: Constants.PNL_CHART_TITLE,
+  },
+  xaxis: {
+    type: "datetime",
+    labels: {
+      format: "dd MMM yyyy"
+    }
+  },
+  yaxis: {
+    title: {
+      text: Constants.PNL_CHART_Y_TEXT,
+    },
+    labels: {
+      formatter: (value: number) => value.toFixed(2)
     }
   }
 }

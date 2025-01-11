@@ -20,7 +20,7 @@ export interface TradesPaginationData {
 export interface PnLData {
   date: Date,
   currency: string,
-  pnl: number,
+  balance: number,
 }
 
 export interface Transaction {

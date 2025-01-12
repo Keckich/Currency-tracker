@@ -51,8 +51,9 @@ export class ChartComponent implements OnInit, OnDestroy {
   private chartSubscription: Subscription = new Subscription;
 
   readonly Routes = Routes;
-  selectedInterval: string = ChartInterval.S1;
+  selectedInterval: ChartInterval = ChartInterval.S1;
   isLoading: boolean = true;
+  chartIntervals: Partial<Record<ChartInterval, string>> = ChartIntervals;
   @Input() currencyPair!: string;
 
   chartSeries: ApexAxisChartSeries = [
@@ -69,6 +70,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    console.log(this.chartIntervals)
     this.spinner.show();
     this.chartSeries[0].name = this.getChartTitle();
     this.chartOptions.title.text = this.getChartTitle();
@@ -126,7 +128,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     this.chartSeries = [... this.chartSeries];
   }
 
-  onIntervalChange(interval: string) {
+  onIntervalChange(interval: ChartInterval) {
     this.selectedInterval = interval;
     this.reloadChart();
   }

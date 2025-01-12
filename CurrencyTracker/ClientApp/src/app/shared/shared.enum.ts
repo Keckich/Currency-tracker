@@ -12,3 +12,11 @@ export enum ChartInterval {
   H12 = '12h',
   D1 = '1d',
 }
+
+export enum PnLInterval {
+  D1 = 1,
+  D7 = 7,
+  D14 = 14,
+  D21 = 21,
+  D30 = 30,
+}

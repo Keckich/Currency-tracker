@@ -1,5 +1,5 @@
 <div *ngIf="!isLoading">
-  <app-interval-list (intervalChange)="onIntervalChange($event)"></app-interval-list>
+  <app-interval-list [chartIntervals]="chartIntervals" [selectedInterval]="selectedInterval" (intervalChange)="onIntervalChange($event)"></app-interval-list>
   <apx-chart [series]="chartSeries"
              [chart]="chartOptions.chart"
              [xaxis]="chartOptions.xaxis"

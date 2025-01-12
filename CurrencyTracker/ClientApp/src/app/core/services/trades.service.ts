@@ -46,8 +46,8 @@ export class TradesService {
     return this.httpService.get<Trade[]>(ApiUrls.TRADES);
   }
 
-  getPnLData(): Observable<PnLData[]> {
-    return this.httpService.get<PnLData[]>(ApiUrls.TRADES + '/pnl');
+  getPnLData(interval: number): Observable<PnLData[]> {
+    return this.httpService.get<PnLData[]>(ApiUrls.TRADES + '/pnl', { interval: interval });
   }
 
   updatePaginationData(page: number, pageSize: number) {

@@ -1,3 +1,4 @@
+<app-interval-list [chartIntervals]="pnlIntervals" [selectedInterval]="selectedInterval" (intervalChange)="onIntervalChange($event)"></app-interval-list>
 <apx-chart *ngIf="!isLoading" [series]="chartSeries"
            [chart]="chartOptions.chart"
            [xaxis]="chartOptions.xaxis"
@@ -5,7 +6,8 @@
            [stroke]="chartOptions.stroke"
            [markers]="chartOptions.markers"
            [fill]="chartOptions.fill"
-           [title]="chartOptions.title">
+           [title]="chartOptions.title"
+           [tooltip]="chartOptions.tooltip">
 </apx-chart>
 <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
 

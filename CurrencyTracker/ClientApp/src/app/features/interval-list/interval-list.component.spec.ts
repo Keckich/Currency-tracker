@@ -6,8 +6,8 @@ import { ChartInterval } from '../../shared/shared.enum';
 import { By } from '@angular/platform-browser';
 
 describe('IntervalListComponent', () => {
-  let component: IntervalListComponent;
-  let fixture: ComponentFixture<IntervalListComponent>;
+  let component: IntervalListComponent<ChartInterval>;
+  let fixture: ComponentFixture<IntervalListComponent<ChartInterval>>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -15,7 +15,7 @@ describe('IntervalListComponent', () => {
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(IntervalListComponent);
+    fixture = TestBed.createComponent(IntervalListComponent<ChartInterval>);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

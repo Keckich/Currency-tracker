@@ -8,8 +8,6 @@ namespace CurrencyTracker.Services
 {
     public class TradeService : ITradeService
     {
-        private const int PnLInterval = 8; // days
-
         private readonly ApplicationDbContext context;
 
         private readonly IBinanceService binanceService;
@@ -42,17 +40,17 @@ namespace CurrencyTracker.Services
             await context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<PnLData>> CalculatePnLAsync()
+        public async Task<IEnumerable<PnLData>> CalculatePnLAsync(CancellationToken cancellationToken, int days = 7)
         {
-            var dates = GetPnLDates();
-            var trades = await context.Trades.ToListAsync();
+            var dates = GetPnLDates(days);
+            var trades = await context.Trades.ToListAsync(cancellationToken);
             var currencies = trades.Select(t => t.Currency).Distinct();
-            var prices = await binanceService.GetDailyClosingPricesAsync(currencies, dates.First(), dates.Last());
+            var prices = await binanceService.GetDailyClosingPricesAsync(currencies, days, cancellationToken);
 
             var pnlEntries = new List<PnLData>();
             var balance = new Dictionary<string, decimal>();
 
-            foreach (var date in dates.Skip(1))
+            foreach (var date in dates)
             {
                 foreach (var trade in trades.Where(t => t.Date.Date <= date))
                 {
@@ -62,7 +60,7 @@ namespace CurrencyTracker.Services
                     balance[trade.Currency] += (decimal)trade.Amount;
                 }
 
-                decimal totalBalance = balance.Sum(b => b.Value * prices[b.Key][date.Date]);
+                decimal totalBalance = balance.Sum(b => b.Value * prices[b.Key][days == 1 ? date : date.Date]);
                 pnlEntries.Add(new PnLData { Date = date, Balance = totalBalance });
                 balance = new Dictionary<string, decimal>();
             }
@@ -70,15 +68,23 @@ namespace CurrencyTracker.Services
             return pnlEntries;
         }
 
-        private IEnumerable<DateTime> GetPnLDates()
+        private IEnumerable<DateTime> GetPnLDates(int days = 7)
         {
             var currentDate = DateTime.UtcNow;
-            var dates = Enumerable.Range(0, PnLInterval)
-                           .Select(d => currentDate.AddDays(-d))
-                           .OrderBy(d => d)
-                           .ToList();
+            var dates = Enumerable.Empty<DateTime>();
+            if (days == 1)
+            {
+                dates = Enumerable.Range(0, 24)
+                           .Select(h => currentDate.AddHours(-h))
+                           .Select(d => new DateTime(d.Year, d.Month, d.Day, d.Hour, 0, 0));
+            }
+            else
+            {
+                dates = Enumerable.Range(0, days)
+                           .Select(d => currentDate.AddDays(-d));
+            }
 
-            return dates;
+            return dates.OrderBy(d => d).ToList();
         }
     }
 }

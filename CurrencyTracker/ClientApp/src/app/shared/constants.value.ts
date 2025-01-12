@@ -1,8 +1,8 @@
 import { AnalysisResult, Trade } from "./shared.model";
-import { ApexChart, ApexFill, ApexMarkers, ApexPlotOptions, ApexStroke, ApexTitleSubtitle, ApexXAxis, ApexYAxis } from 'ng-apexcharts';
+import { ApexChart, ApexFill, ApexMarkers, ApexPlotOptions, ApexStroke, ApexTitleSubtitle, ApexTooltip, ApexXAxis, ApexYAxis } from 'ng-apexcharts';
 
 import { nameof } from 'ts-simple-nameof';
-import { ChartInterval } from "./shared.enum";
+import { ChartInterval, PnLInterval } from "./shared.enum";
 
 export const Constants = {
   CURRENCIES: ['BTCUSDT', 'ETHUSDT', 'BNBUSDT'],
@@ -26,7 +26,7 @@ export const Constants = {
   ] as (keyof AnalysisResult)[],
   CHART_COLORS: { green: '#00B746', red: '#EF403C', blue: '#00BFFF', white: '#fff' },
   CANDLE_CHART_SIZE: 100,
-  PNL_CHART_TITLE: 'PnL Data for 7 days',
+  PNL_CHART_TITLE: 'PnL Data',
   PNL_CHART_Y_TEXT: 'Balance (USD)',
 }
 
@@ -50,6 +50,14 @@ export const ChartIntervals: Partial<Record<ChartInterval, string>> = {
   [ChartInterval.H4]: $localize`:@@chartIntervalS1:4h`,
   [ChartInterval.H12]: $localize`:@@chartIntervalS1:12h`,
   [ChartInterval.D1]: $localize`:@@chartIntervalS1:1d`,
+}
+
+export const PnLIntervals: Partial<Record<PnLInterval, string>> = {
+  [PnLInterval.D1]: $localize`:@@pnlIntervalD1:1d`,
+  [PnLInterval.D7]: $localize`:@@pnlIntervalD7:7d`,
+  [PnLInterval.D14]: $localize`:@@pnlIntervalD14:14d`,
+  [PnLInterval.D21]: $localize`:@@pnlIntervalD21:21d`,
+  [PnLInterval.D30]: $localize`:@@pnlIntervalD30:30d`,
 }
 
 export const AnalysisRecommenations = {
@@ -110,6 +118,7 @@ export const PnLChartOptions: {
   markers: ApexMarkers,
   fill: ApexFill,
   title: ApexTitleSubtitle,
+  tooltip: ApexTooltip,
   xaxis: ApexXAxis,
   yaxis: ApexYAxis,
 } = {
@@ -135,6 +144,11 @@ export const PnLChartOptions: {
   },
   title: {
     text: Constants.PNL_CHART_TITLE,
+  },
+  tooltip: {
+    x: {
+      format: "dd MMM yyyy HH:mm:ss",
+    },
   },
   xaxis: {
     type: "datetime",

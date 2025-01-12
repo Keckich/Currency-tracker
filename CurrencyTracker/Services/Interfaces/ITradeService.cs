@@ -10,6 +10,6 @@ namespace CurrencyTracker.Services.Interfaces
 
         Task AddTradeAsync(Trade trade);
 
-        Task<IEnumerable<PnLData>> CalculatePnLAsync();
+        Task<IEnumerable<PnLData>> CalculatePnLAsync(CancellationToken cancellationToken, int days = 7);
     }
 }

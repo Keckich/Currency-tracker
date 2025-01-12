@@ -52,9 +52,9 @@ namespace CurrencyTracker.Controllers
         }
 
         [HttpGet("pnl")]
-        public async Task<IActionResult> GetPnL()
+        public async Task<IActionResult> GetPnL(CancellationToken cancellationToken, int interval = 7)
         {
-            var pnlData = await tradeService.CalculatePnLAsync();
+            var pnlData = await tradeService.CalculatePnLAsync(cancellationToken, interval);
             return Ok(pnlData);
         }
     }

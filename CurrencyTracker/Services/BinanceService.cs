@@ -35,19 +35,19 @@ namespace CurrencyTracker.Services
             return filteredPrices;
         }
 
-        public async Task<Dictionary<string, Dictionary<DateTime, decimal>?>> GetDailyClosingPricesAsync(IEnumerable<string> currencies, DateTime startDate, DateTime endDate)
+        public async Task<Dictionary<string, Dictionary<DateTime, decimal>?>> GetDailyClosingPricesAsync(IEnumerable<string> currencies, int days, CancellationToken cancellationToken)
         {
             var tasks = currencies.Select(async symbol =>
             {
-                var url = $"https://api.binance.com/api/v3/klines?symbol={symbol}&interval=1d&startTime={ToUnixTimestamp(startDate)}&endTime={ToUnixTimestamp(endDate)}";
+                var url = GetDailyClosingPricesUrl(symbol, days);
 
                 using var client = new HttpClient();
-                var response = await client.GetAsync(url);
+                var response = await client.GetAsync(url, cancellationToken);
 
                 if (!response.IsSuccessStatusCode)
                     throw new Exception($"Failed to fetch prices for {symbol}");
 
-                var content = await response.Content.ReadAsStringAsync();
+                var content = await response.Content.ReadAsStringAsync(cancellationToken);
                 var data = JsonSerializer.Deserialize<List<JsonElement[]>>(content);
 
                 return new
@@ -66,6 +66,14 @@ namespace CurrencyTracker.Services
                 r => r.Symbol,
                 r => r.Prices
             );
+        }
+
+        private string GetDailyClosingPricesUrl(string symbol, int days)
+        {
+            var intervalParams = days == 1 ? $"interval=1h&limit=24" : $"interval=1d&limit={days}";
+            var url = $"https://api.binance.com/api/v3/klines?symbol={symbol}&{intervalParams}";
+
+            return url;
         }
 
         private long ToUnixTimestamp(DateTime date)

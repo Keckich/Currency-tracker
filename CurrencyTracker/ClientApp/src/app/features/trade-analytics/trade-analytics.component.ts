@@ -1,15 +1,18 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, ViewChild, inject } from '@angular/core';
 import { AnalysisResult, Trade } from '../../shared/shared.model';
 import { BinanceService } from '../../core/services/binance.service';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { CommonModule } from '@angular/common';
 import { TradesService } from '../../core/services/trades.service';
-import { Constants, PnLChartOptions } from '../../shared/constants.value';
+import { Constants, PnLChartOptions, PnLIntervals } from '../../shared/constants.value';
 import { ApexAxisChartSeries, NgApexchartsModule } from 'ng-apexcharts';
-import { map } from 'rxjs';
+import { Subscription, map } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { PnLInterval } from '../../shared/shared.enum';
+import { IntervalListComponent } from '../interval-list/interval-list.component';
+import { ChartComponent } from 'ng-apexcharts';
 
 @Component({
   selector: 'app-trade-analytics',
@@ -20,6 +23,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
     MatSortModule,
     CommonModule,
     LoadingSpinnerComponent,
+    IntervalListComponent,
   ],
   templateUrl: './trade-analytics.component.html',
   styleUrl: './trade-analytics.component.css'
@@ -31,6 +35,8 @@ export class TradeAnalyticsComponent implements OnInit {
   private spinner = inject(NgxSpinnerService);
 
   isLoading: boolean = true;
+  pnlIntervals: Partial<Record<PnLInterval, string>> = PnLIntervals;
+  selectedInterval: PnLInterval = PnLInterval.D7;
   dataSource = new MatTableDataSource<AnalysisResult>();
 
   chartSeries: ApexAxisChartSeries = [
@@ -51,7 +57,23 @@ export class TradeAnalyticsComponent implements OnInit {
       }));
     })
 
-    this.tradeService.getPnLData()
+    this.reloadChart();
+  }
+
+  hideSpinner(): void {
+    if (this.isLoading) {
+      this.isLoading = false;
+      this.spinner.hide();
+    }
+  }
+
+  onIntervalChange(interval: number) {
+    this.selectedInterval = interval;
+    this.reloadChart();
+  }
+
+  createChart(): void {
+    this.tradeService.getPnLData(this.selectedInterval)
       .pipe(map(pnl => pnl.map(p => ({ x: new Date(p.date).getTime(), y: p.balance }))))
       .subscribe({
         next: data => {
@@ -65,10 +87,9 @@ export class TradeAnalyticsComponent implements OnInit {
       })
   }
 
-  hideSpinner(): void {
-    if (this.isLoading) {
-      this.isLoading = false;
-      this.spinner.hide();
-    }
+  reloadChart(): void {
+    this.isLoading = true;
+    this.chartSeries[0].data = [];
+    this.createChart();
   }
 }

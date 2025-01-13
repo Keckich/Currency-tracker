@@ -21,6 +21,7 @@ export interface PnLData {
   date: Date,
   currency: string,
   balance: number,
+  pnL: number,
 }
 
 export interface Transaction {

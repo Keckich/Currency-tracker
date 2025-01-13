@@ -3,6 +3,7 @@ import { ApexChart, ApexFill, ApexMarkers, ApexPlotOptions, ApexStroke, ApexTitl
 
 import { nameof } from 'ts-simple-nameof';
 import { ChartInterval, PnLInterval } from "./shared.enum";
+import { inject } from "@angular/core";
 
 export const Constants = {
   CURRENCIES: ['BTCUSDT', 'ETHUSDT', 'BNBUSDT'],
@@ -146,9 +147,6 @@ export const PnLChartOptions: {
     text: Constants.PNL_CHART_TITLE,
   },
   tooltip: {
-    x: {
-      format: "dd MMM yyyy HH:mm:ss",
-    },
   },
   xaxis: {
     type: "datetime",

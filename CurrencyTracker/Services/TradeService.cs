@@ -49,10 +49,11 @@ namespace CurrencyTracker.Services
 
             var pnlEntries = new List<PnLData>();
             var balance = new Dictionary<string, decimal>();
+            decimal initialBalance = 0;
 
-            foreach (var date in dates)
+            foreach (var date in dates.Select((value, i) => new { Index = i, Value = value }))
             {
-                foreach (var trade in trades.Where(t => t.Date.Date <= date))
+                foreach (var trade in trades.Where(t => t.Date.Date <= date.Value))
                 {
                     if (!balance.ContainsKey(trade.Currency))
                         balance[trade.Currency] = 0;
@@ -60,8 +61,14 @@ namespace CurrencyTracker.Services
                     balance[trade.Currency] += (decimal)trade.Amount;
                 }
 
-                decimal totalBalance = balance.Sum(b => b.Value * prices[b.Key][days == 1 ? date : date.Date]);
-                pnlEntries.Add(new PnLData { Date = date, Balance = totalBalance });
+                decimal totalBalance = balance.Sum(b => b.Value * prices[b.Key][days == 1 ? date.Value : date.Value.Date]);
+                if (date.Index == 0 || (initialBalance == 0 && totalBalance != 0))
+                {
+                    initialBalance = totalBalance;
+                }
+
+                var pnl = initialBalance != 0 ? totalBalance / initialBalance * 100 - 100 : 0;
+                pnlEntries.Add(new PnLData { Date = date.Value, Balance = totalBalance, PnL = pnl });
                 balance = new Dictionary<string, decimal>();
             }
 

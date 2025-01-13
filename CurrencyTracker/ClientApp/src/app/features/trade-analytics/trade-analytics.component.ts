@@ -13,6 +13,7 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
 import { PnLInterval } from '../../shared/shared.enum';
 import { IntervalListComponent } from '../interval-list/interval-list.component';
 import { ChartComponent } from 'ng-apexcharts';
+import { TagsGeneratorService } from '../../core/services/tags-generator.service';
 
 @Component({
   selector: 'app-trade-analytics',
@@ -33,6 +34,7 @@ export class TradeAnalyticsComponent implements OnInit {
   private binanceService = inject(BinanceService);
   private tradeService = inject(TradesService);
   private spinner = inject(NgxSpinnerService);
+  private tagsGeneratorService = inject(TagsGeneratorService);
 
   isLoading: boolean = true;
   pnlIntervals: Partial<Record<PnLInterval, string>> = PnLIntervals;
@@ -49,6 +51,7 @@ export class TradeAnalyticsComponent implements OnInit {
   chartOptions = PnLChartOptions;
 
   ngOnInit(): void {
+    this.setCustomTooltip();
     this.spinner.show();
     this.tradeService.analyzedTrades$.subscribe(data => {
       this.dataSource.data = data.map((trade, index) => ({
@@ -58,6 +61,20 @@ export class TradeAnalyticsComponent implements OnInit {
     })
 
     this.reloadChart();
+  }
+
+  setCustomTooltip(): void {
+    const self = this;
+
+    this.chartOptions.tooltip = {
+      custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+        const dataPoint = w.globals.seriesX[seriesIndex][dataPointIndex];
+        const balance = series[seriesIndex][dataPointIndex];
+        const pnl = w.config.series[seriesIndex].data[dataPointIndex].pnl;
+
+        return self.tagsGeneratorService.generateTooltip(dataPoint, balance, pnl);
+      },
+    }
   }
 
   hideSpinner(): void {
@@ -74,7 +91,7 @@ export class TradeAnalyticsComponent implements OnInit {
 
   createChart(): void {
     this.tradeService.getPnLData(this.selectedInterval)
-      .pipe(map(pnl => pnl.map(p => ({ x: new Date(p.date).getTime(), y: p.balance }))))
+      .pipe(map(pnl => pnl.map(p => ({ x: new Date(p.date).getTime(), y: p.balance, pnl: p.pnL }))))
       .subscribe({
         next: data => {
           this.chartSeries[0].data = data;

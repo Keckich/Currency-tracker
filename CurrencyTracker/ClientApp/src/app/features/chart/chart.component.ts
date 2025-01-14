@@ -70,7 +70,6 @@ export class ChartComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log(this.chartIntervals)
     this.spinner.show();
     this.chartSeries[0].name = this.getChartTitle();
     this.chartOptions.title.text = this.getChartTitle();

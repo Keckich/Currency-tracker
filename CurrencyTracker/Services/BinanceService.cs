@@ -3,6 +3,8 @@ using CurrencyTracker.Helpers;
 using CurrencyTracker.Models;
 using CurrencyTracker.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Net.Http;
 using System.Text.Json;
 
 namespace CurrencyTracker.Services
@@ -66,6 +68,19 @@ namespace CurrencyTracker.Services
                 r => r.Symbol,
                 r => r.Prices
             );
+        }
+
+        public async Task<string> GetOrderBookData(string symbol, int limit)
+        {
+            using var client = new HttpClient();
+            var response = await client.GetAsync($"https://api.binance.com/api/v3/depth?symbol={symbol.ToUpper()}&limit={limit}");
+
+            if (!response.IsSuccessStatusCode)
+                throw new Exception(await response.Content.ReadAsStringAsync());
+
+            var content = await response.Content.ReadAsStringAsync();
+
+            return content;
         }
 
         private string GetDailyClosingPricesUrl(string symbol, int days)

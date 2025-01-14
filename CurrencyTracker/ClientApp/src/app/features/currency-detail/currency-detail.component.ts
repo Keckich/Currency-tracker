@@ -5,6 +5,7 @@ import { ChartComponent } from '../chart/chart.component';
 import { TradesComponent } from '../trades/trades.component';
 import { ActivatedRoute } from '@angular/router';
 import { RouteService } from '../../core/services/route.service';
+import { OrderBookService } from '../../core/services/order-book.service';
 
 @Component({
   selector: 'app-currency-detail',
@@ -19,12 +20,17 @@ import { RouteService } from '../../core/services/route.service';
 export class CurrencyDetailComponent implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private routeService = inject(RouteService);
+  private orderBookService = inject(OrderBookService);
 
   trades!: Trade[];
   currencyPair: string = '';
 
   ngOnInit(): void {
     this.currencyPair = this.loadCurrency();
+
+    this.orderBookService.getOrderBook(this.currencyPair, 5).subscribe(data => {
+      console.log(data)
+    })
   }
 
   loadCurrency(): string {

@@ -40,7 +40,7 @@ export const Routes = {
 export const ApiUrls = {
   TRADES: 'trades',
   PAGINATED_TRADES: 'trades/paginated',
-  PNL: 'pnl',
+  ORDER_BOOK: 'orderbook'
 }
 
 export const ChartIntervals: Partial<Record<ChartInterval, string>> = {

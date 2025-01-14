@@ -66,6 +66,16 @@ export interface LimitOrder {
   stopLoss: number[],
 }
 
+export interface Order {
+  price: number;
+  volume: number;
+}
+
+export interface OrderBook {
+  bids: Order[];
+  asks: Order[];
+}
+
 export class RouteParams {
   id?: string | undefined = undefined
 }

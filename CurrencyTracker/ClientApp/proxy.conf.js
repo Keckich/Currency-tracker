@@ -13,7 +13,8 @@ const PROXY_CONFIG = [
       "/connect",
       "/ApplyDatabaseMigrations",
       "/_framework",
-      "/trades"
+      "/trades",
+      "/orderbook",
    ],
     proxyTimeout: 10000,
     target: target,

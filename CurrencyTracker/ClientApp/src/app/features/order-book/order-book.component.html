@@ -1,0 +1,45 @@
+<section>
+  <div>
+    <h3>Asks</h3>
+    <mat-table [dataSource]="asks">
+      <ng-container matColumnDef="Price">
+        <mat-header-cell *matHeaderCellDef> Price </mat-header-cell>
+        <mat-cell *matCellDef="let element" [ngStyle]="{'color': 'red'}">
+          {{ element.price | number: '1.2-2' }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="Amount">
+        <mat-header-cell *matHeaderCellDef> Amount </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.amount | number: '1.4-4' }}
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+  </div>
+
+  <mat-divider></mat-divider>
+
+  <div class="">
+    <h3 class="">Bids</h3>
+    <mat-table [dataSource]="bids" class="mat-elevation-z1 order-book-table">
+      <ng-container matColumnDef="Price">
+        <mat-header-cell *matHeaderCellDef> Price </mat-header-cell>
+        <mat-cell *matCellDef="let element" [ngStyle]="{'color': 'green'}">
+          {{ element.price | number: '1.2-2' }}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="Amount">
+        <mat-header-cell *matHeaderCellDef> Amount </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          {{ element.amount | number: '1.4-4' }}
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+  </div>
+</section>

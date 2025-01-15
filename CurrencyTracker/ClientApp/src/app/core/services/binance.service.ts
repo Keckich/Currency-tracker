@@ -13,8 +13,13 @@ export class BinanceService {
   private binanceSocketUrl(cryptoPair: string): string {
     return `wss://stream.binance.com:9443/ws/${cryptoPair?.toLowerCase()}@ticker`;
   }
+
   private binanceCandleSocketUrl(cryptoPair: string, interval: string): string {
     return `wss://stream.binance.com:9443/ws/${cryptoPair?.toLowerCase()}@kline_${interval}`;
+  }
+
+  private binanceOrderBookSocketUrl(cryptoPair: string): string {
+    return `wss://stream.binance.com:9443/ws/${cryptoPair?.toLowerCase()}@depth`;
   }
 
   constructor(private http: HttpClient) { }
@@ -26,6 +31,11 @@ export class BinanceService {
 
   getCryptoCandleData(crypto: string, interval: string): Observable<any> {
     const socket = webSocket(this.binanceCandleSocketUrl(crypto, interval));
+    return socket;
+  }
+
+  getOrderBookData(crypto: string): Observable<any> {
+    const socket = webSocket(this.binanceOrderBookSocketUrl(crypto));
     return socket;
   }
 

@@ -25,6 +25,10 @@ export const Constants = {
     nameof<AnalysisResult>(t => t.roi),
     nameof<AnalysisResult>(t => t.recommendation),
   ] as (keyof AnalysisResult)[],
+  ORDER_BOOK_COLUMNS: [
+    'Price',
+    'Amount',
+  ],
   CHART_COLORS: { green: '#00B746', red: '#EF403C', blue: '#00BFFF', white: '#fff' },
   CANDLE_CHART_SIZE: 100,
   PNL_CHART_TITLE: 'PnL Data',

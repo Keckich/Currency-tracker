@@ -6,6 +6,7 @@ import { TradesComponent } from '../trades/trades.component';
 import { ActivatedRoute } from '@angular/router';
 import { RouteService } from '../../core/services/route.service';
 import { OrderBookService } from '../../core/services/order-book.service';
+import { OrderBookComponent } from '../order-book/order-book.component';
 
 @Component({
   selector: 'app-currency-detail',
@@ -13,6 +14,7 @@ import { OrderBookService } from '../../core/services/order-book.service';
   imports: [
     ChartComponent,
     TradesComponent,
+    OrderBookComponent,
   ],
   templateUrl: './currency-detail.component.html',
   styleUrl: './currency-detail.component.css'
@@ -27,10 +29,6 @@ export class CurrencyDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.currencyPair = this.loadCurrency();
-
-    this.orderBookService.getOrderBook(this.currencyPair, 5).subscribe(data => {
-      console.log(data)
-    })
   }
 
   loadCurrency(): string {

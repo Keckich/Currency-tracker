@@ -68,12 +68,17 @@ export interface LimitOrder {
 
 export interface Order {
   price: number;
-  volume: number;
+  amount: number;
 }
 
 export interface OrderBook {
   bids: Order[];
   asks: Order[];
+}
+
+export interface OrderBookData {
+  b: [number, number][];
+  a: [number, number][];
 }
 
 export class RouteParams {

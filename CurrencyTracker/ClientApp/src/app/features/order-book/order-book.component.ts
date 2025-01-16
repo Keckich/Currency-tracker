@@ -4,6 +4,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatDividerModule } from '@angular/material/divider';
 import { Constants } from '../../shared/constants.value';
 import { CommonModule } from '@angular/common';
+import { Order } from '../../shared/shared.model';
 
 @Component({
   selector: 'app-order-book',
@@ -19,15 +20,15 @@ import { CommonModule } from '@angular/common';
 export class OrderBookComponent implements OnInit {
   private binanceService = inject(BinanceService);
 
-  bids: any[] = [];
-  asks: any[] = [];
+  bids: Order[] = [];
+  asks: Order[] = [];
   displayedColumns: string[] = Constants.ORDER_BOOK_COLUMNS;
   @Input() currencyPair!: string;
 
   ngOnInit(): void {
     this.binanceService.getOrderBookData(this.currencyPair).subscribe(data => {
-      this.bids = data.b.map(([price, amount]: [number, number]) => ({ price, amount })).slice(0, 10);
-      this.asks = data.a.map(([price, amount]: [number, number]) => ({ price, amount })).slice(0, 10);
+      this.bids = data.bids;
+      this.asks = data.asks;
     })
   }
 }

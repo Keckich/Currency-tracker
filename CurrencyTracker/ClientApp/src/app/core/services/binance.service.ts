@@ -37,8 +37,8 @@ export class BinanceService {
   getOrderBookData(crypto: string): Observable<OrderBook> {
     const socket = webSocket<OrderBookData>(this.binanceOrderBookSocketUrl(crypto)).pipe(
       map(data => ({
-        asks: data.a.map(([price, amount]) => ({ price, amount })).slice(0, 10),
-        bids: data.b.map(([price, amount]) => ({ price, amount })).slice(0, 10),
+        asks: data.a.map(([price, amount]) => ({ price, amount })).slice(0, 10).sort((a, b) => b.price - a.price),
+        bids: data.b.map(([price, amount]) => ({ price, amount })).slice(0, 10).sort((a, b) => b.price - a.price),
       }))
     );
 

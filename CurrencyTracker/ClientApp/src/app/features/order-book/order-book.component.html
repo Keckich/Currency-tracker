@@ -1,16 +1,16 @@
-<section>
-  <div>
-    <h3>Asks</h3>
-    <mat-table [dataSource]="asks">
+<section class="flex flex-col gap-4 bg-gray-50 p-4 rounded-lg shadow-lg h-full">
+  <div class="flex-1 overflow-auto">
+    <h3 class="text-lg font-bold text-gray-700 mb-2">Asks</h3>
+    <mat-table class="w-full text-sm bg-white rounded-lg shadow" [dataSource]="asks">
       <ng-container matColumnDef="Price">
-        <mat-header-cell *matHeaderCellDef> Price </mat-header-cell>
-        <mat-cell *matCellDef="let element" [ngStyle]="{'color': 'red'}">
+        <mat-header-cell *matHeaderCellDef class="py-2 font-bold text-red-500"> Price </mat-header-cell>
+        <mat-cell *matCellDef="let element" [ngStyle]="{'color': 'red'}" class="py-1 text-red-500">
           {{ element.price | number: '1.2-2' }}
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="Amount">
-        <mat-header-cell *matHeaderCellDef> Amount </mat-header-cell>
-        <mat-cell *matCellDef="let element">
+        <mat-header-cell *matHeaderCellDef class="py-2 font-bold"> Amount </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="py-1">
           {{ element.amount | number: '1.4-4' }}
         </mat-cell>
       </ng-container>
@@ -20,20 +20,20 @@
     </mat-table>
   </div>
 
-  <mat-divider class="my-4"></mat-divider>
+  <mat-divider class="border-t my-4"></mat-divider>
 
-  <div class="">
-    <h3 class="">Bids</h3>
-    <mat-table [dataSource]="bids" class="mat-elevation-z1 order-book-table">
+  <div class="flex-1">
+    <h3 class="text-lg font-bold text-gray-700 mb-2">Bids</h3>
+    <mat-table [dataSource]="bids" class="w-full text-sm bg-white rounded-lg shadow">
       <ng-container matColumnDef="Price">
-        <mat-header-cell *matHeaderCellDef> Price </mat-header-cell>
-        <mat-cell *matCellDef="let element" [ngStyle]="{'color': 'green'}">
+        <mat-header-cell *matHeaderCellDef class="py-2 font-bold text-green-500"> Price </mat-header-cell>
+        <mat-cell *matCellDef="let element" [ngStyle]="{'color': 'green'}" class="py-1 text-green-500">
           {{ element.price | number: '1.2-2' }}
         </mat-cell>
       </ng-container>
       <ng-container matColumnDef="Amount">
-        <mat-header-cell *matHeaderCellDef> Amount </mat-header-cell>
-        <mat-cell *matCellDef="let element">
+        <mat-header-cell *matHeaderCellDef class="py-2 font-bold"> Amount </mat-header-cell>
+        <mat-cell *matCellDef="let element" class="py-1">
           {{ element.amount | number: '1.4-4' }}
         </mat-cell>
       </ng-container>

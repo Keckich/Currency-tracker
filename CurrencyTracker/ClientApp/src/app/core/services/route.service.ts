@@ -17,4 +17,10 @@ export class RouteService {
       return params;
     }, {} as RouteParams);
   }
+
+  buildUrl(url: string, ...resources: (string | number)[]): string {
+    return [url]
+    .concat(resources.map(r => r.toString()))
+    .join('/');
+  }
 }

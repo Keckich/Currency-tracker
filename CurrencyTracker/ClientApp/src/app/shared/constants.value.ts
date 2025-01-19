@@ -43,11 +43,15 @@ export const Routes = {
 
 export const ApiUrls = {
   TRADES: 'trades',
-  PAGINATED_TRADES: 'trades/paginated',
   ORDER_BOOK: 'orderbook'
 }
 
-export const ChartIntervals: Partial<Record<ChartInterval, string>> = {
+export const ApiUrlResources = {
+  PAGINATED: 'paginated',
+  PNL: 'pnl'
+}
+
+export const ChartIntervals: Record<ChartInterval, string> = {
   [ChartInterval.S1]: $localize`:@@chartIntervalS1:1s`,
   [ChartInterval.M1]: $localize`:@@chartIntervalS1:1m`,
   [ChartInterval.M15]: $localize`:@@chartIntervalS1:15m`,
@@ -57,7 +61,7 @@ export const ChartIntervals: Partial<Record<ChartInterval, string>> = {
   [ChartInterval.D1]: $localize`:@@chartIntervalS1:1d`,
 }
 
-export const PnLIntervals: Partial<Record<PnLInterval, string>> = {
+export const PnLIntervals: Record<PnLInterval, string> = {
   [PnLInterval.D1]: $localize`:@@pnlIntervalD1:1d`,
   [PnLInterval.D7]: $localize`:@@pnlIntervalD7:7d`,
   [PnLInterval.D14]: $localize`:@@pnlIntervalD14:14d`,

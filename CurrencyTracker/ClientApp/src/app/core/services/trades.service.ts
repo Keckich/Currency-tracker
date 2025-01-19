@@ -2,10 +2,11 @@ import { Inject, Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { AnalysisResult, AnalyzedTradeInfo, PnLData, Trade, TradesPaginationData } from '../../shared/shared.model';
-import { AnalysisRecommenations, ApiUrls } from '../../shared/constants.value';
+import { AnalysisRecommenations, ApiUrlResources, ApiUrls } from '../../shared/constants.value';
 import { HttpClient } from '@angular/common/http';
 import { HttpService } from './http.service';
 import { BinanceService } from './binance.service';
+import { RouteService } from './route.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ import { BinanceService } from './binance.service';
 export class TradesService {
   private httpService = inject(HttpService);
   private binanceService = inject(BinanceService);
+  private routeService = inject(RouteService);
   private tradesSubject = new BehaviorSubject<TradesPaginationData>({ data: [], totalItems: 0 });
   private pricesSubject = new BehaviorSubject<Record<string, number>>({});
 
@@ -37,7 +39,7 @@ export class TradesService {
     const params = { page: page, pageSize: pageSize };
     this.updatePaginationData(page, pageSize);
 
-    return this.httpService.get<TradesPaginationData>(ApiUrls.PAGINATED_TRADES, params).pipe(
+    return this.httpService.get<TradesPaginationData>(this.routeService.buildUrl(ApiUrls.TRADES, ApiUrlResources.PAGINATED), params).pipe(
       tap(trades => this.tradesSubject.next(trades))
     );
   }
@@ -47,7 +49,7 @@ export class TradesService {
   }
 
   getPnLData(interval: number): Observable<PnLData[]> {
-    return this.httpService.get<PnLData[]>(ApiUrls.TRADES + '/pnl', { interval: interval });
+    return this.httpService.get<PnLData[]>(this.routeService.buildUrl(ApiUrls.TRADES, ApiUrlResources.PNL), { interval: interval });
   }
 
   updatePaginationData(page: number, pageSize: number) {
@@ -121,7 +123,7 @@ export class TradesService {
       recommendation = AnalysisRecommenations.SELL_PROFIT;
     } else if (roi > 10) {
       recommendation = AnalysisRecommenations.KEEP_GROWTH;
-    } else if (roi < 0) {
+    } else if (roi < -20) {
       recommendation = AnalysisRecommenations.SELL_LOSS;
     } else {
       recommendation = AnalysisRecommenations.KEEP_RECOVER;

@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, map, of, shareReplay, switchMap, tap } from 'rxjs';
 import { webSocket } from 'rxjs/webSocket';
 import { Currency, Order, OrderBook, OrderBookData } from '../../shared/shared.model';
 
@@ -8,6 +8,7 @@ import { Currency, Order, OrderBook, OrderBookData } from '../../shared/shared.m
   providedIn: 'root'
 })
 export class BinanceService {
+  private currenciesCache: BehaviorSubject<Currency[] | null> = new BehaviorSubject<Currency[] | null>(null);
   private readonly exchangeInfoUrl = 'https://api.binance.com/api/v3/exchangeInfo';
   private readonly pricesUrl = 'https://api.binance.com/api/v3/ticker/price';
   private binanceSocketUrl(cryptoPair: string): string {
@@ -46,11 +47,24 @@ export class BinanceService {
   }
 
   getCryptocurrencies(): Observable<Currency[]> {
-    return this.http.get(this.exchangeInfoUrl).pipe(
-      map((response: any) =>
-        [...response.symbols as Currency[]]
-      )
+    return this.currenciesCache.pipe(
+      switchMap(cached => {
+        if (cached) {
+          return of(cached);
+        } else {
+          return this.http.get<Currency[]>(this.exchangeInfoUrl).pipe(
+            map((response: any) =>
+              [...response.symbols as Currency[]]
+            ),
+            tap((currencies: Currency[]) => this.currenciesCache.next(currencies))
+          );
+        }
+      })
     );
+  }
+
+  clearCache(): void {
+    this.currenciesCache.next(null);
   }
 
   getPrices(currencies: string[]): Observable<Record<string, number>> {

@@ -55,6 +55,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   isLoading: boolean = true;
   chartIntervals: Partial<Record<ChartInterval, string>> = ChartIntervals;
   @Input() currencyPair!: string;
+  @Output() intervalChange = new EventEmitter<ChartInterval>();
 
   chartSeries: ApexAxisChartSeries = [
     {
@@ -129,6 +130,7 @@ export class ChartComponent implements OnInit, OnDestroy {
 
   onIntervalChange(interval: ChartInterval) {
     this.selectedInterval = interval;
+    this.intervalChange.emit(interval);
     this.reloadChart();
   }
 

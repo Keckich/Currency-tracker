@@ -6,6 +6,8 @@ import { TradesComponent } from '../trades/trades.component';
 import { ActivatedRoute } from '@angular/router';
 import { RouteService } from '../../core/services/route.service';
 import { OrderBookComponent } from '../order-book/order-book.component';
+import { PredictionService } from '../../core/services/prediction.service';
+import { ChartInterval } from '../../shared/shared.enum';
 
 @Component({
   selector: 'app-currency-detail',
@@ -21,12 +23,17 @@ import { OrderBookComponent } from '../order-book/order-book.component';
 export class CurrencyDetailComponent implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private routeService = inject(RouteService);
+  private predictionService = inject(PredictionService);
 
   trades!: Trade[];
   currencyPair: string = '';
+  selectedInterval: ChartInterval = ChartInterval.S1;
 
   ngOnInit(): void {
     this.currencyPair = this.loadCurrency();
+    this.predictionService.getHammerPrediction(this.currencyPair, this.selectedInterval).subscribe(data => {
+      console.log(data)
+    });
   }
 
   loadCurrency(): string {
@@ -36,5 +43,9 @@ export class CurrencyDetailComponent implements OnInit {
 
   handleBuy(trades: Trade[]): void {
     this.trades = trades;
+  }
+
+  onIntervalChange(interval: ChartInterval): void {
+    this.selectedInterval = interval;
   }
 }

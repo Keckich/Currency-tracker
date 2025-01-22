@@ -83,6 +83,24 @@ namespace CurrencyTracker.Services
             return content;
         }
 
+        public async Task<IEnumerable<Candlestick>> GetHistoricalData(string symbol, string interval)
+        {
+            var httpClient = new HttpClient();
+            var url = $"https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}&limit=2";
+            var response = await httpClient.GetStringAsync(url);
+            var json = Newtonsoft.Json.JsonConvert.DeserializeObject<List<List<object>>>(response);
+
+            return json?.Select(data => new Candlestick
+            {
+                OpenTime = DateTimeOffset.FromUnixTimeMilliseconds(Convert.ToInt64(data[0])).DateTime,
+                Open = Convert.ToDecimal(data[1]),
+                High = Convert.ToDecimal(data[2]),
+                Low = Convert.ToDecimal(data[3]),
+                Close = Convert.ToDecimal(data[4]),
+                Volume = Convert.ToDecimal(data[5]),
+            }).ToList() ?? Enumerable.Empty<Candlestick>();
+        }
+
         private string GetDailyClosingPricesUrl(string symbol, int days)
         {
             var intervalParams = days == 1 ? $"interval=1h&limit=24" : $"interval=1d&limit={days}";

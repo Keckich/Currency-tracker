@@ -14,6 +14,7 @@ const PROXY_CONFIG = [
       "/_framework",
       "/trades",
       "/orderbook",
+      "/patternanalyzer",
    ],
     proxyTimeout: 10000,
     target: target,

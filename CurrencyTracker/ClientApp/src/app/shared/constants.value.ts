@@ -43,7 +43,8 @@ export const Routes = {
 
 export const ApiUrls = {
   TRADES: 'trades',
-  ORDER_BOOK: 'orderbook'
+  ORDER_BOOK: 'orderbook',
+  PATTERN_ANALYZER: 'patternanalyzer',
 }
 
 export const ApiUrlResources = {

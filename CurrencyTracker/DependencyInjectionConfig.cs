@@ -9,6 +9,7 @@ namespace CurrencyTracker
         {
             services.AddScoped<ITradeService, TradeService>();
             services.AddScoped<IBinanceService, BinanceService>();
+            services.AddScoped<ICandlestickPatternAnalyzer, CandlestickPatternAnalyzer>();
         }
     }
 }

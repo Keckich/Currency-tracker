@@ -4,18 +4,25 @@
     {
         public DateTime OpenTime { get; set; }
 
-        public decimal Open { get; set; }
+        //float is for ML model
+        public float Open { get; set; }
 
-        public decimal High { get; set; }
+        public float High { get; set; }
 
-        public decimal Low { get; set; }
+        public float Low { get; set; }
 
-        public decimal Close { get; set; }
+        public float Close { get; set; }
 
-        public decimal Volume { get; set; }
+        public float Volume { get; set; }
 
         public bool IsBear => Close < Open;
 
         public bool IsBull => Close > Open;
+
+        public float Body => Math.Abs(Close - Open);
+
+        public float LowerShadow => Math.Min(Open, Close) - Low;
+
+        public float UpperShadow => High - Math.Max(Open, Close);
     }
 }

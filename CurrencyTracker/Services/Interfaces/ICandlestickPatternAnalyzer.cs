@@ -14,8 +14,8 @@ namespace CurrencyTracker.Services.Interfaces
 
         bool IsDoji(Candlestick candle);
 
-        /*void TrainHammerModel(IEnumerable<Candlestick> historicalData);
+        /*void TrainHammerModel(IEnumerable<Candlestick> historicalData);*/
 
-        HammerPrediction PredictHammerPattern(Candlestick candle);*/
+        HammerPrediction PredictHammerPattern(Candlestick candle);
     }
 }

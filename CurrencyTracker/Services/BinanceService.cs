@@ -93,11 +93,11 @@ namespace CurrencyTracker.Services
             return json?.Select(data => new Candlestick
             {
                 OpenTime = DateTimeOffset.FromUnixTimeMilliseconds(Convert.ToInt64(data[0])).DateTime,
-                Open = Convert.ToDecimal(data[1]),
-                High = Convert.ToDecimal(data[2]),
-                Low = Convert.ToDecimal(data[3]),
-                Close = Convert.ToDecimal(data[4]),
-                Volume = Convert.ToDecimal(data[5]),
+                Open = ParseHelper.TryParseFloat(data[1]),
+                High = ParseHelper.TryParseFloat(data[2]),
+                Low = ParseHelper.TryParseFloat(data[3]),
+                Close = ParseHelper.TryParseFloat(data[4]),
+                Volume = ParseHelper.TryParseFloat(data[5]),
             }).ToList() ?? Enumerable.Empty<Candlestick>();
         }
 

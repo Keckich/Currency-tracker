@@ -27,6 +27,7 @@ namespace CurrencyTracker.Controllers
             var candleData = await binanceService.GetHistoricalData(currency, interval);
             var prevCanle = candleData.First();
             var currCandel = candleData.Last();
+            var prediction = patternAnalyzer.PredictHammerPattern(currCandel);
 
             var result = new Prediction
             {

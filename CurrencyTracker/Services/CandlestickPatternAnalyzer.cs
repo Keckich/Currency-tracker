@@ -1,5 +1,6 @@
 ﻿using CurrencyTracker.Models;
 using CurrencyTracker.Services.Interfaces;
+using Microsoft.ML;
 
 namespace CurrencyTracker.Services
 {
@@ -18,7 +19,7 @@ namespace CurrencyTracker.Services
             var lowerShadow = Math.Min(candle.Open, candle.Close) - candle.Low;
             var upperShadow = candle.High - Math.Max(candle.Open, candle.Close);
 
-            return body < lowerShadow && upperShadow < body * 0.1m && lowerShadow > 2 * body;
+            return body < lowerShadow && upperShadow < body * 0.1 && lowerShadow > 2 * body;
         }
 
         public bool IsHangingMan(Candlestick candle)
@@ -41,7 +42,7 @@ namespace CurrencyTracker.Services
             var body = Math.Abs(candle.Close - candle.Open);
             var range = candle.High - candle.Low;
 
-            return body < range * 0.1m;
+            return body < range * 0.1;
         }
 
         //TODO: correct these methods later to analyze patterns more accurately
@@ -64,7 +65,7 @@ namespace CurrencyTracker.Services
 
             var model = pipeline.Fit(data);
             context.Model.Save(model, data.Schema, "hammerPatternModel.zip");
-        }
+        }*/
 
         public HammerPrediction PredictHammerPattern(Candlestick candle)
         {
@@ -73,6 +74,6 @@ namespace CurrencyTracker.Services
             var predictionEngine = context.Model.CreatePredictionEngine<Candlestick, HammerPrediction>(model);
 
             return predictionEngine.Predict(candle);
-        }*/
+        }
     }
 }

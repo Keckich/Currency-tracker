@@ -1,11 +1,10 @@
-﻿using CurrencyTracker.Models;
+﻿using CurrencyTracker.Business.Models;
 using Duende.IdentityServer.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 
-namespace CurrencyTracker.Data
+namespace CurrencyTracker.Business.Data
 {
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {

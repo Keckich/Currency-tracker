@@ -1,8 +1,8 @@
-﻿using CurrencyTracker.Models;
-using CurrencyTracker.Services.Interfaces;
+﻿using CurrencyTracker.Business.Models;
+using CurrencyTracker.Business.Services.Interfaces;
 using Microsoft.ML;
 
-namespace CurrencyTracker.Services
+namespace CurrencyTracker.Business.Services
 {
     public class CandlestickPatternAnalyzer : ICandlestickPatternAnalyzer
     {

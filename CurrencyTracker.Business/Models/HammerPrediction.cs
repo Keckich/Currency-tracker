@@ -1,6 +1,6 @@
 ﻿using Microsoft.ML.Data;
 
-namespace CurrencyTracker.Models
+namespace CurrencyTracker.Business.Models
 {
     public class HammerPrediction
     {

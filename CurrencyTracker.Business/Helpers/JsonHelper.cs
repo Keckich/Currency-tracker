@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Text.Json;
 
-namespace CurrencyTracker.Helpers
+namespace CurrencyTracker.Business.Helpers
 {
     public static class JsonHelper
     {

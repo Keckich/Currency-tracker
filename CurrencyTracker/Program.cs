@@ -1,12 +1,8 @@
 using CurrencyTracker;
-using CurrencyTracker.Data;
-using CurrencyTracker.Models;
-using CurrencyTracker.Services;
-using CurrencyTracker.Services.Interfaces;
+using CurrencyTracker.Business.Models;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
+using CurrencyTracker.Business.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

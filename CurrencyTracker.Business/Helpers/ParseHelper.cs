@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace CurrencyTracker.Helpers
+namespace CurrencyTracker.Business.Helpers
 {
     public static class ParseHelper
     {

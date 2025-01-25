@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace CurrencyTracker.Models
+namespace CurrencyTracker.Business.Models
 {
     public class ApplicationUser : IdentityUser
     {

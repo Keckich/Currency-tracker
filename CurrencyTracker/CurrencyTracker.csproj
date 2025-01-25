@@ -45,6 +45,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CurrencyTracker.Business\CurrencyTracker.Business.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\features\limit-order\validators\limit-valiators.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\constants.value.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\shared\shared.enum.ts" />

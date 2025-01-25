@@ -1,13 +1,12 @@
-﻿using CurrencyTracker.Data;
-using CurrencyTracker.Helpers;
-using CurrencyTracker.Models;
-using CurrencyTracker.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Net.Http;
+﻿using CurrencyTracker.Business.Data;
+using CurrencyTracker.Business.Helpers;
+using CurrencyTracker.Business.Models;
+using CurrencyTracker.Business.Services.Interfaces;
+using System;
+using System.Net.Http.Json;
 using System.Text.Json;
 
-namespace CurrencyTracker.Services
+namespace CurrencyTracker.Business.Services
 {
     public class BinanceService : IBinanceService
     {

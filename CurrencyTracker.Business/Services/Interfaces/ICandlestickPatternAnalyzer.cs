@@ -1,6 +1,6 @@
-﻿using CurrencyTracker.Models;
+﻿using CurrencyTracker.Business.Models;
 
-namespace CurrencyTracker.Services.Interfaces
+namespace CurrencyTracker.Business.Services.Interfaces
 {
     public interface ICandlestickPatternAnalyzer
     {

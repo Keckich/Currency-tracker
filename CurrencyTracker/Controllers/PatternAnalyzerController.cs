@@ -1,8 +1,6 @@
-﻿using CurrencyTracker.Models;
-using CurrencyTracker.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using CurrencyTracker.Business.Models;
+using CurrencyTracker.Business.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CurrencyTracker.Controllers
 {

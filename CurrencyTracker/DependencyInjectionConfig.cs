@@ -1,5 +1,5 @@
-﻿using CurrencyTracker.Services.Interfaces;
-using CurrencyTracker.Services;
+﻿using CurrencyTracker.Business.Services.Interfaces;
+using CurrencyTracker.Business.Services;
 
 namespace CurrencyTracker
 {

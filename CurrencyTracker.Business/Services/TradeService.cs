@@ -1,10 +1,9 @@
-﻿using CurrencyTracker.Data;
-using CurrencyTracker.Models;
-using CurrencyTracker.Services.Interfaces;
+﻿using CurrencyTracker.Business.Data;
+using CurrencyTracker.Business.Models;
+using CurrencyTracker.Business.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 
-namespace CurrencyTracker.Services
+namespace CurrencyTracker.Business.Services
 {
     public class TradeService : ITradeService
     {
@@ -30,7 +29,7 @@ namespace CurrencyTracker.Services
                 ? await GetTrades()
                     .Skip(paginationInfo.Page * paginationInfo.PageSize.Value)
                     .Take(paginationInfo.PageSize.Value)
-                    .ToListAsync(cancellationToken)
+            .ToListAsync(cancellationToken)
                 : trades;
         }
 

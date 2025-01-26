@@ -14,8 +14,12 @@ namespace CurrencyTracker.Business.Services.Interfaces
 
         bool IsDoji(Candlestick candle);
 
+        bool IsThreeWhiteSoldiers(IList<Candlestick> candles);
+
         /*void TrainHammerModel(IEnumerable<Candlestick> historicalData);*/
 
-        HammerPrediction PredictHammerPattern(Candlestick candle);
+        PatternPrediction PredictHammerPattern(Candlestick candle);
+
+        PatternPrediction PredictThreeWhiteSoldiersPattern(IEnumerable<Candlestick> candle);
     }
 }

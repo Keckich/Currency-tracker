@@ -5,7 +5,9 @@ VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyTracker", "CurrencyTracker\CurrencyTracker.csproj", "{A0817F47-3E5A-4321-A4F7-C9387270654E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyTracker.Business", "CurrencyTracker.Business\CurrencyTracker.Business.csproj", "{22A16B26-6D19-4C5D-A510-11E3F124592F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyTracker.Business", "CurrencyTracker.Business\CurrencyTracker.Business.csproj", "{22A16B26-6D19-4C5D-A510-11E3F124592F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyTracker.MLTrainer", "CurrencyTracker.MLTrainer\CurrencyTracker.MLTrainer.csproj", "{8CA807BD-BA20-4AAA-A8B2-37ACBB3CE60D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{22A16B26-6D19-4C5D-A510-11E3F124592F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22A16B26-6D19-4C5D-A510-11E3F124592F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22A16B26-6D19-4C5D-A510-11E3F124592F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CA807BD-BA20-4AAA-A8B2-37ACBB3CE60D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CA807BD-BA20-4AAA-A8B2-37ACBB3CE60D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CA807BD-BA20-4AAA-A8B2-37ACBB3CE60D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CA807BD-BA20-4AAA-A8B2-37ACBB3CE60D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

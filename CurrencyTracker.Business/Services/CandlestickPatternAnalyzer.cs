@@ -45,35 +45,44 @@ namespace CurrencyTracker.Business.Services
             return body < range * 0.1;
         }
 
-        //TODO: correct these methods later to analyze patterns more accurately
-        /*public void TrainHammerModel(IEnumerable<Candlestick> historicalData)
+        public bool IsThreeWhiteSoldiers(IList<Candlestick> candles)
         {
-            var context = new MLContext();
+            return candles[0].Close > candles[0].Open &&
+                   candles[1].Close > candles[1].Open &&
+                   candles[2].Close > candles[2].Open &&
+                   candles[1].Open > candles[0].Close &&
+                   candles[2].Open > candles[1].Close;
+        }
 
-            var trainingData = historicalData.Select(c => new
-            {
-                Body = (float)c.Body,
-                LowerShadow = (float)c.LowerShadow,
-                UpperShadow = (float)c.UpperShadow,
-                Label = c.IsHammer
-            }).ToList();
-
-            var data = context.Data.LoadFromEnumerable(trainingData);
-
-            var pipeline = context.Transforms.Concatenate("Features", nameof(Candlestick.Body), nameof(Candlestick.LowerShadow), nameof(Candlestick.UpperShadow))
-                .Append(context.BinaryClassification.Trainers.SdcaLogisticRegression());
-
-            var model = pipeline.Fit(data);
-            context.Model.Save(model, data.Schema, "hammerPatternModel.zip");
-        }*/
-
-        public HammerPrediction PredictHammerPattern(Candlestick candle)
+        public PatternPrediction PredictHammerPattern(Candlestick candle)
         {
             var context = new MLContext();
             var model = context.Model.Load("hammerPatternModel.zip", out _);
-            var predictionEngine = context.Model.CreatePredictionEngine<Candlestick, HammerPrediction>(model);
+            var predictionEngine = context.Model.CreatePredictionEngine<Candlestick, PatternPrediction>(model);
 
             return predictionEngine.Predict(candle);
+        }
+
+        public PatternPrediction PredictThreeWhiteSoldiersPattern(IEnumerable<Candlestick> candles)
+        {
+            var context = new MLContext();
+
+            var model = context.Model.Load("threeWhiteSoldiersModel.zip", out _);
+            var lastCandles = candles.TakeLast(3).ToList();
+            if (lastCandles.Count < 3)
+            {
+                throw new ArgumentException("Not enougth data for pattern analyzing");
+            }
+
+            var input = new ThreeWhiteSoldiersInput
+            {
+                Body1 = lastCandles[0].Body,
+                Body2 = lastCandles[1].Body,
+                Body3 = lastCandles[2].Body,
+            };
+
+            var predictionEngine = context.Model.CreatePredictionEngine<ThreeWhiteSoldiersInput, PatternPrediction>(model);
+            return predictionEngine.Predict(input);
         }
     }
 }

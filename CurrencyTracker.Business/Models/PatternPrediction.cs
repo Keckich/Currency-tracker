@@ -2,10 +2,11 @@
 
 namespace CurrencyTracker.Business.Models
 {
-    public class HammerPrediction
+    public class PatternPrediction
     {
         [ColumnName("PredictedLabel")]
-        public bool IsHammer { get; set; }
+        public bool IsPattern { get; set; }
+
         public float Probability { get; set; }
     }
 }

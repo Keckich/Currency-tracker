@@ -85,7 +85,7 @@ namespace CurrencyTracker.Business.Services
         public async Task<IEnumerable<Candlestick>> GetHistoricalData(string symbol, string interval)
         {
             var httpClient = new HttpClient();
-            var url = $"https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}&limit=2";
+            var url = $"https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}";
             var response = await httpClient.GetStringAsync(url);
             var json = Newtonsoft.Json.JsonConvert.DeserializeObject<List<List<object>>>(response);
 

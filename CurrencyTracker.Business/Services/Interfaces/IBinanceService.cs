@@ -11,5 +11,7 @@ namespace CurrencyTracker.Business.Services.Interfaces
         Task<string> GetOrderBookData(string symbol, int limit);
 
         Task<IEnumerable<Candlestick>> GetHistoricalData(string symbol, string interval);
+
+        Task<IEnumerable<Candlestick>> GetHistoricalData(string symbol, string interval, int limit = 5000);
     }
 }

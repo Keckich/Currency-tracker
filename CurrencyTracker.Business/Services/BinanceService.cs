@@ -100,6 +100,49 @@ namespace CurrencyTracker.Business.Services
             }).ToList() ?? Enumerable.Empty<Candlestick>();
         }
 
+        public async Task<IEnumerable<Candlestick>> GetHistoricalData(string symbol, string interval, int limit = 5000)
+        {
+            var httpClient = new HttpClient();
+            var allCandlesticks = new List<Candlestick>();
+            long? endTime = null;
+
+            while (allCandlesticks.Count < limit)
+            {
+                var url = $"https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}&limit=1000";
+                if (endTime.HasValue)
+                {
+                    url += $"&endTime={endTime}";
+                }
+
+                var response = await httpClient.GetStringAsync(url);
+                var json = Newtonsoft.Json.JsonConvert.DeserializeObject<List<List<object>>>(response);
+
+                if (json == null || !json.Any())
+                {
+                    break;
+                }
+
+                var candlesticks = json.Select(data => new Candlestick
+                {
+                    OpenTime = DateTimeOffset.FromUnixTimeMilliseconds(Convert.ToInt64(data[0])).DateTime,
+                    Open = ParseHelper.TryParseFloat(data[1]),
+                    High = ParseHelper.TryParseFloat(data[2]),
+                    Low = ParseHelper.TryParseFloat(data[3]),
+                    Close = ParseHelper.TryParseFloat(data[4]),
+                    Volume = ParseHelper.TryParseFloat(data[5]),
+                }).ToList();
+
+                allCandlesticks.AddRange(candlesticks);
+                endTime = ToUnixTimestamp(candlesticks.First().OpenTime) - 1;
+                if (candlesticks.Count < 1000)
+                {
+                    break;
+                }
+            }
+
+            return allCandlesticks.Take(limit);
+        }
+
         private string GetDailyClosingPricesUrl(string symbol, int days)
         {
             var intervalParams = days == 1 ? $"interval=1h&limit=24" : $"interval=1d&limit={days}";

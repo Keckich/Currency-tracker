@@ -16,6 +16,8 @@ namespace CurrencyTracker.Business.Services.Interfaces
 
         bool IsThreeWhiteSoldiers(IList<Candlestick> candles);
 
+        void AnalyzePatterns(IEnumerable<Candlestick> candlesticks);
+
         /*void TrainHammerModel(IEnumerable<Candlestick> historicalData);*/
 
         PatternPrediction PredictHammerPattern(Candlestick candle);

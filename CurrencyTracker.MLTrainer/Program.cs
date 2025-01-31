@@ -20,17 +20,11 @@ namespace MLTrainer
             var modelTrainer = serviceProvider.GetRequiredService<IModelTrainer>();
             var patternAnalyzer = serviceProvider.GetRequiredService<ICandlestickPatternAnalyzer>();
 
-            var candleDataBTC = await binanceService.GetHistoricalData("BTCUSDC", "1h", 5000);
-            patternAnalyzer.AnalyzePatterns(candleDataBTC);
-
-            var candleDataETH = await binanceService.GetHistoricalData("ETHUSDC", "1h", 5000);
-            patternAnalyzer.AnalyzePatterns(candleDataETH);
-
-            var candleDataXRP = await binanceService.GetHistoricalData("XRPUSDC", "1h", 5000);
-            patternAnalyzer.AnalyzePatterns(candleDataXRP);
-            /*modelTrainer.TrainThreeWhiteSoldiersModel(candleData);
-            var prediction = patternAnalyzer.PredictThreeWhiteSoldiersPattern(candleData);
-            Console.WriteLine(prediction.Probability);*/
+            var candleDataXRP = await binanceService.GetHistoricalData("XRPUSDC", "4h", 5000);
+            //patternAnalyzer.AnalyzePatterns(candleDataXRP);
+            modelTrainer.TrainBearishAdvanceBlockModel(candleDataXRP);
+            var prediction = patternAnalyzer.PredictBearishAdvanceBlock(candleDataXRP);
+            Console.WriteLine(prediction.Probability);
         }
 
         private static void ConfigureServices(IServiceCollection services)

@@ -7,5 +7,7 @@ namespace CurrencyTracker.Business.Services.Interfaces
         void TrainHammerModel(IEnumerable<Candlestick> historicalData);
 
         void TrainThreeWhiteSoldiersModel(IEnumerable<Candlestick> allCandles);
+
+        void TrainBearishAdvanceBlockModel(IEnumerable<Candlestick> allCandles);
     }
 }

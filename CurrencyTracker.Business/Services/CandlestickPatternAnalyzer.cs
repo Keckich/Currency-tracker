@@ -63,6 +63,23 @@ namespace CurrencyTracker.Business.Services
                    candles[2].Open > candles[1].Close;
         }
 
+        public bool IsBearishAdvanceBlock(IList<Candlestick> candles)
+        {
+            if (candles.Count < 3) return false;
+
+            var c1 = candles[candles.Count - 3];
+            var c2 = candles[candles.Count - 2];
+            var c3 = candles[candles.Count - 1];
+
+            bool isBullishSequence = c1.IsBull && c2.IsBull && c3.IsBull;
+            bool isDecreasingBody = c1.Body > c2.Body && c2.Body > c3.Body;
+            bool hasLongUpperShadows = c1.UpperShadow > c1.Body * 0.5f &&
+                                       c2.UpperShadow > c2.Body * 0.5f &&
+                                       c3.UpperShadow > c3.Body * 0.5f;
+
+            return isBullishSequence && isDecreasingBody && hasLongUpperShadows;
+        }
+
         public PatternPrediction PredictHammerPattern(Candlestick candle)
         {
             var context = new MLContext();
@@ -74,6 +91,8 @@ namespace CurrencyTracker.Business.Services
 
         public PatternPrediction PredictThreeWhiteSoldiersPattern(IEnumerable<Candlestick> candles)
         {
+            if (candles.Count() < 3) return new PatternPrediction { IsPattern = false, Probability = 0 };
+
             var context = new MLContext();
 
             var model = context.Model.Load("threeWhiteSoldiersModel.zip", out _);
@@ -91,6 +110,38 @@ namespace CurrencyTracker.Business.Services
             };
 
             var predictionEngine = context.Model.CreatePredictionEngine<ThreeWhiteSoldiersInput, PatternPrediction>(model);
+            return predictionEngine.Predict(input);
+        }
+
+        public PatternPrediction PredictBearishAdvanceBlock(IEnumerable<Candlestick> candles)
+        {
+            if (candles.Count() < 3) return new PatternPrediction { IsPattern = false, Probability = 0 };
+
+            var context = new MLContext();
+
+            var model = context.Model.Load("bearishAdvanceBlockModel.zip", out _);
+            var lastCandles = candles.TakeLast(3).ToList();
+
+            var input = new BearishAdvanceBlockData
+            {
+                Open1 = lastCandles[^3].Open,
+                High1 = lastCandles[^3].High,
+                Low1 = lastCandles[^3].Low,
+                Close1 = lastCandles[^3].Close,
+                Volume1 = lastCandles[^3].Volume,
+                Open2 = lastCandles[^2].Open,
+                High2 = lastCandles[^2].High,
+                Low2 = lastCandles[^2].Low,
+                Close2 = lastCandles[^2].Close,
+                Volume2 = lastCandles[^2].Volume,
+                Open3 = lastCandles[^1].Open,
+                High3 = lastCandles[^1].High,
+                Low3 = lastCandles[^1].Low,
+                Close3 = lastCandles[^1].Close,
+                Volume3 = lastCandles[^1].Volume
+            };
+
+            var predictionEngine = context.Model.CreatePredictionEngine<BearishAdvanceBlockData, PatternPrediction>(model);
             return predictionEngine.Predict(input);
         }
 

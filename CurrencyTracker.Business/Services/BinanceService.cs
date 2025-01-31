@@ -140,7 +140,7 @@ namespace CurrencyTracker.Business.Services
                 }
             }
 
-            return allCandlesticks.Take(limit);
+            return allCandlesticks.Take(limit).OrderBy(c => c.OpenTime);
         }
 
         private string GetDailyClosingPricesUrl(string symbol, int days)

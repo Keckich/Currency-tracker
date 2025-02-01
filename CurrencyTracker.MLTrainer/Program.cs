@@ -42,6 +42,8 @@ namespace MLTrainer
             services.AddScoped<IBinanceService, BinanceService>();
             services.AddHttpClient<IBinanceService, BinanceService>();
             services.AddScoped<ICandlestickPatternAnalyzer, CandlestickPatternAnalyzer>();
+            services.AddScoped<IGenerationTrainingDataService, GenerationTrainingDataService>();
+            services.AddScoped<ILogService, LogService>();
         }
     }
 }

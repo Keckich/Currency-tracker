@@ -1,24 +1,25 @@
 ﻿using CurrencyTracker.Business.Models;
 using CurrencyTracker.Business.Services.Interfaces;
+using System.Data;
 
 namespace CurrencyTracker.Business.Services
 {
     public class GenerationTrainingDataService : IGenerationTrainingDataService
     {
-        private readonly ICandlestickPatternAnalyzer сandlestickPatternAnalyzer;
+        private readonly ICandlestickPatternAnalyzer candlestickPatternAnalyzer;
 
-        public GenerationTrainingDataService(ICandlestickPatternAnalyzer сandlestickPatternAnalyzer)
+        public GenerationTrainingDataService(ICandlestickPatternAnalyzer candlestickPatternAnalyzer)
         {
-            this.сandlestickPatternAnalyzer = сandlestickPatternAnalyzer;
+            this.candlestickPatternAnalyzer = candlestickPatternAnalyzer;
         }
 
-        public IEnumerable<BearishAdvanceBlockData> PrepareBearishAdvanceBlockTrainingData(List<Candlestick> candles)
+        public IEnumerable<ThreeCandlePatternData> PrepareBearishAdvanceBlockTrainingData(List<Candlestick> candles)
         {
-            var dataset = new List<BearishAdvanceBlockData>();
+            var dataset = new List<ThreeCandlePatternData>();
 
             for (int i = 2; i < candles.Count; i++)
             {
-                var sample = new BearishAdvanceBlockData
+                var sample = new ThreeCandlePatternData
                 {
                     Open1 = candles[i - 2].Open,
                     High1 = candles[i - 2].High,
@@ -37,27 +38,67 @@ namespace CurrencyTracker.Business.Services
                     Low3 = candles[i].Low,
                     Close3 = candles[i].Close,
                     Volume3 = candles[i].Volume,
-                    IsBearishAdvanceBlock = сandlestickPatternAnalyzer.IsBearishAdvanceBlock(candles.GetRange(i - 2, 3))
+                    IsPattern = candlestickPatternAnalyzer.IsBearishAdvanceBlock(candles.GetRange(i - 2, 3))
                 };
 
                 dataset.Add(sample);
             }
 
-            dataset = GenerateBearishAdvanceBlockBalancedData(dataset).ToList();
-            int positiveCount = dataset.Count(x => x.IsBearishAdvanceBlock);
-            int negativeCount = dataset.Count(x => !x.IsBearishAdvanceBlock);
+            dataset = GenerateBearishAdvanceBlockBalancedData(dataset, candlestickPatternAnalyzer.IsBearishAdvanceBlock).ToList();
+            int positiveCount = dataset.Count(x => x.IsPattern);
+            int negativeCount = dataset.Count(x => !x.IsPattern);
             Console.WriteLine($"Result Positive Samples: {positiveCount}, Result Negative Samples: {negativeCount}");
 
             return dataset;
         }
 
-        private IEnumerable<BearishAdvanceBlockData> GenerateBearishAdvanceBlockBalancedData(
-            IEnumerable<BearishAdvanceBlockData> dataset,
+        public IEnumerable<ThreeCandlePatternData> PrepareThreeWhiteSoldiersTrainingData(List<Candlestick> candles)
+        {
+            var dataset = new List<ThreeCandlePatternData>();
+
+            for (int i = 2; i < candles.Count; i++)
+            {
+                var sample = new ThreeCandlePatternData
+                {
+                    Open1 = candles[i - 2].Open,
+                    High1 = candles[i - 2].High,
+                    Low1 = candles[i - 2].Low,
+                    Close1 = candles[i - 2].Close,
+                    Volume1 = candles[i - 2].Volume,
+
+                    Open2 = candles[i - 1].Open,
+                    High2 = candles[i - 1].High,
+                    Low2 = candles[i - 1].Low,
+                    Close2 = candles[i - 1].Close,
+                    Volume2 = candles[i - 1].Volume,
+
+                    Open3 = candles[i].Open,
+                    High3 = candles[i].High,
+                    Low3 = candles[i].Low,
+                    Close3 = candles[i].Close,
+                    Volume3 = candles[i].Volume,
+                    IsPattern = candlestickPatternAnalyzer.IsThreeWhiteSoldiers(candles.GetRange(i - 2, 3))
+                };
+
+                dataset.Add(sample);
+            }
+
+            dataset = GenerateBearishAdvanceBlockBalancedData(dataset, candlestickPatternAnalyzer.IsThreeWhiteSoldiers).ToList();
+            int positiveCount = dataset.Count(x => x.IsPattern);
+            int negativeCount = dataset.Count(x => !x.IsPattern);
+            Console.WriteLine($"Result Positive Samples: {positiveCount}, Result Negative Samples: {negativeCount}");
+
+            return dataset;
+        }
+
+        private IEnumerable<ThreeCandlePatternData> GenerateBearishAdvanceBlockBalancedData(
+            IEnumerable<ThreeCandlePatternData> dataset,
+            Func<IList<Candlestick>, bool> isPattern,
             float noisePercent = 1.5f)
         {
             var random = new Random();
-            var positiveSamples = dataset.Where(x => x.IsBearishAdvanceBlock).ToList();
-            var negativeSamples = dataset.Where(x => !x.IsBearishAdvanceBlock).ToList();
+            var positiveSamples = dataset.Where(x => x.IsPattern).ToList();
+            var negativeSamples = dataset.Where(x => !x.IsPattern).ToList();
 
             int negativeCount = negativeSamples.Count;
             int positiveTargetCount = (int)((0.7 * negativeCount) / 0.3);
@@ -66,7 +107,7 @@ namespace CurrencyTracker.Business.Services
             Console.WriteLine($"Negative Samples: {negativeCount}, Initial Positive Samples: {positiveSamples.Count}");
             Console.WriteLine($"Target Positive Samples: {positiveTargetCount}, Need to Generate: {requiredNewPositives}");
 
-            var augmentedData = new List<BearishAdvanceBlockData>();
+            var augmentedData = new List<ThreeCandlePatternData>();
 
             while (augmentedData.Count < requiredNewPositives)
             {
@@ -101,9 +142,9 @@ namespace CurrencyTracker.Business.Services
                     }
                 };
 
-                if (сandlestickPatternAnalyzer.IsBearishAdvanceBlock(candles))
+                if (isPattern(candles))
                 {
-                    var newSample = new BearishAdvanceBlockData
+                    var newSample = new ThreeCandlePatternData
                     {
                         Open1 = candles[0].Open,
                         High1 = candles[0].High,
@@ -123,7 +164,7 @@ namespace CurrencyTracker.Business.Services
                         Close3 = candles[2].Close,
                         Volume3 = candles[2].Volume,
 
-                        IsBearishAdvanceBlock = true
+                        IsPattern = true
                     };
 
                     augmentedData.Add(newSample);

@@ -2,7 +2,7 @@
 
 namespace CurrencyTracker.Business.Models
 {
-    public class BearishAdvanceBlockData
+    public class ThreeCandlePatternData
     {
         public float Open1 { get; set; }
 
@@ -59,6 +59,6 @@ namespace CurrencyTracker.Business.Models
         public float TrendAngle => (Close3 - Open1) / Open1;
 
         [ColumnName("Label")]
-        public bool IsBearishAdvanceBlock { get; set; }
+        public bool IsPattern { get; set; }
     }
 }

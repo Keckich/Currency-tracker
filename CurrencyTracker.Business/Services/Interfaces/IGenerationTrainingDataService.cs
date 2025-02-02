@@ -4,6 +4,8 @@ namespace CurrencyTracker.Business.Services.Interfaces
 {
     public interface IGenerationTrainingDataService
     {
-        IEnumerable<BearishAdvanceBlockData> PrepareBearishAdvanceBlockTrainingData(List<Candlestick> candles);
+        IEnumerable<ThreeCandlePatternData> PrepareBearishAdvanceBlockTrainingData(List<Candlestick> candles);
+
+        IEnumerable<ThreeCandlePatternData> PrepareThreeWhiteSoldiersTrainingData(List<Candlestick> candles);
     }
 }

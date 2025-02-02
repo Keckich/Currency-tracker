@@ -122,7 +122,7 @@ namespace CurrencyTracker.Business.Services
             var model = context.Model.Load("bearishAdvanceBlockModel.zip", out _);
             var lastCandles = candles.TakeLast(3).ToList();
 
-            var input = new BearishAdvanceBlockData
+            var input = new ThreeCandlePatternData
             {
                 Open1 = lastCandles[^3].Open,
                 High1 = lastCandles[^3].High,
@@ -141,7 +141,7 @@ namespace CurrencyTracker.Business.Services
                 Volume3 = lastCandles[^1].Volume
             };
 
-            var predictionEngine = context.Model.CreatePredictionEngine<BearishAdvanceBlockData, PatternPrediction>(model);
+            var predictionEngine = context.Model.CreatePredictionEngine<ThreeCandlePatternData, PatternPrediction>(model);
             return predictionEngine.Predict(input);
         }
 

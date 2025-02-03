@@ -19,13 +19,5 @@ namespace CurrencyTracker.Business.Services.Interfaces
         bool IsBearishAdvanceBlock(IList<Candlestick> candles);
 
         void AnalyzePatterns(IEnumerable<Candlestick> candlesticks);
-
-        /*void TrainHammerModel(IEnumerable<Candlestick> historicalData);*/
-
-        PatternPrediction PredictHammerPattern(Candlestick candle);
-
-        PatternPrediction PredictThreeWhiteSoldiersPattern(IEnumerable<Candlestick> candle);
-
-        PatternPrediction PredictBearishAdvanceBlock(IEnumerable<Candlestick> candles);
     }
 }

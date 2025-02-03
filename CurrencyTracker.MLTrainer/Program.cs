@@ -19,11 +19,12 @@ namespace MLTrainer
             var binanceService = serviceProvider.GetRequiredService<IBinanceService>();
             var modelTrainer = serviceProvider.GetRequiredService<IModelTrainer>();
             var patternAnalyzer = serviceProvider.GetRequiredService<ICandlestickPatternAnalyzer>();
+            var predictionService = serviceProvider.GetRequiredService<IPredictionService>();
 
             var candleDataXRP = await binanceService.GetHistoricalData("XRPUSDC", "4h", 4000);
             //patternAnalyzer.AnalyzePatterns(candleDataXRP);
             modelTrainer.TrainThreeWhiteSoldiersModel(candleDataXRP);
-            var prediction = patternAnalyzer.PredictThreeWhiteSoldiersPattern(candleDataXRP);
+            var prediction = predictionService.PredictThreeWhiteSoldiersPattern(candleDataXRP);
             Console.WriteLine(prediction.Probability);
         }
 
@@ -44,6 +45,7 @@ namespace MLTrainer
             services.AddScoped<ICandlestickPatternAnalyzer, CandlestickPatternAnalyzer>();
             services.AddScoped<IGenerationTrainingDataService, GenerationTrainingDataService>();
             services.AddScoped<ILogService, LogService>();
+            services.AddScoped<IPredictionService, PredictionService>();
         }
     }
 }

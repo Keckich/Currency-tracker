@@ -44,7 +44,7 @@ namespace CurrencyTracker.Business.Services
                 dataset.Add(sample);
             }
 
-            dataset = GenerateBearishAdvanceBlockBalancedData(dataset, candlestickPatternAnalyzer.IsBearishAdvanceBlock).ToList();
+            dataset = GenerateThreeCandlePatternBalancedData(dataset, candlestickPatternAnalyzer.IsBearishAdvanceBlock).ToList();
             int positiveCount = dataset.Count(x => x.IsPattern);
             int negativeCount = dataset.Count(x => !x.IsPattern);
             Console.WriteLine($"Result Positive Samples: {positiveCount}, Result Negative Samples: {negativeCount}");
@@ -83,7 +83,7 @@ namespace CurrencyTracker.Business.Services
                 dataset.Add(sample);
             }
 
-            dataset = GenerateBearishAdvanceBlockBalancedData(dataset, candlestickPatternAnalyzer.IsThreeWhiteSoldiers).ToList();
+            dataset = GenerateThreeCandlePatternBalancedData(dataset, candlestickPatternAnalyzer.IsThreeWhiteSoldiers).ToList();
             int positiveCount = dataset.Count(x => x.IsPattern);
             int negativeCount = dataset.Count(x => !x.IsPattern);
             Console.WriteLine($"Result Positive Samples: {positiveCount}, Result Negative Samples: {negativeCount}");
@@ -91,7 +91,44 @@ namespace CurrencyTracker.Business.Services
             return dataset;
         }
 
-        private IEnumerable<ThreeCandlePatternData> GenerateBearishAdvanceBlockBalancedData(
+        public IEnumerable<ThreeCandlePatternData> PrepareEveningStarTrainingData(List<Candlestick> candles)
+        {
+            var dataset = new List<ThreeCandlePatternData>();
+
+            for (int i = 2; i < candles.Count; i++)
+            {
+                var sample = new ThreeCandlePatternData
+                {
+                    Open1 = candles[i - 2].Open,
+                    High1 = candles[i - 2].High,
+                    Low1 = candles[i - 2].Low,
+                    Close1 = candles[i - 2].Close,
+
+                    Open2 = candles[i - 1].Open,
+                    High2 = candles[i - 1].High,
+                    Low2 = candles[i - 1].Low,
+                    Close2 = candles[i - 1].Close,
+
+                    Open3 = candles[i].Open,
+                    High3 = candles[i].High,
+                    Low3 = candles[i].Low,
+                    Close3 = candles[i].Close,
+
+                    IsPattern = candlestickPatternAnalyzer.IsEveningStar(candles.GetRange(i - 2, 3))
+                };
+
+                dataset.Add(sample);
+            }
+
+            dataset = GenerateThreeCandlePatternBalancedData(dataset, candlestickPatternAnalyzer.IsEveningStar).ToList();
+            int positiveCount = dataset.Count(x => x.IsPattern);
+            int negativeCount = dataset.Count(x => !x.IsPattern);
+            Console.WriteLine($"Result Positive Samples: {positiveCount}, Result Negative Samples: {negativeCount}");
+
+            return dataset;
+        }
+
+        private IEnumerable<ThreeCandlePatternData> GenerateThreeCandlePatternBalancedData(
             IEnumerable<ThreeCandlePatternData> dataset,
             Func<IList<Candlestick>, bool> isPattern,
             float noisePercent = 1.5f)

@@ -2,6 +2,7 @@
 using CurrencyTracker.Business.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.ML;
+using Microsoft.ML.Data;
 using Microsoft.ML.Trainers;
 using Microsoft.ML.Trainers.FastTree;
 using Microsoft.ML.Trainers.LightGbm;
@@ -70,7 +71,7 @@ namespace CurrencyTracker.Business.Services
             context.Model.Save(model, data.Schema, "threeWhiteSoldiersModel.zip");
         }
 
-        public void TrainBearishAdvanceBlockModel(IEnumerable<Candlestick> allCandles)
+        public void TrainThreeCandlePatternModel(IEnumerable<ThreeCandlePatternData> preparedData, string pattern)
         {
             var context = new MLContext();
 
@@ -80,11 +81,12 @@ namespace CurrencyTracker.Business.Services
                     nameof(ThreeCandlePatternData.Open2), nameof(ThreeCandlePatternData.High2), nameof(ThreeCandlePatternData.Low2), nameof(ThreeCandlePatternData.Close2), nameof(ThreeCandlePatternData.Volume2),
                     nameof(ThreeCandlePatternData.Open3), nameof(ThreeCandlePatternData.High3), nameof(ThreeCandlePatternData.Low3), nameof(ThreeCandlePatternData.Close3), nameof(ThreeCandlePatternData.Volume3))
                 .Append(context.Transforms.NormalizeMinMax("Features"))
-                .Append(trainer);
+                .Append(trainer)
+                .Append(context.BinaryClassification.Calibrators.Platt(
+                    labelColumnName: "Label",
+                    scoreColumnName: "Score"));
 
-            var data = generationTrainingDataService.PrepareBearishAdvanceBlockTrainingData(allCandles.ToList());
-
-            var trainData = context.Data.LoadFromEnumerable(data);
+            var trainData = context.Data.LoadFromEnumerable(preparedData);
 
             var partitions = context.Data.TrainTestSplit(trainData, testFraction: 0.2);
             var trainingData = partitions.TrainSet;
@@ -92,12 +94,13 @@ namespace CurrencyTracker.Business.Services
 
             var model = pipeline.Fit(trainingData);
             var predictions = model.Transform(testData);
-            
+            var probabilities = predictions.GetColumn<float>("Score").Select(score => 1.0f / (1.0f + (float)Math.Exp(-score))).ToList();
+
             var metrics = context.BinaryClassification.Evaluate(predictions, "Label", "Score");
             logService.LogMetrics(metrics);
             logService.CheckIsModelRetrained(context, trainingData, pipeline);
             
-            context.Model.Save(model, trainData.Schema, "bearishAdvanceBlockModel.zip");
+            context.Model.Save(model, trainData.Schema, $"{pattern}Model.zip");
         }
 
         private FastTreeBinaryTrainer GetFastTreeTrainer(MLContext context)
@@ -105,10 +108,10 @@ namespace CurrencyTracker.Business.Services
             var trainer = context.BinaryClassification.Trainers.FastTree(
                 new FastTreeBinaryTrainer.Options
                 {
-                    NumberOfTrees = 500,
-                    NumberOfLeaves = 50,  // 10, 20, 50
-                    MinimumExampleCountPerLeaf = 10,
-                    LearningRate = 0.5  // 0.05, 0.1, 0.2
+                    NumberOfTrees = 800,
+                    NumberOfLeaves = 80,  // 10, 20, 50
+                    MinimumExampleCountPerLeaf = 20,
+                    LearningRate = 0.6  // 0.05, 0.1, 0.2
                 });
 
             return trainer;

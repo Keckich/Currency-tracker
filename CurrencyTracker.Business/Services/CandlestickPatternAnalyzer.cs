@@ -80,6 +80,20 @@ namespace CurrencyTracker.Business.Services
             return isBullishSequence && isDecreasingBody && hasLongUpperShadows;
         }
 
+        public bool IsEveningStar(IList<Candlestick> candles)
+        {
+            if (candles.Count != 3) return false;
+
+            var first = candles[0];
+            var second = candles[1];
+            var third = candles[2];
+
+            return first.IsBull &&
+                   second.Body < (first.Body * 0.5) &&
+                   third.Close < (first.Open + first.Close) / 2 &&
+                   third.IsBear;
+        }
+
         public void AnalyzePatterns(IEnumerable<Candlestick> candlesticks)
         {
             var dataOhlcv = candlesticks

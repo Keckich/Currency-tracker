@@ -8,6 +8,6 @@ namespace CurrencyTracker.Business.Services.Interfaces
 
         void TrainThreeWhiteSoldiersModel(IEnumerable<Candlestick> allCandles);
 
-        void TrainBearishAdvanceBlockModel(IEnumerable<Candlestick> allCandles);
+        void TrainThreeCandlePatternModel(IEnumerable<ThreeCandlePatternData> preparedData, string pattern);
     }
 }

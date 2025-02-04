@@ -60,5 +60,7 @@ namespace CurrencyTracker.Business.Models
 
         [ColumnName("Label")]
         public bool IsPattern { get; set; }
+
+        public string? Pattern { get; set; }
     }
 }

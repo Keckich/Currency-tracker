@@ -20,6 +20,8 @@ namespace CurrencyTracker.Business.Services.Interfaces
 
         bool IsEveningStar(IList<Candlestick> candles);
 
+        bool IsThreeBlackCrows(IList<Candlestick> candles);
+
         void AnalyzePatterns(IEnumerable<Candlestick> candlesticks);
     }
 }

@@ -8,6 +8,6 @@ namespace CurrencyTracker.Business.Services.Interfaces
 
         PatternPrediction PredictThreeWhiteSoldiersPattern(IEnumerable<Candlestick> candle);
 
-        PatternPrediction PredictBearishAdvanceBlock(IEnumerable<Candlestick> candles);
+        PatternPrediction PredictThreeCandlePattern(IEnumerable<Candlestick> candles, string pattern);
     }
 }

@@ -8,6 +8,6 @@ namespace CurrencyTracker.Business.Services.Interfaces
 
         IEnumerable<ThreeCandlePatternData> PrepareThreeWhiteSoldiersTrainingData(List<Candlestick> candles);
 
-        IEnumerable<ThreeCandlePatternData> PrepareEveningStarTrainingData(List<Candlestick> candles);
+        IEnumerable<ThreeCandlePatternData> PrepareThreeCandlePatternTrainingData(List<Candlestick> candles, Func<IList<Candlestick>, bool> isPattern);
     }
 }

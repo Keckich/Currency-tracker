@@ -39,13 +39,14 @@ namespace CurrencyTracker.Business.Services
             return predictionEngine.Predict(input);
         }
 
-        public PatternPrediction PredictBearishAdvanceBlock(IEnumerable<Candlestick> candles)
+        // TODO: remove pattern param
+        public PatternPrediction PredictThreeCandlePattern(IEnumerable<Candlestick> candles, string pattern)
         {
             if (candles.Count() < 3) return new PatternPrediction { IsPattern = false, Probability = 0 };
 
             var context = new MLContext();
 
-            var model = context.Model.Load("bearishAdvanceBlockModel.zip", out _);
+            var model = context.Model.Load($"{pattern}Model.zip", out _);
             var lastCandles = candles.TakeLast(3).ToList();
 
             var input = new ThreeCandlePatternData

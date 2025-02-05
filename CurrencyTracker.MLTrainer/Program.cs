@@ -22,11 +22,14 @@ namespace MLTrainer
             var predictionService = serviceProvider.GetRequiredService<IPredictionService>();
             var dataGenerationService = serviceProvider.GetRequiredService<IGenerationTrainingDataService>();
 
-            var candleDataXRP = (await binanceService.GetHistoricalData("XRPUSDC", "4h", 6000)).ToList();
-            var preparedData = dataGenerationService.PrepareEveningStarTrainingData(candleDataXRP);
-            modelTrainer.TrainThreeCandlePatternModel(preparedData, "eveningStar");
+            var candleDataXRP = (await binanceService.GetHistoricalData("XRPUSDC", "4h", 5000)).ToList();
+            var preparedData = dataGenerationService.PrepareThreeCandlePatternTrainingData(candleDataXRP, patternAnalyzer.IsThreeBlackCrows);
 
-            var prediction = predictionService.PredictThreeWhiteSoldiersPattern(candleDataXRP);
+            // TODO: remove
+            var pattern = "threeBlackCrows";
+            modelTrainer.TrainThreeCandlePatternModel(preparedData, pattern);
+
+            var prediction = predictionService.PredictThreeCandlePattern(candleDataXRP, pattern);
             Console.WriteLine(prediction.Probability);
         }
 

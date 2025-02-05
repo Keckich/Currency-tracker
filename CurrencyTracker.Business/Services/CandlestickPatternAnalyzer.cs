@@ -94,6 +94,15 @@ namespace CurrencyTracker.Business.Services
                    third.IsBear;
         }
 
+        public bool IsThreeBlackCrows(IList<Candlestick> candles)
+        {
+            return candles[0].IsBear &&
+                   candles[1].IsBear &&
+                   candles[2].IsBear &&
+                   candles[1].Open < candles[0].Close &&
+                   candles[2].Open < candles[1].Close;
+        }
+
         public void AnalyzePatterns(IEnumerable<Candlestick> candlesticks)
         {
             var dataOhlcv = candlesticks

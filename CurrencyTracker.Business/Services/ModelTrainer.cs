@@ -108,10 +108,10 @@ namespace CurrencyTracker.Business.Services
             var trainer = context.BinaryClassification.Trainers.FastTree(
                 new FastTreeBinaryTrainer.Options
                 {
-                    NumberOfTrees = 800,
-                    NumberOfLeaves = 80,  // 10, 20, 50
+                    NumberOfTrees = 700,
+                    NumberOfLeaves = 70,  // 10, 20, 50
                     MinimumExampleCountPerLeaf = 20,
-                    LearningRate = 0.6  // 0.05, 0.1, 0.2
+                    LearningRate = 0.5  // 0.05, 0.1, 0.2
                 });
 
             return trainer;

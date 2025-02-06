@@ -1,4 +1,5 @@
-﻿using CurrencyTracker.Business.Models;
+﻿using CurrencyTracker.Business.Enums;
+using CurrencyTracker.Business.Models;
 
 namespace CurrencyTracker.Business.Services.Interfaces
 {
@@ -8,6 +9,6 @@ namespace CurrencyTracker.Business.Services.Interfaces
 
         void TrainThreeWhiteSoldiersModel(IEnumerable<Candlestick> allCandles);
 
-        void TrainThreeCandlePatternModel(IEnumerable<ThreeCandlePatternData> preparedData, string pattern);
+        void TrainThreeCandlePatternModel(IEnumerable<ThreeCandlePatternData> preparedData, CandlestickPattern pattern);
     }
 }

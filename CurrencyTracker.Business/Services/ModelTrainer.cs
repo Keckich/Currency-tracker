@@ -1,4 +1,5 @@
-﻿using CurrencyTracker.Business.Models;
+﻿using CurrencyTracker.Business.Enums;
+using CurrencyTracker.Business.Models;
 using CurrencyTracker.Business.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.ML;
@@ -71,7 +72,7 @@ namespace CurrencyTracker.Business.Services
             context.Model.Save(model, data.Schema, "threeWhiteSoldiersModel.zip");
         }
 
-        public void TrainThreeCandlePatternModel(IEnumerable<ThreeCandlePatternData> preparedData, string pattern)
+        public void TrainThreeCandlePatternModel(IEnumerable<ThreeCandlePatternData> preparedData, CandlestickPattern pattern)
         {
             var context = new MLContext();
 
@@ -100,7 +101,7 @@ namespace CurrencyTracker.Business.Services
             logService.LogMetrics(metrics);
             logService.CheckIsModelRetrained(context, trainingData, pipeline);
             
-            context.Model.Save(model, trainData.Schema, $"{pattern}Model.zip");
+            context.Model.Save(model, trainData.Schema, $"{pattern.ToString()}Model.zip");
         }
 
         private FastTreeBinaryTrainer GetFastTreeTrainer(MLContext context)
@@ -108,8 +109,8 @@ namespace CurrencyTracker.Business.Services
             var trainer = context.BinaryClassification.Trainers.FastTree(
                 new FastTreeBinaryTrainer.Options
                 {
-                    NumberOfTrees = 700,
-                    NumberOfLeaves = 70,  // 10, 20, 50
+                    NumberOfTrees = 600,
+                    NumberOfLeaves = 60,  // 10, 20, 50
                     MinimumExampleCountPerLeaf = 20,
                     LearningRate = 0.5  // 0.05, 0.1, 0.2
                 });

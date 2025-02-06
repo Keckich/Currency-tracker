@@ -18,4 +18,8 @@
     <PackageReference Include="OHLC_Candlestick_Patterns" Version="2.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CurrencyTracker.Common\CurrencyTracker.Common.csproj" />
+  </ItemGroup>
+
 </Project>

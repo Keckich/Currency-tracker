@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CurrencyTracker.Business\CurrencyTracker.Business.csproj" />
+    <ProjectReference Include="..\CurrencyTracker.Common\CurrencyTracker.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

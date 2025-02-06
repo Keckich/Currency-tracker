@@ -1,4 +1,6 @@
-﻿using CurrencyTracker.Business.Models;
+﻿using CurrencyTracker.Business.Enums;
+using CurrencyTracker.Business.Helpers;
+using CurrencyTracker.Business.Models;
 using CurrencyTracker.Business.Services.Interfaces;
 using System.Data;
 
@@ -91,7 +93,7 @@ namespace CurrencyTracker.Business.Services
             return dataset;
         }
 
-        public IEnumerable<ThreeCandlePatternData> PrepareThreeCandlePatternTrainingData(List<Candlestick> candles, Func<IList<Candlestick>, bool> isPattern)
+        public IEnumerable<ThreeCandlePatternData> PrepareThreeCandlePatternTrainingData(List<Candlestick> candles, CandlestickPattern pattern)
         {
             var dataset = new List<ThreeCandlePatternData>();
 
@@ -114,13 +116,13 @@ namespace CurrencyTracker.Business.Services
                     Low3 = candles[i].Low,
                     Close3 = candles[i].Close,
 
-                    IsPattern = isPattern(candles.GetRange(i - 2, 3))
+                    IsPattern = PatternHelper.GetPatternCheckers()[pattern](candles.GetRange(i - 2, 3))
                 };
 
                 dataset.Add(sample);
             }
 
-            dataset = GenerateThreeCandlePatternBalancedData(dataset, isPattern).ToList();
+            dataset = GenerateThreeCandlePatternBalancedData(dataset, PatternHelper.GetPatternCheckers()[pattern]).ToList();
             int positiveCount = dataset.Count(x => x.IsPattern);
             int negativeCount = dataset.Count(x => !x.IsPattern);
             Console.WriteLine($"Result Positive Samples: {positiveCount}, Result Negative Samples: {negativeCount}");

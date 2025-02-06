@@ -1,4 +1,6 @@
-﻿using CurrencyTracker.Business.Models;
+﻿using CurrencyTracker.Business.Enums;
+using CurrencyTracker.Business.Helpers;
+using CurrencyTracker.Business.Models;
 using CurrencyTracker.Business.Services.Interfaces;
 using Microsoft.ML;
 
@@ -40,13 +42,13 @@ namespace CurrencyTracker.Business.Services
         }
 
         // TODO: remove pattern param
-        public PatternPrediction PredictThreeCandlePattern(IEnumerable<Candlestick> candles, string pattern)
+        public PatternPrediction PredictThreeCandlePattern(IEnumerable<Candlestick> candles, CandlestickPattern pattern)
         {
             if (candles.Count() < 3) return new PatternPrediction { IsPattern = false, Probability = 0 };
 
             var context = new MLContext();
 
-            var model = context.Model.Load($"{pattern}Model.zip", out _);
+            var model = context.Model.Load($"{pattern.ToString()}Model.zip", out _);
             var lastCandles = candles.TakeLast(3).ToList();
 
             var input = new ThreeCandlePatternData
@@ -65,7 +67,8 @@ namespace CurrencyTracker.Business.Services
                 High3 = lastCandles[^1].High,
                 Low3 = lastCandles[^1].Low,
                 Close3 = lastCandles[^1].Close,
-                Volume3 = lastCandles[^1].Volume
+                Volume3 = lastCandles[^1].Volume,
+                IsPattern = PatternHelper.GetPatternCheckers()[pattern](lastCandles),
             };
 
             var predictionEngine = context.Model.CreatePredictionEngine<ThreeCandlePatternData, PatternPrediction>(model);

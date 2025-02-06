@@ -56,9 +56,9 @@ namespace CurrencyTracker.Business.Services
 
         public bool IsThreeWhiteSoldiers(IList<Candlestick> candles)
         {
-            return candles[0].Close > candles[0].Open &&
-                   candles[1].Close > candles[1].Open &&
-                   candles[2].Close > candles[2].Open &&
+            return candles[0].IsBull &&
+                   candles[1].IsBull &&
+                   candles[2].IsBull &&
                    candles[1].Open > candles[0].Close &&
                    candles[2].Open > candles[1].Close;
         }
@@ -96,11 +96,12 @@ namespace CurrencyTracker.Business.Services
 
         public bool IsThreeBlackCrows(IList<Candlestick> candles)
         {
-            return candles[0].IsBear &&
+            var res = candles[0].IsBear &&
                    candles[1].IsBear &&
                    candles[2].IsBear &&
                    candles[1].Open < candles[0].Close &&
                    candles[2].Open < candles[1].Close;
+            return res;
         }
 
         public void AnalyzePatterns(IEnumerable<Candlestick> candlesticks)

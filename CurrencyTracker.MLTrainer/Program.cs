@@ -22,8 +22,6 @@ namespace MLTrainer
             var serviceProvider = serviceCollection.BuildServiceProvider();
             DependencyResolver.Initialize(serviceProvider);
 
-            // TODO: fix a problem with DI
-            var _ = PatternHelper.GetPatternCheckers();
             var binanceService = serviceProvider.GetRequiredService<IBinanceService>();
             var modelTrainer = serviceProvider.GetRequiredService<IModelTrainer>();
             var patternAnalyzer = serviceProvider.GetRequiredService<ICandlestickPatternAnalyzer>();

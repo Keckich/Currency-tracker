@@ -22,6 +22,8 @@ namespace CurrencyTracker.Business.Services.Interfaces
 
         bool IsThreeBlackCrows(IList<Candlestick> candles);
 
+        bool IsMorningStar(IList<Candlestick> candles);
+
         void AnalyzePatterns(IEnumerable<Candlestick> candlesticks);
     }
 }

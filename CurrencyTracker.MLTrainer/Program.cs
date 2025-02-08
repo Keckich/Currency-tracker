@@ -28,7 +28,7 @@ namespace MLTrainer
             var predictionService = serviceProvider.GetRequiredService<IPredictionService>();
             var dataGenerationService = serviceProvider.GetRequiredService<IGenerationTrainingDataService>();
 
-            var pattern = CandlestickPattern.ThreeWhiteSoldiers;
+            var pattern = CandlestickPattern.MorningStar;
             var candleDataXRP = (await binanceService.GetHistoricalData("XRPUSDC", "4h", 5000)).ToList();
             var preparedData = dataGenerationService.PrepareThreeCandlePatternTrainingData(candleDataXRP, pattern);
             modelTrainer.TrainThreeCandlePatternModel(preparedData, pattern);

@@ -16,6 +16,7 @@ namespace CurrencyTracker.Business.Helpers
                 { CandlestickPattern.ThreeWhiteSoldiers, patternAnalyzer.IsThreeWhiteSoldiers },
                 { CandlestickPattern.ThreeBlackCrows, patternAnalyzer.IsThreeBlackCrows },
                 { CandlestickPattern.EveningStar, patternAnalyzer.IsEveningStar },
+                { CandlestickPattern.MorningStar, patternAnalyzer.IsMorningStar },
                 { CandlestickPattern.BearishAdvanceBlock, patternAnalyzer.IsBearishAdvanceBlock }
             };
         });

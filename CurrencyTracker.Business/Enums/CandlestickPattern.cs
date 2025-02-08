@@ -5,6 +5,7 @@
         ThreeWhiteSoldiers,
         ThreeBlackCrows,
         EveningStar,
+        MorningStar,
         BearishAdvanceBlock
     }
 }

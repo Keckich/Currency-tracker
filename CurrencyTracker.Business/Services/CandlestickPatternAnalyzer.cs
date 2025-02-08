@@ -82,26 +82,27 @@ namespace CurrencyTracker.Business.Services
 
         public bool IsEveningStar(IList<Candlestick> candles)
         {
-            if (candles.Count != 3) return false;
+            return candles[0].IsBull &&
+                   candles[1].Body < (candles[0].Body * 0.5) &&
+                   candles[2].Close < (candles[0].Open + candles[0].Close) / 2 &&
+                   candles[2].IsBear;
+        }
 
-            var first = candles[0];
-            var second = candles[1];
-            var third = candles[2];
-
-            return first.IsBull &&
-                   second.Body < (first.Body * 0.5) &&
-                   third.Close < (first.Open + first.Close) / 2 &&
-                   third.IsBear;
+        public bool IsMorningStar(IList<Candlestick> candles)
+        {
+            return candles[0].IsBear &&
+                   candles[1].Body < (candles[0].Body * 0.5) &&
+                   candles[2].Close > (candles[0].Open + candles[0].Close) / 2 &&
+                   candles[2].IsBull;
         }
 
         public bool IsThreeBlackCrows(IList<Candlestick> candles)
         {
-            var res = candles[0].IsBear &&
+            return candles[0].IsBear &&
                    candles[1].IsBear &&
                    candles[2].IsBear &&
                    candles[1].Open < candles[0].Close &&
                    candles[2].Open < candles[1].Close;
-            return res;
         }
 
         public void AnalyzePatterns(IEnumerable<Candlestick> candlesticks)

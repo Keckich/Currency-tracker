@@ -6,6 +6,11 @@
         ThreeBlackCrows,
         EveningStar,
         MorningStar,
-        BearishAdvanceBlock
+        BearishAdvanceBlock,
+        BullishDeliberationBlock,
+        BearishAbandonedBaby,
+        BullishAbandonedBaby,
+        ThreeInsideUp,
+        ThreeInsideDown,
     }
 }

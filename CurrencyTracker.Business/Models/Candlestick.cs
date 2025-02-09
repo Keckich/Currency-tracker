@@ -24,5 +24,9 @@
         public float LowerShadow => Math.Min(Open, Close) - Low;
 
         public float UpperShadow => High - Math.Max(Open, Close);
+
+        public float Range => High - Low;
+
+        public bool IsDoji => Body <= (Range * 0.1);
     }
 }

@@ -29,65 +29,30 @@ namespace CurrencyTracker.Business.Services
             this.logService = logService;
         }
 
-        public void TrainHammerModel(IEnumerable<Candlestick> historicalData)
-        {
-            var context = new MLContext();
-
-            var trainingData = historicalData.Select(c => new
-            {
-                Body = (float)c.Body,
-                LowerShadow = (float)c.LowerShadow,
-                UpperShadow = (float)c.UpperShadow,
-                Label = candlestickPatternAnalyzer.IsHammer(c),
-            }).ToList();
-
-            var data = context.Data.LoadFromEnumerable(trainingData);
-
-            var pipeline = context.Transforms.Concatenate("Features", nameof(Candlestick.Body), nameof(Candlestick.LowerShadow), nameof(Candlestick.UpperShadow))
-                .Append(context.BinaryClassification.Trainers.SdcaLogisticRegression());
-
-            var model = pipeline.Fit(data);
-            context.Model.Save(model, data.Schema, "hammerPatternModel.zip");
-        }
-
-        public void TrainThreeWhiteSoldiersModel(IEnumerable<Candlestick> allCandles)
-        {
-            var context = new MLContext();
-            var trainer = GetLightGbmBinaryTrainer(context);
-            var trainingData = generationTrainingDataService.PrepareThreeWhiteSoldiersTrainingData(allCandles.ToList());
-
-            var data = context.Data.LoadFromEnumerable(trainingData!);
-            var pipeline = context.Transforms.Concatenate("Features", nameof(ThreeWhiteSoldiersInput.Body1), nameof(ThreeWhiteSoldiersInput.Body2), nameof(ThreeWhiteSoldiersInput.Body3))
-                .Append(trainer);
-            var model = pipeline.Fit(data);
-
-            var partitions = context.Data.TrainTestSplit(data, testFraction: 0.2);
-            var trainData = partitions.TrainSet;
-            var testData = partitions.TestSet;
-            var predictions = model.Transform(testData);
-            var metrics = context.BinaryClassification.Evaluate(predictions, "Label", "Score");
-            logService.LogMetrics(metrics);
-            logService.CheckIsModelRetrained(context, trainData, pipeline);
-
-            context.Model.Save(model, data.Schema, "threeWhiteSoldiersModel.zip");
-        }
-
-        public void TrainThreeCandlePatternModel(IEnumerable<ThreeCandlePatternData> preparedData, CandlestickPattern pattern)
+        public void TrainPatternModel(IEnumerable<CandlePatternData> preparedData, CandlestickPattern pattern, int patternSize)
         {
             var context = new MLContext();
 
             var trainer = GetFastTreeTrainer(context);
-            var pipeline = context.Transforms.Concatenate("Features",
-                    nameof(ThreeCandlePatternData.Open1), nameof(ThreeCandlePatternData.High1), nameof(ThreeCandlePatternData.Low1), nameof(ThreeCandlePatternData.Close1), nameof(ThreeCandlePatternData.Volume1),
-                    nameof(ThreeCandlePatternData.Open2), nameof(ThreeCandlePatternData.High2), nameof(ThreeCandlePatternData.Low2), nameof(ThreeCandlePatternData.Close2), nameof(ThreeCandlePatternData.Volume2),
-                    nameof(ThreeCandlePatternData.Open3), nameof(ThreeCandlePatternData.High3), nameof(ThreeCandlePatternData.Low3), nameof(ThreeCandlePatternData.Close3), nameof(ThreeCandlePatternData.Volume3))
+
+            var schemaDefinition = SchemaDefinition.Create(typeof(CandlePatternData));
+            schemaDefinition[nameof(CandlePatternData.Opens)].ColumnType = new VectorDataViewType(NumberDataViewType.Single, patternSize);
+            schemaDefinition[nameof(CandlePatternData.Highs)].ColumnType = new VectorDataViewType(NumberDataViewType.Single, patternSize);
+            schemaDefinition[nameof(CandlePatternData.Lows)].ColumnType = new VectorDataViewType(NumberDataViewType.Single, patternSize);
+            schemaDefinition[nameof(CandlePatternData.Closes)].ColumnType = new VectorDataViewType(NumberDataViewType.Single, patternSize);
+            schemaDefinition[nameof(CandlePatternData.Volumes)].ColumnType = new VectorDataViewType(NumberDataViewType.Single, patternSize);
+
+            var trainData = context.Data.LoadFromEnumerable(preparedData, schemaDefinition);
+
+            var pipeline = context.Transforms
+                .Concatenate("Features", nameof(CandlePatternData.Opens), nameof(CandlePatternData.Highs),
+                                         nameof(CandlePatternData.Lows), nameof(CandlePatternData.Closes),
+                                         nameof(CandlePatternData.Volumes))
                 .Append(context.Transforms.NormalizeMinMax("Features"))
                 .Append(trainer)
                 .Append(context.BinaryClassification.Calibrators.Platt(
                     labelColumnName: "Label",
                     scoreColumnName: "Score"));
-
-            var trainData = context.Data.LoadFromEnumerable(preparedData);
 
             var partitions = context.Data.TrainTestSplit(trainData, testFraction: 0.2);
             var trainingData = partitions.TrainSet;
@@ -95,12 +60,11 @@ namespace CurrencyTracker.Business.Services
 
             var model = pipeline.Fit(trainingData);
             var predictions = model.Transform(testData);
-            var probabilities = predictions.GetColumn<float>("Score").Select(score => 1.0f / (1.0f + (float)Math.Exp(-score))).ToList();
 
             var metrics = context.BinaryClassification.Evaluate(predictions, "Label", "Score");
             logService.LogMetrics(metrics);
             logService.CheckIsModelRetrained(context, trainingData, pipeline);
-            
+
             context.Model.Save(model, trainData.Schema, $"{pattern.ToString()}Model.zip");
         }
 

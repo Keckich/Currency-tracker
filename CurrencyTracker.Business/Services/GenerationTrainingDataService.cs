@@ -15,38 +15,26 @@ namespace CurrencyTracker.Business.Services
             this.candlestickPatternAnalyzer = candlestickPatternAnalyzer;
         }
 
-        public IEnumerable<ThreeCandlePatternData> PrepareBearishAdvanceBlockTrainingData(List<Candlestick> candles)
+        public IEnumerable<CandlePatternData> PreparePatternTrainingData(List<Candlestick> candles, CandlestickPattern pattern, int patternSize)
         {
-            var dataset = new List<ThreeCandlePatternData>();
+            var dataset = new List<CandlePatternData>();
 
-            for (int i = 2; i < candles.Count; i++)
+            for (int i = patternSize - 1; i < candles.Count; i++)
             {
-                var sample = new ThreeCandlePatternData
+                var sample = new CandlePatternData
                 {
-                    Open1 = candles[i - 2].Open,
-                    High1 = candles[i - 2].High,
-                    Low1 = candles[i - 2].Low,
-                    Close1 = candles[i - 2].Close,
-                    Volume1 = candles[i - 2].Volume,
-
-                    Open2 = candles[i - 1].Open,
-                    High2 = candles[i - 1].High,
-                    Low2 = candles[i - 1].Low,
-                    Close2 = candles[i - 1].Close,
-                    Volume2 = candles[i - 1].Volume,
-
-                    Open3 = candles[i].Open,
-                    High3 = candles[i].High,
-                    Low3 = candles[i].Low,
-                    Close3 = candles[i].Close,
-                    Volume3 = candles[i].Volume,
-                    IsPattern = candlestickPatternAnalyzer.IsBearishAdvanceBlock(candles.GetRange(i - 2, 3))
+                    Opens = candles.Skip(i - (patternSize - 1)).Take(patternSize).Select(c => c.Open).ToArray(),
+                    Highs = candles.Skip(i - (patternSize - 1)).Take(patternSize).Select(c => c.High).ToArray(),
+                    Lows = candles.Skip(i - (patternSize - 1)).Take(patternSize).Select(c => c.Low).ToArray(),
+                    Closes = candles.Skip(i - (patternSize - 1)).Take(patternSize).Select(c => c.Close).ToArray(),
+                    Volumes = candles.Skip(i - (patternSize - 1)).Take(patternSize).Select(c => c.Volume).ToArray(),
+                    IsPattern = PatternHelper.GetPatternCheckers()[pattern](candles.GetRange(i - (patternSize - 1), patternSize))
                 };
 
                 dataset.Add(sample);
             }
 
-            dataset = GenerateThreeCandlePatternBalancedData(dataset, candlestickPatternAnalyzer.IsBearishAdvanceBlock).ToList();
+            dataset = GenerateBalancedPatternData(dataset, PatternHelper.GetPatternCheckers()[pattern], patternSize).ToList();
             int positiveCount = dataset.Count(x => x.IsPattern);
             int negativeCount = dataset.Count(x => !x.IsPattern);
             Console.WriteLine($"Result Positive Samples: {positiveCount}, Result Negative Samples: {negativeCount}");
@@ -54,85 +42,10 @@ namespace CurrencyTracker.Business.Services
             return dataset;
         }
 
-        public IEnumerable<ThreeCandlePatternData> PrepareThreeWhiteSoldiersTrainingData(List<Candlestick> candles)
-        {
-            var dataset = new List<ThreeCandlePatternData>();
-
-            for (int i = 2; i < candles.Count; i++)
-            {
-                var sample = new ThreeCandlePatternData
-                {
-                    Open1 = candles[i - 2].Open,
-                    High1 = candles[i - 2].High,
-                    Low1 = candles[i - 2].Low,
-                    Close1 = candles[i - 2].Close,
-                    Volume1 = candles[i - 2].Volume,
-
-                    Open2 = candles[i - 1].Open,
-                    High2 = candles[i - 1].High,
-                    Low2 = candles[i - 1].Low,
-                    Close2 = candles[i - 1].Close,
-                    Volume2 = candles[i - 1].Volume,
-
-                    Open3 = candles[i].Open,
-                    High3 = candles[i].High,
-                    Low3 = candles[i].Low,
-                    Close3 = candles[i].Close,
-                    Volume3 = candles[i].Volume,
-                    IsPattern = candlestickPatternAnalyzer.IsThreeWhiteSoldiers(candles.GetRange(i - 2, 3))
-                };
-
-                dataset.Add(sample);
-            }
-
-            dataset = GenerateThreeCandlePatternBalancedData(dataset, candlestickPatternAnalyzer.IsThreeWhiteSoldiers).ToList();
-            int positiveCount = dataset.Count(x => x.IsPattern);
-            int negativeCount = dataset.Count(x => !x.IsPattern);
-            Console.WriteLine($"Result Positive Samples: {positiveCount}, Result Negative Samples: {negativeCount}");
-
-            return dataset;
-        }
-
-        public IEnumerable<ThreeCandlePatternData> PrepareThreeCandlePatternTrainingData(List<Candlestick> candles, CandlestickPattern pattern)
-        {
-            var dataset = new List<ThreeCandlePatternData>();
-
-            for (int i = 2; i < candles.Count; i++)
-            {
-                var sample = new ThreeCandlePatternData
-                {
-                    Open1 = candles[i - 2].Open,
-                    High1 = candles[i - 2].High,
-                    Low1 = candles[i - 2].Low,
-                    Close1 = candles[i - 2].Close,
-
-                    Open2 = candles[i - 1].Open,
-                    High2 = candles[i - 1].High,
-                    Low2 = candles[i - 1].Low,
-                    Close2 = candles[i - 1].Close,
-
-                    Open3 = candles[i].Open,
-                    High3 = candles[i].High,
-                    Low3 = candles[i].Low,
-                    Close3 = candles[i].Close,
-
-                    IsPattern = PatternHelper.GetPatternCheckers()[pattern](candles.GetRange(i - 2, 3))
-                };
-
-                dataset.Add(sample);
-            }
-
-            dataset = GenerateThreeCandlePatternBalancedData(dataset, PatternHelper.GetPatternCheckers()[pattern]).ToList();
-            int positiveCount = dataset.Count(x => x.IsPattern);
-            int negativeCount = dataset.Count(x => !x.IsPattern);
-            Console.WriteLine($"Result Positive Samples: {positiveCount}, Result Negative Samples: {negativeCount}");
-
-            return dataset;
-        }
-
-        private IEnumerable<ThreeCandlePatternData> GenerateThreeCandlePatternBalancedData(
-            IEnumerable<ThreeCandlePatternData> dataset,
+        private IEnumerable<CandlePatternData> GenerateBalancedPatternData(
+            IEnumerable<CandlePatternData> dataset,
             Func<IList<Candlestick>, bool> isPattern,
+            int patternSize,
             float noisePercent = 1.5f)
         {
             var random = new Random();
@@ -146,63 +59,34 @@ namespace CurrencyTracker.Business.Services
             Console.WriteLine($"Negative Samples: {negativeCount}, Initial Positive Samples: {positiveSamples.Count}");
             Console.WriteLine($"Target Positive Samples: {positiveTargetCount}, Need to Generate: {requiredNewPositives}");
 
-            var augmentedData = new List<ThreeCandlePatternData>();
+            var augmentedData = new List<CandlePatternData>();
 
             while (augmentedData.Count < requiredNewPositives)
             {
                 var original = positiveSamples[random.Next(positiveSamples.Count)];
+                var candles = new List<Candlestick>();
 
-                // Generating new data with noise
-                var candles = new List<Candlestick>
+                for (int i = 0; i < patternSize; i++)
                 {
-                    new Candlestick
+                    candles.Add(new Candlestick
                     {
-                        Open = original.Open1 * (1 + (float)(random.NextDouble() * noisePercent / 100)),
-                        High = original.High1 * (1 + (float)(random.NextDouble() * noisePercent / 100)),
-                        Low = original.Low1 * (1 + (float)(random.NextDouble() * noisePercent / 100)),
-                        Close = original.Close1 * (1 + (float)(random.NextDouble() * noisePercent / 100)),
-                        Volume = original.Volume1
-                    },
-                    new Candlestick
-                    {
-                        Open = original.Open2 * (1 + (float)(random.NextDouble() * noisePercent / 100)),
-                        High = original.High2 * (1 + (float)(random.NextDouble() * noisePercent / 100)),
-                        Low = original.Low2 * (1 + (float)(random.NextDouble() * noisePercent / 100)),
-                        Close = original.Close2 * (1 + (float)(random.NextDouble() * noisePercent / 100)),
-                        Volume = original.Volume2
-                    },
-                    new Candlestick
-                    {
-                        Open = original.Open3 * (1 + (float)(random.NextDouble() * noisePercent / 100)),
-                        High = original.High3 * (1 + (float)(random.NextDouble() * noisePercent / 100)),
-                        Low = original.Low3 * (1 + (float)(random.NextDouble() * noisePercent / 100)),
-                        Close = original.Close3 * (1 + (float)(random.NextDouble() * noisePercent / 100)),
-                        Volume = original.Volume3
-                    }
-                };
+                        Open = original.Opens[i] * (1 + (float)(random.NextDouble() * noisePercent / 100)),
+                        High = original.Highs[i] * (1 + (float)(random.NextDouble() * noisePercent / 100)),
+                        Low = original.Lows[i] * (1 + (float)(random.NextDouble() * noisePercent / 100)),
+                        Close = original.Closes[i] * (1 + (float)(random.NextDouble() * noisePercent / 100)),
+                        Volume = original.Volumes[i]
+                    });
+                }
 
                 if (isPattern(candles))
                 {
-                    var newSample = new ThreeCandlePatternData
+                    var newSample = new CandlePatternData
                     {
-                        Open1 = candles[0].Open,
-                        High1 = candles[0].High,
-                        Low1 = candles[0].Low,
-                        Close1 = candles[0].Close,
-                        Volume1 = candles[0].Volume,
-
-                        Open2 = candles[1].Open,
-                        High2 = candles[1].High,
-                        Low2 = candles[1].Low,
-                        Close2 = candles[1].Close,
-                        Volume2 = candles[1].Volume,
-
-                        Open3 = candles[2].Open,
-                        High3 = candles[2].High,
-                        Low3 = candles[2].Low,
-                        Close3 = candles[2].Close,
-                        Volume3 = candles[2].Volume,
-
+                        Opens = candles.Select(c => c.Open).ToArray(),
+                        Highs = candles.Select(c => c.High).ToArray(),
+                        Lows = candles.Select(c => c.Low).ToArray(),
+                        Closes = candles.Select(c => c.Close).ToArray(),
+                        Volumes = candles.Select(c => c.Volume).ToArray(),
                         IsPattern = true
                     };
 

@@ -84,11 +84,21 @@ namespace CurrencyTracker.Business.Services
 
         public bool IsThreeWhiteSoldiers(IList<Candlestick> candles)
         {
-            return candles[0].IsBull &&
-                   candles[1].IsBull &&
-                   candles[2].IsBull &&
-                   candles[1].Open > candles[0].Close &&
-                   candles[2].Open > candles[1].Close;
+            if (candles.Count < 3) return false;
+
+            var c1 = candles[0];
+            var c2 = candles[1];
+            var c3 = candles[2];
+
+            bool isAllBullish = c1.IsBull && c2.IsBull && c3.IsBull;
+            bool isIncreasingBody = c1.Body < c2.Body && c2.Body < c3.Body;
+
+            bool opensWithinPreviousBody = c2.Open > c1.Close && c3.Open > c2.Close;
+            bool shortLowerShadows = c1.LowerShadow < (c1.Body * 0.2) &&
+                                     c2.LowerShadow < (c2.Body * 0.2) &&
+                                     c3.LowerShadow < (c3.Body * 0.2);
+
+            return isAllBullish && isIncreasingBody && opensWithinPreviousBody && shortLowerShadows;
         }
 
         public bool IsBearishAdvanceBlock(IList<Candlestick> candles)
@@ -101,11 +111,14 @@ namespace CurrencyTracker.Business.Services
 
             bool isBullishSequence = c1.IsBull && c2.IsBull && c3.IsBull;
             bool isDecreasingBody = c1.Body > c2.Body && c2.Body > c3.Body;
-            bool hasLongUpperShadows = c1.UpperShadow > c1.Body * 0.5f &&
-                                       c2.UpperShadow > c2.Body * 0.5f &&
-                                       c3.UpperShadow > c3.Body * 0.5f;
 
-            return isBullishSequence && isDecreasingBody && hasLongUpperShadows;
+            bool hasLongUpperShadows = c1.UpperShadow > c1.Body * 0.5 &&
+                                       c2.UpperShadow > c2.Body * 0.5 &&
+                                       c3.UpperShadow > c3.Body * 0.5;
+
+            bool hasGapBetweenBodies = c2.Open > c1.Close && c3.Open > c2.Close;
+
+            return isBullishSequence && isDecreasingBody && hasLongUpperShadows && hasGapBetweenBodies;
         }
 
         public bool IsBullishDeliberationBlock(IList<Candlestick> candles)
@@ -127,27 +140,69 @@ namespace CurrencyTracker.Business.Services
 
         public bool IsEveningStar(IList<Candlestick> candles)
         {
-            return candles[0].IsBull &&
-                   candles[1].Body < (candles[0].Body * 0.5) &&
-                   candles[2].Close < (candles[0].Open + candles[0].Close) / 2 &&
-                   candles[2].IsBear;
+            if (candles.Count < 3) return false;
+
+            var c1 = candles[0];
+            var c2 = candles[1];
+            var c3 = candles[2];
+
+            bool isFirstBullish = c1.IsBull;
+            bool isSmallBodySecond = c2.Body < (c1.Body * 0.5);
+            bool isThirdBearish = c3.IsBear;
+
+            bool isSecondShadowBalanced = c2.UpperShadow < (c2.Body * 2) && c2.LowerShadow < (c2.Body * 2);
+            bool isThirdBodyStrong = c3.Body > (c1.Body * 0.6);
+            bool isThirdClosesBelowMiddleFirst = c3.Close < (c1.Open + c1.Close) / 2;
+
+            return isFirstBullish &&
+                   isSmallBodySecond &&
+                   isSecondShadowBalanced &&
+                   isThirdBearish &&
+                   isThirdBodyStrong &&
+                   isThirdClosesBelowMiddleFirst;
         }
 
         public bool IsMorningStar(IList<Candlestick> candles)
         {
-            return candles[0].IsBear &&
-                   candles[1].Body < (candles[0].Body * 0.5) &&
-                   candles[2].Close > (candles[0].Open + candles[0].Close) / 2 &&
-                   candles[2].IsBull;
+            if (candles.Count < 3) return false;
+
+            var c1 = candles[0];
+            var c2 = candles[1];
+            var c3 = candles[2];
+
+            bool isFirstBearish = c1.IsBear;
+            bool isSmallBodySecond = c2.Body < (c1.Body * 0.5);
+            bool isThirdBullish = c3.IsBull;
+
+            bool isThirdBodyStrong = c3.Body > (c1.Body * 0.6);
+            bool isSecondShadowBalanced = c2.UpperShadow < (c2.Body * 2) && c2.LowerShadow < (c2.Body * 2);
+            bool isThirdClosesAboveMiddleFirst = c3.Close > (c1.Open + c1.Close) / 2;
+
+            return isFirstBearish &&
+                   isSmallBodySecond &&
+                   isSecondShadowBalanced &&
+                   isThirdBullish &&
+                   isThirdBodyStrong &&
+                   isThirdClosesAboveMiddleFirst;
         }
 
         public bool IsThreeBlackCrows(IList<Candlestick> candles)
         {
-            return candles[0].IsBear &&
-                   candles[1].IsBear &&
-                   candles[2].IsBear &&
-                   candles[1].Open < candles[0].Close &&
-                   candles[2].Open < candles[1].Close;
+            if (candles.Count < 3) return false;
+
+            var c1 = candles[0];
+            var c2 = candles[1];
+            var c3 = candles[2];
+
+            bool isAllBearish = c1.IsBear && c2.IsBear && c3.IsBear;
+            bool isDecreasingBody = c1.Body > c2.Body && c2.Body > c3.Body;
+
+            bool opensWithinPreviousBody = c2.Open < c1.Close && c3.Open < c2.Close;
+            bool shortUpperShadows = c1.UpperShadow < (c1.Body * 0.2) &&
+                                     c2.UpperShadow < (c2.Body * 0.2) &&
+                                     c3.UpperShadow < (c3.Body * 0.2);
+
+            return isAllBearish && isDecreasingBody && opensWithinPreviousBody && shortUpperShadows;
         }
 
         public bool IsBearishAbandonedBaby(IList<Candlestick> candles)
@@ -213,6 +268,39 @@ namespace CurrencyTracker.Business.Services
 
             return isFirstBullish && isSecondBearishInside && isThirdBearishBreakout;
         }
+
+        public bool IsBullishThreeLineStrike(IList<Candlestick> candles)
+        {
+            if (candles.Count < 4) return false;
+
+            var c1 = candles[0];
+            var c2 = candles[1];
+            var c3 = candles[2];
+            var c4 = candles[3];
+
+            bool isThreeBullish = c1.IsBull && c2.IsBull && c3.IsBull;
+            bool isHigherCloses = c2.Close > c1.Close && c3.Close > c2.Close;
+            bool isBearishReversal = c4.IsBear && c4.Open > c3.Close && c4.Close < c1.Open;
+
+            return isThreeBullish && isHigherCloses && isBearishReversal;
+        }
+
+        public bool IsBearishThreeLineStrike(IList<Candlestick> candles)
+        {
+            if (candles.Count < 4) return false;
+
+            var c1 = candles[0];
+            var c2 = candles[1];
+            var c3 = candles[2];
+            var c4 = candles[3];
+
+            bool isThreeBearish = c1.IsBear && c2.IsBear && c3.IsBear;
+            bool isLowerCloses = c2.Close < c1.Close && c3.Close < c2.Close;
+            bool isBullishReversal = c4.IsBull && c4.Open < c3.Close && c4.Close > c1.Open;
+
+            return isThreeBearish && isLowerCloses && isBullishReversal;
+        }
+
         public void AnalyzePatterns(IEnumerable<Candlestick> candlesticks)
         {
             var dataOhlcv = candlesticks

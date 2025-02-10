@@ -2,7 +2,7 @@
 
 namespace CurrencyTracker.Business.Models
 {
-    public class ThreeCandlePatternData
+    public class ThreeCandlePatternData : BaseCandlePatternData
     {
         public float Open1 { get; set; }
 
@@ -57,8 +57,5 @@ namespace CurrencyTracker.Business.Models
         public float BodyRatio23 => Body2 / Body3;
 
         public float TrendAngle => (Close3 - Open1) / Open1;
-
-        [ColumnName("Label")]
-        public bool IsPattern { get; set; }
     }
 }

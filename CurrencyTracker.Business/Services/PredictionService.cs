@@ -3,75 +3,42 @@ using CurrencyTracker.Business.Helpers;
 using CurrencyTracker.Business.Models;
 using CurrencyTracker.Business.Services.Interfaces;
 using Microsoft.ML;
+using Microsoft.ML.Data;
 
 namespace CurrencyTracker.Business.Services
 {
     public class PredictionService : IPredictionService
     {
-        public PatternPrediction PredictHammerPattern(Candlestick candle)
+        public PatternPrediction PredictPattern(IEnumerable<Candlestick> candles, CandlestickPattern pattern, int patternSize)
         {
-            var context = new MLContext();
-            var model = context.Model.Load("hammerPatternModel.zip", out _);
-            var predictionEngine = context.Model.CreatePredictionEngine<Candlestick, PatternPrediction>(model);
-
-            return predictionEngine.Predict(candle);
-        }
-
-        public PatternPrediction PredictThreeWhiteSoldiersPattern(IEnumerable<Candlestick> candles)
-        {
-            if (candles.Count() < 3) return new PatternPrediction { IsPattern = false, Probability = 0 };
+            if (candles.Count() < patternSize)
+                return new PatternPrediction { IsPattern = false, Probability = 0 };
 
             var context = new MLContext();
+            var modelPath = $"{pattern.ToString()}Model.zip";
+            var model = context.Model.Load(modelPath, out _);
 
-            var model = context.Model.Load("threeWhiteSoldiersModel.zip", out _);
-            var lastCandles = candles.TakeLast(3).ToList();
-            if (lastCandles.Count < 3)
-            {
-                throw new ArgumentException("Not enougth data for pattern analyzing");
-            }
+            var lastCandles = candles.TakeLast(patternSize).ToList();
 
-            var input = new ThreeWhiteSoldiersInput
+            var input = new CandlePatternData
             {
-                Body1 = lastCandles[0].Body,
-                Body2 = lastCandles[1].Body,
-                Body3 = lastCandles[2].Body,
+                Opens = lastCandles.Select(c => c.Open).ToArray(),
+                Highs = lastCandles.Select(c => c.High).ToArray(),
+                Lows = lastCandles.Select(c => c.Low).ToArray(),
+                Closes = lastCandles.Select(c => c.Close).ToArray(),
+                Volumes = lastCandles.Select(c => c.Volume).ToArray(),
+                IsPattern = PatternHelper.GetPatternCheckers()[pattern](lastCandles)
             };
 
-            var predictionEngine = context.Model.CreatePredictionEngine<ThreeWhiteSoldiersInput, PatternPrediction>(model);
-            return predictionEngine.Predict(input);
-        }
+            var schemaDefinition = SchemaDefinition.Create(typeof(CandlePatternData));
+            schemaDefinition[nameof(CandlePatternData.Opens)].ColumnType = new VectorDataViewType(NumberDataViewType.Single, patternSize);
+            schemaDefinition[nameof(CandlePatternData.Highs)].ColumnType = new VectorDataViewType(NumberDataViewType.Single, patternSize);
+            schemaDefinition[nameof(CandlePatternData.Lows)].ColumnType = new VectorDataViewType(NumberDataViewType.Single, patternSize);
+            schemaDefinition[nameof(CandlePatternData.Closes)].ColumnType = new VectorDataViewType(NumberDataViewType.Single, patternSize);
+            schemaDefinition[nameof(CandlePatternData.Volumes)].ColumnType = new VectorDataViewType(NumberDataViewType.Single, patternSize);
 
-        // TODO: remove pattern param
-        public PatternPrediction PredictThreeCandlePattern(IEnumerable<Candlestick> candles, CandlestickPattern pattern)
-        {
-            if (candles.Count() < 3) return new PatternPrediction { IsPattern = false, Probability = 0 };
+            var predictionEngine = context.Model.CreatePredictionEngine<CandlePatternData, PatternPrediction>(model, inputSchemaDefinition: schemaDefinition);
 
-            var context = new MLContext();
-
-            var model = context.Model.Load($"{pattern.ToString()}Model.zip", out _);
-            var lastCandles = candles.TakeLast(3).ToList();
-
-            var input = new ThreeCandlePatternData
-            {
-                Open1 = lastCandles[^3].Open,
-                High1 = lastCandles[^3].High,
-                Low1 = lastCandles[^3].Low,
-                Close1 = lastCandles[^3].Close,
-                Volume1 = lastCandles[^3].Volume,
-                Open2 = lastCandles[^2].Open,
-                High2 = lastCandles[^2].High,
-                Low2 = lastCandles[^2].Low,
-                Close2 = lastCandles[^2].Close,
-                Volume2 = lastCandles[^2].Volume,
-                Open3 = lastCandles[^1].Open,
-                High3 = lastCandles[^1].High,
-                Low3 = lastCandles[^1].Low,
-                Close3 = lastCandles[^1].Close,
-                Volume3 = lastCandles[^1].Volume,
-                IsPattern = PatternHelper.GetPatternCheckers()[pattern](lastCandles),
-            };
-
-            var predictionEngine = context.Model.CreatePredictionEngine<ThreeCandlePatternData, PatternPrediction>(model);
             return predictionEngine.Predict(input);
         }
     }

@@ -1,4 +1,5 @@
 ﻿using CurrencyTracker.Business.Enums;
+using CurrencyTracker.Business.Helpers;
 using CurrencyTracker.Business.Models;
 using CurrencyTracker.Business.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -29,10 +30,10 @@ namespace CurrencyTracker.Business.Services
             this.logService = logService;
         }
 
-        public void TrainPatternModel(IEnumerable<CandlePatternData> preparedData, CandlestickPattern pattern, int patternSize)
+        public void TrainPatternModel(IEnumerable<CandlePatternData> preparedData, CandlestickPattern pattern)
         {
             var context = new MLContext();
-
+            var patternSize = PatternHelper.GetPatternCheckers()[pattern].PatternSize;
             var trainer = GetFastTreeTrainer(context);
 
             var schemaDefinition = SchemaDefinition.Create(typeof(CandlePatternData));

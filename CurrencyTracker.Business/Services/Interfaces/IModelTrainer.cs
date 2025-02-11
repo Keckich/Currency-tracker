@@ -5,6 +5,6 @@ namespace CurrencyTracker.Business.Services.Interfaces
 {
     public interface IModelTrainer
     {
-        void TrainPatternModel(IEnumerable<CandlePatternData> preparedData, CandlestickPattern pattern, int patternSize);
+        void TrainPatternModel(IEnumerable<CandlePatternData> preparedData, CandlestickPattern pattern);
     }
 }

@@ -9,8 +9,11 @@ namespace CurrencyTracker.Business.Services
 {
     public class PredictionService : IPredictionService
     {
-        public PatternPrediction PredictPattern(IEnumerable<Candlestick> candles, CandlestickPattern pattern, int patternSize)
+        public PatternPrediction PredictPattern(IEnumerable<Candlestick> candles, CandlestickPattern pattern)
         {
+            var patternInfo = PatternHelper.GetPatternCheckers()[pattern];
+            var patternSize = patternInfo.PatternSize;
+
             if (candles.Count() < patternSize)
                 return new PatternPrediction { IsPattern = false, Probability = 0 };
 
@@ -27,7 +30,7 @@ namespace CurrencyTracker.Business.Services
                 Lows = lastCandles.Select(c => c.Low).ToArray(),
                 Closes = lastCandles.Select(c => c.Close).ToArray(),
                 Volumes = lastCandles.Select(c => c.Volume).ToArray(),
-                IsPattern = PatternHelper.GetPatternCheckers()[pattern](lastCandles)
+                IsPattern = patternInfo.Method(lastCandles)
             };
 
             var schemaDefinition = SchemaDefinition.Create(typeof(CandlePatternData));

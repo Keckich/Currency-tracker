@@ -15,9 +15,11 @@ namespace CurrencyTracker.Business.Services
             this.candlestickPatternAnalyzer = candlestickPatternAnalyzer;
         }
 
-        public IEnumerable<CandlePatternData> PreparePatternTrainingData(List<Candlestick> candles, CandlestickPattern pattern, int patternSize)
+        public IEnumerable<CandlePatternData> PreparePatternTrainingData(List<Candlestick> candles, CandlestickPattern pattern)
         {
             var dataset = new List<CandlePatternData>();
+            var patternInfo = PatternHelper.GetPatternCheckers()[pattern];
+            var patternSize = patternInfo.PatternSize;
 
             for (int i = patternSize - 1; i < candles.Count; i++)
             {
@@ -28,13 +30,13 @@ namespace CurrencyTracker.Business.Services
                     Lows = candles.Skip(i - (patternSize - 1)).Take(patternSize).Select(c => c.Low).ToArray(),
                     Closes = candles.Skip(i - (patternSize - 1)).Take(patternSize).Select(c => c.Close).ToArray(),
                     Volumes = candles.Skip(i - (patternSize - 1)).Take(patternSize).Select(c => c.Volume).ToArray(),
-                    IsPattern = PatternHelper.GetPatternCheckers()[pattern](candles.GetRange(i - (patternSize - 1), patternSize))
+                    IsPattern = PatternHelper.GetPatternCheckers()[pattern].Method(candles.GetRange(i - (patternSize - 1), patternSize))
                 };
 
                 dataset.Add(sample);
             }
 
-            dataset = GenerateBalancedPatternData(dataset, PatternHelper.GetPatternCheckers()[pattern], patternSize).ToList();
+            dataset = GenerateBalancedPatternData(dataset, patternInfo.Method, patternSize).ToList();
             int positiveCount = dataset.Count(x => x.IsPattern);
             int negativeCount = dataset.Count(x => !x.IsPattern);
             Console.WriteLine($"Result Positive Samples: {positiveCount}, Result Negative Samples: {negativeCount}");

@@ -30,11 +30,10 @@ namespace MLTrainer
 
             var pattern = CandlestickPattern.MorningStar;
             var candleDataXRP = (await binanceService.GetHistoricalData("XRPUSDC", "4h", 5000)).ToList();
-            // TODO: move pattern size to pattern dictionary
-            var preparedData = dataGenerationService.PreparePatternTrainingData(candleDataXRP, pattern, 3);
-            modelTrainer.TrainPatternModel(preparedData, pattern, 3);
+            var preparedData = dataGenerationService.PreparePatternTrainingData(candleDataXRP, pattern);
+            modelTrainer.TrainPatternModel(preparedData, pattern);
 
-            var prediction = predictionService.PredictPattern(candleDataXRP, pattern, 3);
+            var prediction = predictionService.PredictPattern(candleDataXRP, pattern);
             Console.WriteLine(prediction.Probability);
         }
 

@@ -12,5 +12,12 @@
         BullishAbandonedBaby,
         ThreeInsideUp,
         ThreeInsideDown,
+        BullishThreeLineStrike,
+        BearishThreeLineStrike,
+        FallingThreeMethods,
+        RisingThreeMethods,
+        ThreeStarsInTheSouth,
+        FourSoldiers,
+        FourBlackCrows,
     }
 }

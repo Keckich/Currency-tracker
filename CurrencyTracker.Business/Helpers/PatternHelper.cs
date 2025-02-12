@@ -23,6 +23,13 @@ namespace CurrencyTracker.Business.Helpers
                 { CandlestickPattern.BullishAbandonedBaby, new PatternInfo { Method = patternAnalyzer.IsBullishAbandonedBaby, PatternSize = 3 } },
                 { CandlestickPattern.ThreeInsideUp, new PatternInfo { Method = patternAnalyzer.IsThreeInsideUp, PatternSize = 3 } },
                 { CandlestickPattern.ThreeInsideDown, new PatternInfo { Method = patternAnalyzer.IsThreeInsideDown, PatternSize = 3 } },
+                { CandlestickPattern.BullishThreeLineStrike, new PatternInfo { Method = patternAnalyzer.IsBullishThreeLineStrike, PatternSize = 4 } },
+                { CandlestickPattern.BearishThreeLineStrike, new PatternInfo { Method = patternAnalyzer.IsBearishThreeLineStrike, PatternSize = 4 } },
+                { CandlestickPattern.FallingThreeMethods, new PatternInfo { Method = patternAnalyzer.IsFallingThreeMethods, PatternSize = 5 } },
+                { CandlestickPattern.RisingThreeMethods, new PatternInfo { Method = patternAnalyzer.IsRisingThreeMethods, PatternSize = 5 } },
+                { CandlestickPattern.ThreeStarsInTheSouth, new PatternInfo { Method = patternAnalyzer.IsThreeStarsInTheSouth, PatternSize = 3 } },
+                { CandlestickPattern.FourSoldiers, new PatternInfo { Method = patternAnalyzer.IsFourSoldiers, PatternSize = 4 } },
+                { CandlestickPattern.FourBlackCrows, new PatternInfo { Method = patternAnalyzer.IsFourBlackCrows, PatternSize = 4 } },
             };
         });
 

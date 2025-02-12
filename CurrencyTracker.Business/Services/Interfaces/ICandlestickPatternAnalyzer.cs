@@ -34,6 +34,20 @@ namespace CurrencyTracker.Business.Services.Interfaces
 
         bool IsThreeInsideDown(IList<Candlestick> candles);
 
+        bool IsBullishThreeLineStrike(IList<Candlestick> candles);
+
+        bool IsBearishThreeLineStrike(IList<Candlestick> candles);
+
+        bool IsFallingThreeMethods(IList<Candlestick> candles);
+
+        bool IsRisingThreeMethods(IList<Candlestick> candles);
+
+        bool IsThreeStarsInTheSouth(IList<Candlestick> candles);
+
+        bool IsFourSoldiers(IList<Candlestick> candles);
+
+        bool IsFourBlackCrows(IList<Candlestick> candles);
+
         void AnalyzePatterns(IEnumerable<Candlestick> candlesticks);
     }
 }

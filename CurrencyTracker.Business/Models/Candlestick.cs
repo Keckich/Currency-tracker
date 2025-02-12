@@ -28,5 +28,11 @@
         public float Range => High - Low;
 
         public bool IsDoji => Body <= (Range * 0.1);
+
+        public float TotalSize => High - Low;
+
+        public bool HasLongUpperShadow(float factor = 1.5f) => UpperShadow > Body * factor;
+
+        public bool HasLongLowerShadow(float factor = 1.5f) => LowerShadow > Body * factor;
     }
 }

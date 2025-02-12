@@ -281,8 +281,10 @@ namespace CurrencyTracker.Business.Services
             bool isThreeBullish = c1.IsBull && c2.IsBull && c3.IsBull;
             bool isHigherCloses = c2.Close > c1.Close && c3.Close > c2.Close;
             bool isBearishReversal = c4.IsBear && c4.Open > c3.Close && c4.Close < c1.Open;
+            bool hasNormalShadows = !c1.HasLongUpperShadow() && !c2.HasLongUpperShadow() && !c3.HasLongUpperShadow()
+                            && !c4.HasLongLowerShadow();
 
-            return isThreeBullish && isHigherCloses && isBearishReversal;
+            return isThreeBullish && isHigherCloses && isBearishReversal && hasNormalShadows;
         }
 
         public bool IsBearishThreeLineStrike(IList<Candlestick> candles)
@@ -297,8 +299,102 @@ namespace CurrencyTracker.Business.Services
             bool isThreeBearish = c1.IsBear && c2.IsBear && c3.IsBear;
             bool isLowerCloses = c2.Close < c1.Close && c3.Close < c2.Close;
             bool isBullishReversal = c4.IsBull && c4.Open < c3.Close && c4.Close > c1.Open;
+            bool hasNormalShadows = !c1.HasLongLowerShadow() && !c2.HasLongLowerShadow() && !c3.HasLongLowerShadow()
+                           && !c4.HasLongUpperShadow();
 
-            return isThreeBearish && isLowerCloses && isBullishReversal;
+            return isThreeBearish && isLowerCloses && isBullishReversal && hasNormalShadows;
+        }
+
+        public bool IsFallingThreeMethods(IList<Candlestick> candles)
+        {
+            if (candles.Count < 5) return false;
+
+            var c1 = candles[0];
+            var c2 = candles[1];
+            var c3 = candles[2];
+            var c4 = candles[3];
+            var c5 = candles[4];
+
+            bool isFirstBearish = c1.IsBear;
+            bool isLastBearish = c5.IsBear;
+            bool isMiddleBullish = c2.IsBull && c3.IsBull && c4.IsBull;
+            bool isInsidePattern = c2.Open > c1.Close && c2.Close < c1.Open &&
+                                   c3.Open > c1.Close && c3.Close < c1.Open &&
+                                   c4.Open > c1.Close && c4.Close < c1.Open;
+            bool isBreakout = c5.Close < c1.Close;
+
+            return isFirstBearish && isMiddleBullish && isInsidePattern && isLastBearish && isBreakout;
+        }
+
+        public bool IsRisingThreeMethods(IList<Candlestick> candles)
+        {
+            if (candles.Count < 5) return false;
+
+            var c1 = candles[0];
+            var c2 = candles[1];
+            var c3 = candles[2];
+            var c4 = candles[3];
+            var c5 = candles[4];
+
+            bool isFirstBullish = c1.IsBull;
+            bool isLastBullish = c5.IsBull;
+            bool isMiddleBearish = c2.IsBear && c3.IsBear && c4.IsBear;
+            bool isInsidePattern = c2.Open < c1.Close && c2.Close > c1.Open &&
+                                   c3.Open < c1.Close && c3.Close > c1.Open &&
+                                   c4.Open < c1.Close && c4.Close > c1.Open;
+            bool isBreakout = c5.Close > c1.Close;
+
+            return isFirstBullish && isMiddleBearish && isInsidePattern && isLastBullish && isBreakout;
+        }
+
+        public bool IsThreeStarsInTheSouth(IList<Candlestick> candles)
+        {
+            if (candles.Count < 3) return false;
+
+            var c1 = candles[0];
+            var c2 = candles[1];
+            var c3 = candles[2];
+
+            bool isAllBearish = c1.IsBear && c2.IsBear && c3.IsBear;
+            bool isFallingCloses = c2.Close < c1.Close && c3.Close < c2.Close;
+            bool hasShortBodies = c1.Body < c1.TotalSize * 0.5 && c2.Body < c2.TotalSize * 0.5 && c3.Body < c3.TotalSize * 0.5;
+            bool hasShortUpperShadows = c1.UpperShadow < c1.Body * 0.5 && c2.UpperShadow < c2.Body * 0.5 && c3.UpperShadow < c3.Body * 0.5;
+
+            return isAllBearish && isFallingCloses && hasShortBodies && hasShortUpperShadows;
+        }
+
+        public bool IsFourSoldiers(IList<Candlestick> candles)
+        {
+            if (candles.Count < 4) return false;
+
+            var c1 = candles[0];
+            var c2 = candles[1];
+            var c3 = candles[2];
+            var c4 = candles[3];
+
+            bool isAllBullish = c1.IsBull && c2.IsBull && c3.IsBull && c4.IsBull;
+            bool isHigherCloses = c2.Close > c1.Close && c3.Close > c2.Close && c4.Close > c3.Close;
+            bool hasSmallShadows = !c1.HasLongUpperShadow() && !c2.HasLongUpperShadow() &&
+                                   !c3.HasLongUpperShadow() && !c4.HasLongUpperShadow();
+
+            return isAllBullish && isHigherCloses && hasSmallShadows;
+        }
+
+        public bool IsFourBlackCrows(IList<Candlestick> candles)
+        {
+            if (candles.Count < 4) return false;
+
+            var c1 = candles[0];
+            var c2 = candles[1];
+            var c3 = candles[2];
+            var c4 = candles[3];
+
+            bool isAllBearish = c1.IsBear && c2.IsBear && c3.IsBear && c4.IsBear;
+            bool isLowerCloses = c2.Close < c1.Close && c3.Close < c2.Close && c4.Close < c3.Close;
+            bool hasSmallShadows = !c1.HasLongLowerShadow() && !c2.HasLongLowerShadow() &&
+                                   !c3.HasLongLowerShadow() && !c4.HasLongLowerShadow();
+
+            return isAllBearish && isLowerCloses && hasSmallShadows;
         }
 
         public void AnalyzePatterns(IEnumerable<Candlestick> candlesticks)

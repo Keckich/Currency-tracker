@@ -97,8 +97,9 @@ namespace CurrencyTracker.Business.Services
             bool shortLowerShadows = c1.LowerShadow < (c1.Body * 0.2) &&
                                      c2.LowerShadow < (c2.Body * 0.2) &&
                                      c3.LowerShadow < (c3.Body * 0.2);
+            bool isHighVolumeOnThird = c3.Volume > c2.Volume * 1.5f;
 
-            return isAllBullish && isIncreasingBody && opensWithinPreviousBody && shortLowerShadows;
+            return isAllBullish && isIncreasingBody && opensWithinPreviousBody && shortLowerShadows && isHighVolumeOnThird;
         }
 
         public bool IsBearishAdvanceBlock(IList<Candlestick> candles)
@@ -117,8 +118,9 @@ namespace CurrencyTracker.Business.Services
                                        c3.UpperShadow > c3.Body * 0.5;
 
             bool hasGapBetweenBodies = c2.Open > c1.Close && c3.Open > c2.Close;
+            bool isLowVolumeOnThird = c3.Volume < c2.Volume * 0.6f;
 
-            return isBullishSequence && isDecreasingBody && hasLongUpperShadows && hasGapBetweenBodies;
+            return isBullishSequence && isDecreasingBody && hasLongUpperShadows && hasGapBetweenBodies && isLowVolumeOnThird;
         }
 
         public bool IsBullishDeliberationBlock(IList<Candlestick> candles)
@@ -153,13 +155,15 @@ namespace CurrencyTracker.Business.Services
             bool isSecondShadowBalanced = c2.UpperShadow < (c2.Body * 2) && c2.LowerShadow < (c2.Body * 2);
             bool isThirdBodyStrong = c3.Body > (c1.Body * 0.6);
             bool isThirdClosesBelowMiddleFirst = c3.Close < (c1.Open + c1.Close) / 2;
+            bool isHighVolumeOnThird = c3.Volume > c1.Volume * 1.5f;
 
             return isFirstBullish &&
                    isSmallBodySecond &&
                    isSecondShadowBalanced &&
                    isThirdBearish &&
                    isThirdBodyStrong &&
-                   isThirdClosesBelowMiddleFirst;
+                   isThirdClosesBelowMiddleFirst &&
+                   isHighVolumeOnThird;
         }
 
         public bool IsMorningStar(IList<Candlestick> candles)
@@ -177,13 +181,15 @@ namespace CurrencyTracker.Business.Services
             bool isThirdBodyStrong = c3.Body > (c1.Body * 0.6);
             bool isSecondShadowBalanced = c2.UpperShadow < (c2.Body * 2) && c2.LowerShadow < (c2.Body * 2);
             bool isThirdClosesAboveMiddleFirst = c3.Close > (c1.Open + c1.Close) / 2;
+            bool isHighVolumeOnThird = c3.Volume > c1.Volume * 1.5f;
 
             return isFirstBearish &&
                    isSmallBodySecond &&
                    isSecondShadowBalanced &&
                    isThirdBullish &&
                    isThirdBodyStrong &&
-                   isThirdClosesAboveMiddleFirst;
+                   isThirdClosesAboveMiddleFirst &&
+                   isHighVolumeOnThird;
         }
 
         public bool IsThreeBlackCrows(IList<Candlestick> candles)
@@ -201,8 +207,9 @@ namespace CurrencyTracker.Business.Services
             bool shortUpperShadows = c1.UpperShadow < (c1.Body * 0.2) &&
                                      c2.UpperShadow < (c2.Body * 0.2) &&
                                      c3.UpperShadow < (c3.Body * 0.2);
+            bool isHighVolumeOnThird = c3.Volume > c2.Volume * 1.5f;
 
-            return isAllBearish && isDecreasingBody && opensWithinPreviousBody && shortUpperShadows;
+            return isAllBearish && isDecreasingBody && opensWithinPreviousBody && shortUpperShadows && isHighVolumeOnThird;
         }
 
         public bool IsBearishAbandonedBaby(IList<Candlestick> candles)
@@ -218,8 +225,9 @@ namespace CurrencyTracker.Business.Services
             bool isThirdBearish = c3.IsBear;
 
             bool hasGaps = c2.Open > c1.Close && c3.Open < c2.Close;
+            bool isHighVolumeOnThird = c3.Volume > c1.Volume * 1.5f;
 
-            return isFirstBullish && isDoji && isThirdBearish && hasGaps;
+            return isFirstBullish && isDoji && isThirdBearish && hasGaps && isHighVolumeOnThird;
         }
 
         public bool IsBullishAbandonedBaby(IList<Candlestick> candles)
@@ -235,8 +243,9 @@ namespace CurrencyTracker.Business.Services
             bool isThirdBullish = c3.IsBull;
 
             bool hasGaps = c2.Open < c1.Close && c3.Open > c2.Close;
+            bool isHighVolumeOnThird = c3.Volume > c1.Volume * 1.5f;
 
-            return isFirstBearish && isDoji && isThirdBullish && hasGaps;
+            return isFirstBearish && isDoji && isThirdBullish && hasGaps && isHighVolumeOnThird;
         }
 
         public bool IsThreeInsideUp(IList<Candlestick> candles)
@@ -250,8 +259,9 @@ namespace CurrencyTracker.Business.Services
             bool isFirstBearish = c1.IsBear;
             bool isSecondBullishInside = c2.IsBull && c2.Open > c1.Close && c2.Close < c1.Open;
             bool isThirdBullishBreakout = c3.IsBull && c3.Close > c1.Open;
+            bool isHighVolumeOnThird = c3.Volume > c2.Volume * 1.5f;
 
-            return isFirstBearish && isSecondBullishInside && isThirdBullishBreakout;
+            return isFirstBearish && isSecondBullishInside && isThirdBullishBreakout && isHighVolumeOnThird;
         }
 
         public bool IsThreeInsideDown(IList<Candlestick> candles)
@@ -265,8 +275,9 @@ namespace CurrencyTracker.Business.Services
             bool isFirstBullish = c1.IsBull;
             bool isSecondBearishInside = c2.IsBear && c2.Open < c1.Close && c2.Close > c1.Open;
             bool isThirdBearishBreakout = c3.IsBear && c3.Close < c1.Open;
+            bool isHighVolumeOnThird = c3.Volume > c2.Volume * 1.5f;
 
-            return isFirstBullish && isSecondBearishInside && isThirdBearishBreakout;
+            return isFirstBullish && isSecondBearishInside && isThirdBearishBreakout && isHighVolumeOnThird;
         }
 
         public bool IsBullishThreeLineStrike(IList<Candlestick> candles)
@@ -322,8 +333,12 @@ namespace CurrencyTracker.Business.Services
                                    c3.Open > c1.Close && c3.Close < c1.Open &&
                                    c4.Open > c1.Close && c4.Close < c1.Open;
             bool isBreakout = c5.Close < c1.Close;
+            bool isLowVolumeOnPullback = c2.Volume < c1.Volume * 0.6f &&
+                                 c3.Volume < c1.Volume * 0.6f &&
+                                 c4.Volume < c1.Volume * 0.6f;
+            bool isHighVolumeOnBreakout = c5.Volume > c4.Volume * 1.5f;
 
-            return isFirstBearish && isMiddleBullish && isInsidePattern && isLastBearish && isBreakout;
+            return isFirstBearish && isMiddleBullish && isInsidePattern && isLastBearish && isBreakout && isLowVolumeOnPullback && isHighVolumeOnBreakout;
         }
 
         public bool IsRisingThreeMethods(IList<Candlestick> candles)
@@ -343,8 +358,12 @@ namespace CurrencyTracker.Business.Services
                                    c3.Open < c1.Close && c3.Close > c1.Open &&
                                    c4.Open < c1.Close && c4.Close > c1.Open;
             bool isBreakout = c5.Close > c1.Close;
+            bool isLowVolumeOnPullback = c2.Volume < c1.Volume * 0.6f &&
+                                     c3.Volume < c1.Volume * 0.6f &&
+                                     c4.Volume < c1.Volume * 0.6f;
+            bool isHighVolumeOnBreakout = c5.Volume > c4.Volume * 1.5f;
 
-            return isFirstBullish && isMiddleBearish && isInsidePattern && isLastBullish && isBreakout;
+            return isFirstBullish && isMiddleBearish && isInsidePattern && isLastBullish && isBreakout && isLowVolumeOnPullback && isHighVolumeOnBreakout;
         }
 
         public bool IsThreeStarsInTheSouth(IList<Candlestick> candles)

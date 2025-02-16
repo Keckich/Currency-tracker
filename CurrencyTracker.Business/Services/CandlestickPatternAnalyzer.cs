@@ -22,6 +22,24 @@ namespace CurrencyTracker.Business.Services
             accuracy = new AccuracyTrials();
         }
 
+        public float CalculateRSI(List<float> closes, int period = 14)
+        {
+            if (closes.Count < period + 1) return 50;
+
+            float gain = 0, loss = 0;
+            for (int i = 1; i <= period; i++)
+            {
+                float change = closes[i] - closes[i - 1];
+                if (change > 0) gain += change;
+                else loss -= change;
+            }
+
+            if (loss == 0) return 100;
+
+            float rs = gain / loss;
+            return 100 - (100 / (1 + rs));
+        }
+
         public bool IsHammer(Candlestick candle)
         {
             var body = Math.Abs(candle.Close - candle.Open);

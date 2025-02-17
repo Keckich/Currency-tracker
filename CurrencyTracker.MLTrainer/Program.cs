@@ -10,6 +10,7 @@ using System.Text.RegularExpressions;
 using CurrencyTracker.Business.Helpers;
 using CurrencyTracker.Business.Enums;
 using CurrencyTracker.Common;
+using StockSharp.Algo.Candles;
 
 namespace MLTrainer
 {
@@ -27,11 +28,15 @@ namespace MLTrainer
             var patternAnalyzer = serviceProvider.GetRequiredService<ICandlestickPatternAnalyzer>();
             var predictionService = serviceProvider.GetRequiredService<IPredictionService>();
             var dataGenerationService = serviceProvider.GetRequiredService<IGenerationTrainingDataService>();
+            var indicatorService = serviceProvider.GetRequiredService<IIndicatorService>();
 
-            var pattern = CandlestickPattern.MorningStar;
-            var candleDataXRP = (await binanceService.GetHistoricalData("XRPUSDC", "4h", 5000)).ToList();
-            var preparedData = dataGenerationService.PreparePatternTrainingData(candleDataXRP, pattern);
-            modelTrainer.TrainPatternModel(preparedData, pattern);
+            var pattern = CandlestickPattern.ThreeWhiteSoldiers;
+            var candleDataXRP = (await binanceService.GetHistoricalData("XRPUSDC", "4h", 10000)).ToList();
+            //var preparedData = dataGenerationService.PreparePatternTrainingData(candleDataXRP, pattern);
+            //modelTrainer.TrainPatternModel(preparedData, pattern);
+
+            indicatorService.UpdateRSI(candleDataXRP);
+            decimal rsiValue = indicatorService.GetRSI();
 
             var prediction = predictionService.PredictPattern(candleDataXRP, pattern);
             Console.WriteLine(prediction.Probability);
@@ -64,6 +69,7 @@ namespace MLTrainer
             services.AddScoped<IGenerationTrainingDataService, GenerationTrainingDataService>();
             services.AddScoped<ILogService, LogService>();
             services.AddScoped<IPredictionService, PredictionService>();
+            services.AddScoped<IIndicatorService, IndicatorService>();
         }
     }
 }

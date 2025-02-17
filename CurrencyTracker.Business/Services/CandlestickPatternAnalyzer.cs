@@ -1,43 +1,29 @@
 ﻿using Candlestick_Patterns;
 using CurrencyTracker.Business.Models;
 using CurrencyTracker.Business.Services.Interfaces;
-using Microsoft.ML;
-using Newtonsoft.Json;
 using OHLC_Candlestick_Patterns;
 
 namespace CurrencyTracker.Business.Services
 {
     public class CandlestickPatternAnalyzer : ICandlestickPatternAnalyzer
     {
+        private const int MaxRSIValue = 50;
+
         private readonly IBinanceService binanceService;
+
+        private readonly IIndicatorService indicatorService;
 
         private readonly Signals signals;
 
         private readonly IAccuracyTrials accuracy;
 
-        public CandlestickPatternAnalyzer(IBinanceService binanceService)
+        public CandlestickPatternAnalyzer(IBinanceService binanceService, IIndicatorService indicatorService)
         {
             this.binanceService = binanceService;
+            this.indicatorService = indicatorService;
+
             signals = new Signals();
             accuracy = new AccuracyTrials();
-        }
-
-        public float CalculateRSI(List<float> closes, int period = 14)
-        {
-            if (closes.Count < period + 1) return 50;
-
-            float gain = 0, loss = 0;
-            for (int i = 1; i <= period; i++)
-            {
-                float change = closes[i] - closes[i - 1];
-                if (change > 0) gain += change;
-                else loss -= change;
-            }
-
-            if (loss == 0) return 100;
-
-            float rs = gain / loss;
-            return 100 - (100 / (1 + rs));
         }
 
         public bool IsHammer(Candlestick candle)
@@ -117,7 +103,14 @@ namespace CurrencyTracker.Business.Services
                                      c3.LowerShadow < (c3.Body * 0.2);
             bool isHighVolumeOnThird = c3.Volume > c2.Volume * 1.5f;
 
-            return isAllBullish && isIncreasingBody && opensWithinPreviousBody && shortLowerShadows && isHighVolumeOnThird;
+            // TODO: think about including RSI in model training
+            /*foreach (var candle in candles)
+            {
+                indicatorService.AddCandleAndUpdateRSI(candle);
+            }
+            decimal rsiValue = indicatorService.GetRSI();*/
+
+            return isAllBullish && isIncreasingBody && opensWithinPreviousBody && shortLowerShadows && isHighVolumeOnThird/* && rsiValue < MaxRSIValue*/;
         }
 
         public bool IsBearishAdvanceBlock(IList<Candlestick> candles)

@@ -11,6 +11,7 @@ using CurrencyTracker.Business.Helpers;
 using CurrencyTracker.Business.Enums;
 using CurrencyTracker.Common;
 using StockSharp.Algo.Candles;
+using StockSharp.Algo.Indicators;
 
 namespace MLTrainer
 {
@@ -35,8 +36,7 @@ namespace MLTrainer
             //var preparedData = dataGenerationService.PreparePatternTrainingData(candleDataXRP, pattern);
             //modelTrainer.TrainPatternModel(preparedData, pattern);
 
-            indicatorService.UpdateRSI(candleDataXRP);
-            decimal rsiValue = indicatorService.GetRSI();
+            var rsi = indicatorService.CalculateRSI(candleDataXRP);
 
             var prediction = predictionService.PredictPattern(candleDataXRP, pattern);
             Console.WriteLine(prediction.Probability);

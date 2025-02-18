@@ -4,10 +4,12 @@ namespace CurrencyTracker.Business.Services.Interfaces
 {
     public interface IIndicatorService
     {
-        void AddCandleAndUpdateRSI(Candlestick candlestick);
+        decimal CalculateRSI(IList<Candlestick> candles, int period = 14);
+
+        /*void AddCandleAndUpdateRSI(Candlestick candlestick);
 
         void UpdateRSI(IEnumerable<Candlestick> candles);
 
-        decimal GetRSI();
+        decimal GetRSI();*/
     }
 }

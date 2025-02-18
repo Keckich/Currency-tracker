@@ -1,6 +1,5 @@
 ﻿using CurrencyTracker.Business.Models;
 using CurrencyTracker.Business.Services.Interfaces;
-using StockSharp.Algo.Candles;
 using StockSharp.Algo.Indicators;
 using StockSharp.Messages;
 
@@ -16,11 +15,44 @@ namespace CurrencyTracker.Business.Services
 
         public IndicatorService()
         {
-            rsi = new RelativeStrengthIndex { Length = 14 };
+            rsi = new RelativeStrengthIndex { Length = MaxCandles };
             candleBuffer = new Queue<TimeFrameCandleMessage>(MaxCandles);
         }
 
-        public void AddCandleAndUpdateRSI(Candlestick candlestick)
+        public decimal CalculateRSI(IList<Candlestick> candles, int period = MaxCandles)
+        {
+            if (candles.Count < period + 1) return -1;
+
+            decimal gainSum = 0, lossSum = 0;
+
+            for (int i = 1; i <= period; i++)
+            {
+                decimal change = (decimal)(candles[i].Close - candles[i - 1].Close);
+                if (change > 0) gainSum += change;
+                else lossSum += Math.Abs(change);
+            }
+
+            decimal avgGain = gainSum / period;
+            decimal avgLoss = lossSum / period;
+
+            for (int i = period + 1; i < candles.Count; i++)
+            {
+                decimal change = (decimal)(candles[i].Close - candles[i - 1].Close);
+                decimal gain = change > 0 ? change : 0;
+                decimal loss = change < 0 ? Math.Abs(change) : 0;
+
+                avgGain = (avgGain * (period - 1) + gain) / period;
+                avgLoss = (avgLoss * (period - 1) + loss) / period;
+            }
+
+            if (avgLoss == 0) return 100;
+
+            decimal rs = avgGain / avgLoss;
+            return 100 - (100 / (1 + rs));
+        }
+
+        // For some reason StockSharp is not forming RSI value
+        /*public void AddCandleAndUpdateRSI(Candlestick candlestick)
         {
             if (candleBuffer.Count == MaxCandles)
             {
@@ -86,6 +118,6 @@ namespace CurrencyTracker.Business.Services
                 TotalVolume = (decimal)candlestick.Volume,
                 SecurityId = new SecurityId { SecurityCode = "XRPUSDC" },
             };
-        }
+        }*/
     }
 }

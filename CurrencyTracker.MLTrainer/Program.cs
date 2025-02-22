@@ -5,13 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using CurrencyTracker.Business.Models;
-using System.Linq.Expressions;
-using System.Text.RegularExpressions;
-using CurrencyTracker.Business.Helpers;
 using CurrencyTracker.Business.Enums;
 using CurrencyTracker.Common;
-using StockSharp.Algo.Candles;
-using StockSharp.Algo.Indicators;
 
 namespace MLTrainer
 {
@@ -40,15 +35,6 @@ namespace MLTrainer
 
             var prediction = predictionService.PredictPattern(candleDataXRP, pattern);
             Console.WriteLine(prediction.Probability);
-        }
-
-        static string GetMethodName<T>(Expression<Action<T>> expression) where T : ICandlestickPatternAnalyzer
-        {
-            if (expression.Body is MethodCallExpression methodCall)
-            {
-                return Regex.Replace(methodCall.Method.Name, "^Is", "");
-            }
-            throw new ArgumentException("Invalid expression");
         }
 
         private static void ConfigureServices(IServiceCollection services)

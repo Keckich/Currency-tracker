@@ -51,6 +51,50 @@ namespace CurrencyTracker.Business.Services
             return 100 - (100 / (1 + rs));
         }
 
+        public (IEnumerable<double> macd, IEnumerable<double> signal) CalculateMACD(IList<double> prices, int shortPeriod = 12, int longPeriod = 26, int signalPeriod = 9)
+        {
+            var shortEMA = CalculateEMA(prices, shortPeriod);
+            var longEMA = CalculateEMA(prices, longPeriod);
+            var macd = shortEMA.Zip(longEMA, (s, l) => s - l).ToList();
+            var signal = CalculateEMA(macd, signalPeriod);
+
+            return (macd, signal);
+        }
+
+        public IEnumerable<double> CalculateEMA(IList<double> prices, int period)
+        {
+            var emaValues = new List<double>();
+            double multiplier = 2.0 / (period + 1);
+            double ema = prices.Take(period).Average();
+            emaValues.Add(ema);
+
+            for (int i = period; i < prices.Count; i++)
+            {
+                ema = (prices[i] - ema) * multiplier + ema;
+                emaValues.Add(ema);
+            }
+
+            return emaValues;
+        }
+
+        public (IEnumerable<double> upperBand, IEnumerable<double> lowerBand) CalculateBollingerBands(IEnumerable<double> prices, int period = 20, double stdDevMultiplier = 2.0)
+        {
+            var upperBand = new List<double>();
+            var lowerBand = new List<double>();
+
+            for (int i = period - 1; i < prices.Count(); i++)
+            {
+                var window = prices.Skip(i - period + 1).Take(period).ToList();
+                double mean = window.Average();
+                double stdDev = Math.Sqrt(window.Sum(p => Math.Pow(p - mean, 2)) / period);
+
+                upperBand.Add(mean + stdDevMultiplier * stdDev);
+                lowerBand.Add(mean - stdDevMultiplier * stdDev);
+            }
+
+            return (upperBand, lowerBand);
+        }
+
         // For some reason StockSharp is not forming RSI value
         /*public void AddCandleAndUpdateRSI(Candlestick candlestick)
         {

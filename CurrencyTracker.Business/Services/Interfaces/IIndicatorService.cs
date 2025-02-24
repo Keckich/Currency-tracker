@@ -6,6 +6,7 @@ namespace CurrencyTracker.Business.Services.Interfaces
     {
         decimal CalculateRSI(IList<Candlestick> candles, int period = 14);
 
+        string AnalyzeMarket(IList<Candlestick> candles);
         /*void AddCandleAndUpdateRSI(Candlestick candlestick);
 
         void UpdateRSI(IEnumerable<Candlestick> candles);

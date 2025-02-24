@@ -51,8 +51,9 @@ namespace CurrencyTracker.Business.Services
             return 100 - (100 / (1 + rs));
         }
 
-        public (IEnumerable<double> macd, IEnumerable<double> signal) CalculateMACD(IList<double> prices, int shortPeriod = 12, int longPeriod = 26, int signalPeriod = 9)
+        public (IEnumerable<float> macd, IEnumerable<float> signal) CalculateMACD(IList<Candlestick> candles, int shortPeriod = 12, int longPeriod = 26, int signalPeriod = 9)
         {
+            var prices = candles.Select(c => c.Close).ToList();
             var shortEMA = CalculateEMA(prices, shortPeriod);
             var longEMA = CalculateEMA(prices, longPeriod);
             var macd = shortEMA.Zip(longEMA, (s, l) => s - l).ToList();
@@ -61,11 +62,11 @@ namespace CurrencyTracker.Business.Services
             return (macd, signal);
         }
 
-        public IEnumerable<double> CalculateEMA(IList<double> prices, int period)
+        public IEnumerable<float> CalculateEMA(IList<float> prices, int period)
         {
-            var emaValues = new List<double>();
-            double multiplier = 2.0 / (period + 1);
-            double ema = prices.Take(period).Average();
+            var emaValues = new List<float>();
+            float multiplier = 2.0f / (period + 1);
+            float ema = prices.Take(period).Average();
             emaValues.Add(ema);
 
             for (int i = period; i < prices.Count; i++)
@@ -77,8 +78,9 @@ namespace CurrencyTracker.Business.Services
             return emaValues;
         }
 
-        public (IEnumerable<double> upperBand, IEnumerable<double> lowerBand) CalculateBollingerBands(IEnumerable<double> prices, int period = 20, double stdDevMultiplier = 2.0)
+        public (IEnumerable<double> upperBand, IEnumerable<double> lowerBand) CalculateBollingerBands(IEnumerable<Candlestick> candles, int period = 20, double stdDevMultiplier = 2.0)
         {
+            var prices = candles.Select(c => c.Close).ToList();
             var upperBand = new List<double>();
             var lowerBand = new List<double>();
 
@@ -93,6 +95,47 @@ namespace CurrencyTracker.Business.Services
             }
 
             return (upperBand, lowerBand);
+        }
+
+        public IEnumerable<float> CalculateATR(IList<Candlestick> candles, int period = 14)
+        {
+            var atrValues = new List<float>();
+
+            for (int i = 1; i < candles.Count; i++)
+            {
+                float highLow = candles[i].High - candles[i].Low;
+                float highClose = Math.Abs(candles[i].High - candles[i - 1].Close);
+                float lowClose = Math.Abs(candles[i].Low - candles[i - 1].Close);
+
+                float trueRange = Math.Max(highLow, Math.Max(highClose, lowClose));
+                atrValues.Add(trueRange);
+            }
+
+            var smoothedATR = CalculateEMA(atrValues, period);
+            return smoothedATR;
+        }
+
+        public string AnalyzeMarket(IList<Candlestick> candles)
+        {
+            var prices = candles.Select(c => c.Close).ToList();
+
+            var rsi = CalculateRSI(candles);
+            var (macd, signal) = CalculateMACD(candles);
+            var atr = CalculateATR(candles);
+            var (upperBand, lowerBand) = CalculateBollingerBands(candles);
+
+            bool isUptrend = macd.Last() > signal.Last();
+            bool isDowntrend = macd.Last() < signal.Last();
+
+            double latestATR = atr.Last();
+            double bollingerWidth = upperBand.Last() - lowerBand.Last();
+            bool highVolatility = bollingerWidth > prices.Last() * 0.02;
+
+            bool highVolume = candles.Last().Volume > candles.SkipLast(1).Average(c => c.Volume) * 1.5;
+
+            return $"Trend: {(isUptrend ? "Uptrend" : isDowntrend ? "Downtrend" : "Flat")}, " +
+                   $"Volatility: {(highVolatility ? "High" : "Low")}, " +
+                   $"Volume: {(highVolume ? "High" : "Normal")}.";
         }
 
         // For some reason StockSharp is not forming RSI value

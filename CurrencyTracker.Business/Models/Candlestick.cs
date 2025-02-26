@@ -27,12 +27,40 @@
 
         public float Range => High - Low;
 
-        public bool IsDoji => Body <= (Range * 0.1);
-
         public float TotalSize => High - Low;
 
         public bool HasLongUpperShadow(float factor = 1.5f) => UpperShadow > Body * factor;
 
         public bool HasLongLowerShadow(float factor = 1.5f) => LowerShadow > Body * factor;
+
+        public bool IsDoji() => Body <= (Range * 0.1);
+
+        public bool IsHammer()
+            => LowerShadow > (Body * 2) &&
+               UpperShadow < (Body * 0.5) &&
+               Body < Range * 0.3;
+
+        public bool IsInvertedHammer()
+            => UpperShadow > (Body * 2) &&
+               LowerShadow < (Body * 0.5) &&
+               Body < Range * 0.3;
+
+        public static bool IsBullishEngulfing(Candlestick first, Candlestick second)
+            => first.IsBear &&
+               second.IsBull &&
+               second.Open < first.Close &&
+               second.Close > first.Open;
+
+        public static bool IsBearishEngulfing(Candlestick first, Candlestick second)
+            => first.IsBull &&
+               second.IsBear &&
+               second.Open > first.Close &&
+               second.Close < first.Open;
+
+        public static bool IsTweezerTop(Candlestick first, Candlestick second)
+            => first.High == second.High && first.IsBull && second.IsBear;
+
+        public static bool IsTweezerBottom(Candlestick first, Candlestick second)
+            => first.Low == second.Low && first.IsBear && second.IsBull;
     }
 }

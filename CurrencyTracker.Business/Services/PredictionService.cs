@@ -44,5 +44,19 @@ namespace CurrencyTracker.Business.Services
 
             return predictionEngine.Predict(input);
         }
+
+        private PatternPrediction DetectSingleCandlePatterns(Candlestick candle)
+        {
+            if (candle.IsDoji())
+                return new PatternPrediction { PatternName = "Doji", Probability = 100 };
+
+            if (candle.IsHammer())
+                return new PatternPrediction { PatternName = "Hammer", Probability = 100 };
+
+            if (candle.IsInvertedHammer())
+                return new PatternPrediction { PatternName = "Inverted Hammer", Probability = 100 };
+
+            return new PatternPrediction { PatternName = "Unknown", Probability = 0 };
+        }
     }
 }

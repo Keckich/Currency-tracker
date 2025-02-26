@@ -7,6 +7,8 @@ namespace CurrencyTracker.Business.Models
         [ColumnName("PredictedLabel")]
         public bool IsPattern { get; set; }
 
+        public string? PatternName { get; set; }
+
         public float Probability { get; set; }
     }
 }

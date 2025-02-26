@@ -27,16 +27,7 @@ namespace CurrencyTracker.Controllers
             var currCandel = candleData.Last();
             //var prediction = patternAnalyzer.PredictHammerPattern(currCandel);
 
-            var result = new Prediction
-            {
-                IsHammer = patternAnalyzer.IsHammer(currCandel),
-                IsHangingMan = patternAnalyzer.IsHangingMan(currCandel),
-                IsBullishEngulfing = patternAnalyzer.IsBullishEngulfing(prevCanle, currCandel),
-                IsBearishEngulfing = patternAnalyzer.IsBearishEngulfing(prevCanle, currCandel),
-                IsDoji = patternAnalyzer.IsDoji(currCandel),
-            };
-
-            return Ok(result);
+            return Ok();
         }
     }
 }

@@ -232,7 +232,7 @@ namespace CurrencyTracker.Business.Services
             var c3 = candles[2];
 
             bool isFirstBullish = c1.IsBull;
-            bool isDoji = c2.IsDoji;
+            bool isDoji = c2.IsDoji();
             bool isThirdBearish = c3.IsBear;
 
             bool hasGaps = c2.Open > c1.Close && c3.Open < c2.Close;
@@ -250,7 +250,7 @@ namespace CurrencyTracker.Business.Services
             var c3 = candles[2];
 
             bool isFirstBearish = c1.IsBear;
-            bool isDoji = c2.IsDoji;
+            bool isDoji = c2.IsDoji();
             bool isThirdBullish = c3.IsBull;
 
             bool hasGaps = c2.Open < c1.Close && c3.Open > c2.Close;

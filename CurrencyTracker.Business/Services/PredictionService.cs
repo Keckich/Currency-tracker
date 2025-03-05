@@ -1,4 +1,5 @@
 ﻿using CurrencyTracker.Business.Enums;
+using CurrencyTracker.Business.Extensions;
 using CurrencyTracker.Business.Helpers;
 using CurrencyTracker.Business.Models;
 using CurrencyTracker.Business.Services.Interfaces;
@@ -9,6 +10,13 @@ namespace CurrencyTracker.Business.Services
 {
     public class PredictionService : IPredictionService
     {
+        private readonly IIndicatorService indicatorService;
+
+        public PredictionService(IIndicatorService indicatorService)
+        {
+            this.indicatorService = indicatorService;
+        }
+
         public PatternPrediction PredictPattern(IEnumerable<Candlestick> candles, CandlestickPattern pattern)
         {
             var patternInfo = PatternHelper.GetPatternCheckers()[pattern];
@@ -57,6 +65,72 @@ namespace CurrencyTracker.Business.Services
                 return new PatternPrediction { PatternName = "Inverted Hammer", Probability = 100 };
 
             return new PatternPrediction { PatternName = "Unknown", Probability = 0 };
+        }
+
+        public TradeSignal GenerateTradeSignal(List<Candlestick> candles)
+        {
+            if (candles.Count < 26)
+                return new TradeSignal { Type = TradeSignalType.Neutral, Confidence = 0 };
+
+            var detectedPatterns = new List<(CandlestickPattern Pattern, double Probability)>();
+
+            foreach (var pattern in Enum.GetValues<CandlestickPattern>())
+            {
+                var prediction = PredictPattern(candles, pattern);
+                if (prediction.IsPattern && prediction.Probability > 0.7)
+                {
+                    detectedPatterns.Add((pattern, prediction.Probability));
+                }
+            }
+
+            if (!detectedPatterns.Any())
+                return new TradeSignal { Type = TradeSignalType.Neutral, Confidence = 0 };
+
+            var rsi = indicatorService.CalculateRSI(candles, 14);
+            var (macd, signal) = indicatorService.CalculateMACD(candles);
+            var (upperBand, lowerBand) = indicatorService.CalculateBollingerBands(candles);
+            double macdLast = macd.Last();
+            double signalLast = signal.Last();
+            double closePrice = candles.Last().Close;
+
+            bool rsiOversold = rsi < 30;
+            bool rsiOverbought = rsi > 70;
+            bool macdBullishCross = macdLast > signalLast && macd[macd.Count - 2] <= signal[signal.Count - 2];
+            bool macdBearishCross = macdLast < signalLast && macd[macd.Count - 2] >= signal[signal.Count - 2];
+            bool priceNearLowerBand = closePrice <= lowerBand.Last();
+            bool priceNearUpperBand = closePrice >= upperBand.Last();
+
+            int confidence = 0;
+            int maxConfidence = 100;
+            int maxFactors = 4;
+            int weightPerFactor = maxConfidence / maxFactors;
+
+            bool buySignal = false;
+            bool sellSignal = false;
+
+            foreach (var (pattern, probability) in detectedPatterns)
+            {
+                if (pattern.IsBullish() && (rsiOversold || priceNearLowerBand || macdBullishCross))
+                {
+                    buySignal = true;
+                    confidence += (int)(probability * weightPerFactor);
+                }
+                if (pattern.IsBearish() && (rsiOverbought || priceNearUpperBand || macdBearishCross))
+                {
+                    sellSignal = true;
+                    confidence += (int)(probability * weightPerFactor);
+                }
+            }
+
+            if (macdBullishCross) confidence += weightPerFactor;
+            if (macdBearishCross) confidence += weightPerFactor;
+
+            confidence = Math.Min(confidence, maxConfidence);
+
+            if (buySignal) return new TradeSignal { Type = TradeSignalType.Buy, Confidence = confidence };
+            if (sellSignal) return new TradeSignal { Type = TradeSignalType.Sell, Confidence = confidence };
+
+            return new TradeSignal { Type = TradeSignalType.Neutral, Confidence = 0 };
         }
     }
 }

@@ -51,7 +51,7 @@ namespace CurrencyTracker.Business.Services
             return 100 - (100 / (1 + rs));
         }
 
-        public (IEnumerable<float> macd, IEnumerable<float> signal) CalculateMACD(IList<Candlestick> candles, int shortPeriod = 12, int longPeriod = 26, int signalPeriod = 9)
+        public (IList<float> macd, IList<float> signal) CalculateMACD(IList<Candlestick> candles, int shortPeriod = 12, int longPeriod = 26, int signalPeriod = 9)
         {
             var prices = candles.Select(c => c.Close).ToList();
             var shortEMA = CalculateEMA(prices, shortPeriod);
@@ -62,7 +62,7 @@ namespace CurrencyTracker.Business.Services
             return (macd, signal);
         }
 
-        public IEnumerable<float> CalculateEMA(IList<float> prices, int period)
+        public IList<float> CalculateEMA(IList<float> prices, int period)
         {
             var emaValues = new List<float>();
             float multiplier = 2.0f / (period + 1);

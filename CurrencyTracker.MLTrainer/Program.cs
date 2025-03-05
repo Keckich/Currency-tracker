@@ -33,8 +33,8 @@ namespace MLTrainer
 
             var rsi = indicatorService.CalculateRSI(candleDataXRP);
             Console.WriteLine(indicatorService.AnalyzeMarket(candleDataXRP));
-            var prediction = predictionService.PredictPattern(candleDataXRP, pattern);
-            Console.WriteLine(prediction.Probability);
+            var prediction = predictionService.GenerateTradeSignal(candleDataXRP);
+            Console.WriteLine($"{prediction.Type.ToString()} - {prediction.Confidence}%");
         }
 
         private static void ConfigureServices(IServiceCollection services)

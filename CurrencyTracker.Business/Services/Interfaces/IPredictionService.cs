@@ -6,5 +6,7 @@ namespace CurrencyTracker.Business.Services.Interfaces
     public interface IPredictionService
     {
         PatternPrediction PredictPattern(IEnumerable<Candlestick> candles, CandlestickPattern pattern);
+
+        TradeSignal GenerateTradeSignal(List<Candlestick> candles);
     }
 }

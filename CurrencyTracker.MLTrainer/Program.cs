@@ -26,13 +26,14 @@ namespace MLTrainer
             var dataGenerationService = serviceProvider.GetRequiredService<IGenerationTrainingDataService>();
             var indicatorService = serviceProvider.GetRequiredService<IIndicatorService>();
 
-            var pattern = CandlestickPattern.ThreeWhiteSoldiers;
-            var candleDataXRP = (await binanceService.GetHistoricalData("XRPUSDC", "15m", 100)).ToList();
-            //var preparedData = dataGenerationService.PreparePatternTrainingData(candleDataXRP, pattern);
-            //modelTrainer.TrainPatternModel(preparedData, pattern);
+            var candleDataXRP = (await binanceService.GetHistoricalData("XRPUSDC", "1h", 10000)).ToList();
+            //var pattern = CandlestickPattern.BearishAdvanceBlock;
+            /*
+            var preparedData = dataGenerationService.PreparePatternTrainingData(candleDataXRP, pattern);
+            modelTrainer.TrainPatternModel(preparedData, pattern);*/
 
-            var rsi = indicatorService.CalculateRSI(candleDataXRP);
-            Console.WriteLine(indicatorService.AnalyzeMarket(candleDataXRP));
+            /*var rsi = indicatorService.CalculateRSI(candleDataXRP);
+            Console.WriteLine(indicatorService.AnalyzeMarket(candleDataXRP));*/
             var prediction = predictionService.GenerateTradeSignal(candleDataXRP);
             Console.WriteLine($"{prediction.Type.ToString()} - {prediction.Confidence}%");
         }

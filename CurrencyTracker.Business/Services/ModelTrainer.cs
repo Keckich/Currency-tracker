@@ -20,6 +20,8 @@ namespace CurrencyTracker.Business.Services
 
         private readonly ILogService logService;
 
+        private readonly IBinanceService binanceService;
+
         public ModelTrainer(
             ICandlestickPatternAnalyzer candlestickPatternAnalyzer,
             IGenerationTrainingDataService generationTrainingDataService,
@@ -69,15 +71,25 @@ namespace CurrencyTracker.Business.Services
             context.Model.Save(model, trainData.Schema, $"{pattern.ToString()}Model.zip");
         }
 
+        public async Task TrainModels()
+        {
+            var candleDataXRP = (await binanceService.GetHistoricalData("XRPUSDC", "15m", 22000)).ToList();
+            foreach (var pattern in Enum.GetValues<CandlestickPattern>())
+            {
+                var preparedData = generationTrainingDataService.PreparePatternTrainingData(candleDataXRP, pattern);
+                TrainPatternModel(preparedData, pattern);
+            }
+        }
+
         private FastTreeBinaryTrainer GetFastTreeTrainer(MLContext context)
         {
             var trainer = context.BinaryClassification.Trainers.FastTree(
                 new FastTreeBinaryTrainer.Options
                 {
-                    NumberOfTrees = 500,
-                    NumberOfLeaves = 50,  // 10, 20, 50
+                    NumberOfTrees = 300,
+                    NumberOfLeaves = 20,  // 10, 20, 50
                     MinimumExampleCountPerLeaf = 15,
-                    LearningRate = 0.6  // 0.05, 0.1, 0.2
+                    LearningRate = 0.3  // 0.05, 0.1, 0.2
                 });
 
             return trainer;

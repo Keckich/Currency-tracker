@@ -1,16 +1,20 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, map, of, shareReplay, switchMap, tap } from 'rxjs';
 import { webSocket } from 'rxjs/webSocket';
 import { Currency, Order, OrderBook, OrderBookData } from '../../shared/shared.model';
+import { ApiUrls } from '../../shared/constants.value';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BinanceService {
+  private baseUrl!: string;
   private currenciesCache: BehaviorSubject<Currency[] | null> = new BehaviorSubject<Currency[] | null>(null);
   private readonly exchangeInfoUrl = 'https://api.binance.com/api/v3/exchangeInfo';
   private readonly pricesUrl = 'https://api.binance.com/api/v3/ticker/price';
+  private readonly tradeSignalSocketUrl = `ws://${this.baseUrl}/${ApiUrls.TRADE_SIGNALS}`;
+
   private binanceSocketUrl(cryptoPair: string): string {
     return `wss://stream.binance.com:9443/ws/${cryptoPair?.toLowerCase()}@ticker`;
   }
@@ -23,7 +27,7 @@ export class BinanceService {
     return `wss://stream.binance.com:9443/ws/${cryptoPair?.toLowerCase()}@depth`;
   }
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, @Inject('BASE_URL') baseUrl: string) { console.log(baseUrl) }
 
   getCryptoPriceUpdates(crypto: string): Observable<any> {
     const socket = webSocket(this.binanceSocketUrl(crypto));
@@ -78,5 +82,9 @@ export class BinanceService {
           }, {} as Record<string, number>)
       )
     );
+  }
+
+  getTradeSignals(): Observable<{ signal: string }> {
+    return webSocket<{ signal: string }>(this.tradeSignalSocketUrl);
   }
 }

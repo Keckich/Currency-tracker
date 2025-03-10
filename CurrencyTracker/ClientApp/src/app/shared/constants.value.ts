@@ -45,6 +45,7 @@ export const ApiUrls = {
   TRADES: 'trades',
   ORDER_BOOK: 'orderbook',
   PATTERN_ANALYZER: 'patternanalyzer',
+  TRADE_SIGNALS: 'trade-signals',
 }
 
 export const ApiUrlResources = {

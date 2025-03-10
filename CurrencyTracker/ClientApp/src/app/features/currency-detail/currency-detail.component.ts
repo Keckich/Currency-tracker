@@ -8,6 +8,7 @@ import { RouteService } from '../../core/services/route.service';
 import { OrderBookComponent } from '../order-book/order-book.component';
 import { PredictionService } from '../../core/services/prediction.service';
 import { ChartInterval } from '../../shared/shared.enum';
+import { TradeSignalComponent } from '../trade-signal/trade-signal.component';
 
 @Component({
   selector: 'app-currency-detail',
@@ -16,6 +17,7 @@ import { ChartInterval } from '../../shared/shared.enum';
     ChartComponent,
     TradesComponent,
     OrderBookComponent,
+    TradeSignalComponent,
   ],
   templateUrl: './currency-detail.component.html',
   styleUrl: './currency-detail.component.css'

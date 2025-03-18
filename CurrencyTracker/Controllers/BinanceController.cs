@@ -1,5 +1,4 @@
 ﻿using CurrencyTracker.Business.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CurrencyTracker.Controllers
@@ -20,6 +19,39 @@ namespace CurrencyTracker.Controllers
         {
             await _binanceWebSocketService.ConnectToStreamAsync(cryptoPair, streamType);
             return Ok(new { message = "Subscribed successfully" });
+        }
+
+        [HttpPost("subscribe")]
+        public async Task<IActionResult> Subscribe(
+            [FromQuery] string symbol,
+            [FromQuery] string type,
+            [FromQuery] string? interval = null)
+        {
+            if (string.IsNullOrWhiteSpace(symbol) || string.IsNullOrWhiteSpace(type))
+                return BadRequest(new { message = "Symbol and type are required" });
+
+            if (type == "kline" && string.IsNullOrWhiteSpace(interval))
+                return BadRequest(new { message = "Interval is required for kline" });
+
+            string streamType = type == "kline" ? $"{type}_{interval}" : type;
+            await _binanceWebSocketService.ConnectToStreamAsync(symbol, streamType);
+
+            return Ok(new { message = $"Subscribed to {symbol} {streamType} updates" });
+        }
+
+        [HttpPost("unsubscribe")]
+        public async Task<IActionResult> Unsubscribe(
+            [FromQuery] string symbol,
+            [FromQuery] string type,
+            [FromQuery] string? interval = null)
+        {
+            if (string.IsNullOrWhiteSpace(symbol) || string.IsNullOrWhiteSpace(type))
+                return BadRequest(new { message = "Symbol and type are required" });
+
+            string streamType = type == "kline" ? $"{type}_{interval}" : type;
+            await _binanceWebSocketService.DisconnectFromStreamAsync(symbol, streamType);
+
+            return Ok(new { message = $"Unsubscribed from {symbol} {streamType} updates" });
         }
     }
 }

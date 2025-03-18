@@ -2,8 +2,8 @@
 {
     public interface IBinanceWebSocketService
     {
-        event Action<string, string>? OnMessageReceived;
-
         Task ConnectToStreamAsync(string cryptoPair, string streamType);
+
+        Task DisconnectFromStreamAsync(string cryptoPair, string streamType);
     }
 }

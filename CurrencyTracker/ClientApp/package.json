@@ -25,6 +25,7 @@
     "@angular/platform-browser-dynamic": "^18.2.11",
     "@angular/platform-server": "^18.2.11",
     "@angular/router": "^18.2.11",
+    "@microsoft/signalr": "^8.0.7",
     "apexcharts": "^3.54.1",
     "bootstrap": "^5.2.3",
     "jquery": "^3.6.4",

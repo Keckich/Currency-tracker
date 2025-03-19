@@ -2,9 +2,9 @@
 
 namespace CurrencyTracker.Business.Hubs
 {
-    public class CryptoWebSocketHub : Hub
+    public class CryptoHub : Hub
     {
-        public async Task SubscribeToPriceUpdates(string symbol)
+        /*public async Task SubscribeToPriceUpdates(string symbol)
         {
             await Clients.Caller.SendAsync("ReceivePriceUpdate", $"Subscribed to {symbol} price updates.");
         }
@@ -17,6 +17,6 @@ namespace CurrencyTracker.Business.Hubs
         public async Task SubscribeToOrderBook(string symbol)
         {
             await Clients.Caller.SendAsync("ReceiveOrderBook", $"Subscribed to {symbol} order book.");
-        }
+        }*/
     }
 }

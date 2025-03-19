@@ -1,4 +1,5 @@
 ﻿using CurrencyTracker.Business.Hubs;
+using CurrencyTracker.Business.Models;
 using CurrencyTracker.Business.Services.Interfaces;
 using Microsoft.AspNetCore.SignalR;
 using System.Net.WebSockets;
@@ -9,21 +10,22 @@ namespace CurrencyTracker.Business.Services
     public class BinanceWebSocketService : IBinanceWebSocketService
     {
         private readonly Dictionary<string, ClientWebSocket> sockets = new();
-        private readonly IHubContext<CryptoWebSocketHub> _hubContext;
+        private readonly IHubContext<CryptoHub> hubContext;
 
-        public BinanceWebSocketService(IHubContext<CryptoWebSocketHub> hubContext)
+        public BinanceWebSocketService(IHubContext<CryptoHub> hubContext)
         {
-            _hubContext = hubContext;
+            this.hubContext = hubContext;
         }
 
-        public async Task ConnectToStreamAsync(string cryptoPair, string streamType)
+        public async Task ConnectToStreamAsync(BinanceSocketRequest data)
         {
-            string url = streamType switch
+            var cryptoPair = data.Symbol;
+            string url = data.Type switch
             {
                 "ticker" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@ticker",
-                "kline_1m" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@kline_1m",
+                "kline" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@kline_${data.Interval ?? "1m"}",
                 "depth" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@depth",
-                _ => throw new ArgumentException("Unknown stream type", nameof(streamType))
+                _ => throw new ArgumentException("Unknown stream type", nameof(data.Type))
             };
 
             if (sockets.ContainsKey(url))
@@ -42,19 +44,20 @@ namespace CurrencyTracker.Business.Services
                     var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                     var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
 
-                    await _hubContext.Clients.All.SendAsync($"Receive{streamType}", message);
+                    await hubContext.Clients.All.SendAsync($"Receive_{data.Type}", message);
                 }
             });
         }
 
-        public async Task DisconnectFromStreamAsync(string cryptoPair, string streamType)
+        public async Task DisconnectFromStreamAsync(BinanceSocketRequest data)
         {
-            string url = streamType switch
+            var cryptoPair = data.Symbol;
+            string url = data.Type switch
             {
                 "ticker" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@ticker",
-                "kline_1m" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@kline_1m",
+                "kline" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@kline_${data.Interval ?? "1m"}",
                 "depth" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@depth",
-                _ => throw new ArgumentException("Unknown stream type", nameof(streamType))
+                _ => throw new ArgumentException("Unknown stream type", nameof(data.Type))
             };
 
             if (sockets.TryGetValue(url, out var socket))

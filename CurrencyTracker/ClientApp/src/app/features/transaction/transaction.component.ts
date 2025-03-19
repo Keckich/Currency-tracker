@@ -50,21 +50,30 @@ export class TransactionComponent implements OnInit, OnDestroy {
   @ViewChild(LimitOrderComponent) limitOrderComponent!: LimitOrderComponent;
 
   ngOnInit(): void {
-    this.priceSubscription = this.getPrice();
+    //this.priceSubscription = this.getPrice();
+    this.getPrice();
   }
 
-  getPrice(): Subscription {
-    this.price$ = this.binanceService.getCryptoPriceUpdates(this.currencyPair);
+  getPrice(): void {
+    this.binanceService.getCryptoPriceUpdates(this.currencyPair).subscribe(data => {
+      this.binanceService.onPriceUpdates(rawData => {
+        const data = JSON.parse(rawData);
 
-    return this.price$.subscribe({
-      next: data => {
-        const currentDate = new Date();
-        const price = parseFloat(data.c);
-        this.tradesService.updatePrices({ [this.currencyPair]: price });
-        this.setCurrentTradeValue(currentDate, price);
+        if (data.s === this.currencyPair) {
+          const currentDate = new Date();
+          const price = parseFloat(data.c);
+          this.tradesService.updatePrices({ [this.currencyPair]: price });
+          this.setCurrentTradeValue(currentDate, price);
+        }
+      });
+    });
+
+    /*this.price$.subscribe({
+      next: () => {
+        console.log(`Subscribed to ${this.currencyPair} price updates`)
       },
       error: error => console.log(`Error occured: ${error}`)
-    })
+    })*/
   }
 
   private setCurrentTradeValue(currentDate: Date, price: number): void {
@@ -106,7 +115,7 @@ export class TransactionComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.priceSubscription) {
-      this.priceSubscription.unsubscribe();
+      //this.priceSubscription.unsubscribe();
     }
   }
 }

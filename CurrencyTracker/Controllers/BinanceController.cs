@@ -1,57 +1,47 @@
-﻿using CurrencyTracker.Business.Services;
+﻿using CurrencyTracker.Business.Models;
+using CurrencyTracker.Business.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CurrencyTracker.Controllers
 {
-    [Route("[controller]")]
     [ApiController]
+    [Route("[controller]")]
     public class BinanceController : ControllerBase
     {
-        private readonly BinanceWebSocketService _binanceWebSocketService;
+        private readonly IBinanceWebSocketService binanceWebSocketService;
 
-        public BinanceController(BinanceWebSocketService binanceWebSocketService)
+        public BinanceController(IBinanceWebSocketService binanceWebSocketService)
         {
-            _binanceWebSocketService = binanceWebSocketService;
-        }
-
-        [HttpPost("subscribe")]
-        public async Task<IActionResult> Subscribe([FromQuery] string cryptoPair, [FromQuery] string streamType)
-        {
-            await _binanceWebSocketService.ConnectToStreamAsync(cryptoPair, streamType);
-            return Ok(new { message = "Subscribed successfully" });
+            this.binanceWebSocketService = binanceWebSocketService;
         }
 
         [HttpPost("subscribe")]
         public async Task<IActionResult> Subscribe(
-            [FromQuery] string symbol,
-            [FromQuery] string type,
-            [FromQuery] string? interval = null)
+            [FromBody] BinanceSocketRequest data)
         {
-            if (string.IsNullOrWhiteSpace(symbol) || string.IsNullOrWhiteSpace(type))
+            if (string.IsNullOrWhiteSpace(data.Symbol) || string.IsNullOrWhiteSpace(data.Type))
                 return BadRequest(new { message = "Symbol and type are required" });
 
-            if (type == "kline" && string.IsNullOrWhiteSpace(interval))
+            if (data.Type == "kline" && string.IsNullOrWhiteSpace(data.Interval))
                 return BadRequest(new { message = "Interval is required for kline" });
 
-            string streamType = type == "kline" ? $"{type}_{interval}" : type;
-            await _binanceWebSocketService.ConnectToStreamAsync(symbol, streamType);
+            //string streamType = data.Type == "kline" ? $"{data.Type}_{data.Interval}" : data.Type;
+            await binanceWebSocketService.ConnectToStreamAsync(data);
 
-            return Ok(new { message = $"Subscribed to {symbol} {streamType} updates" });
+            return Ok(new { message = $"Subscribed to {data.Symbol} {data.Type} updates" });
         }
 
         [HttpPost("unsubscribe")]
         public async Task<IActionResult> Unsubscribe(
-            [FromQuery] string symbol,
-            [FromQuery] string type,
-            [FromQuery] string? interval = null)
+            [FromBody] BinanceSocketRequest data)
         {
-            if (string.IsNullOrWhiteSpace(symbol) || string.IsNullOrWhiteSpace(type))
+            if (string.IsNullOrWhiteSpace(data.Symbol) || string.IsNullOrWhiteSpace(data.Type))
                 return BadRequest(new { message = "Symbol and type are required" });
 
-            string streamType = type == "kline" ? $"{type}_{interval}" : type;
-            await _binanceWebSocketService.DisconnectFromStreamAsync(symbol, streamType);
+            //string streamType = data.Type == "kline" ? $"{data.Type}_{data.Interval}" : data.Type;
+            await binanceWebSocketService.DisconnectFromStreamAsync(data);
 
-            return Ok(new { message = $"Unsubscribed from {symbol} {streamType} updates" });
+            return Ok(new { message = $"Unsubscribed from {data.Symbol} {data.Type} updates" });
         }
     }
 }

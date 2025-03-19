@@ -1,9 +1,11 @@
-﻿namespace CurrencyTracker.Business.Services.Interfaces
+﻿using CurrencyTracker.Business.Models;
+
+namespace CurrencyTracker.Business.Services.Interfaces
 {
     public interface IBinanceWebSocketService
     {
-        Task ConnectToStreamAsync(string cryptoPair, string streamType);
+        Task ConnectToStreamAsync(BinanceSocketRequest data);
 
-        Task DisconnectFromStreamAsync(string cryptoPair, string streamType);
+        Task DisconnectFromStreamAsync(BinanceSocketRequest data);
     }
 }

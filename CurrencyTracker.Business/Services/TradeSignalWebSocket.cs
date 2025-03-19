@@ -13,7 +13,6 @@ namespace CurrencyTracker.Business.Services
         public TradeSignalWebSocket(IBinanceWebSocketService binanceWebSocketService)
         {
             this.binanceWebSocketService = binanceWebSocketService;
-            this.binanceWebSocketService.OnMessageReceived += async (streamType, message) => await SendTradeSignalAsync(message);
         }
 
         public async Task HandleWebSocketAsync(WebSocket webSocket)

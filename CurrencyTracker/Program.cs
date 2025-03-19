@@ -3,6 +3,7 @@ using CurrencyTracker.Business.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using CurrencyTracker.Business.Data;
+using CurrencyTracker.Business.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,11 +24,23 @@ builder.Services.AddAuthentication()
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
-
+builder.Services.AddSignalR();
 builder.Services.AddApplicationServices();
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy",
+        builder => builder
+            .AllowAnyOrigin()
+            //.WithOrigins("https://localhost:4200")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            //.AllowCredentials()
+            .SetIsOriginAllowed(_ => true));
+});
 var app = builder.Build();
 app.UseWebSockets();
+app.UseCors("CorsPolicy");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -38,7 +51,7 @@ else
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
+app.MapHub<CryptoHub>("/CryptoHub");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();

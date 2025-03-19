@@ -4,16 +4,18 @@ import { BehaviorSubject, Observable, map, of, shareReplay, switchMap, tap } fro
 import { webSocket } from 'rxjs/webSocket';
 import { Currency, Order, OrderBook, OrderBookData } from '../../shared/shared.model';
 import { ApiUrls } from '../../shared/constants.value';
+import * as signalR from '@microsoft/signalr';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BinanceService {
   private baseUrl!: string;
+  private hubConnection!: signalR.HubConnection;
   private currenciesCache: BehaviorSubject<Currency[] | null> = new BehaviorSubject<Currency[] | null>(null);
   private readonly exchangeInfoUrl = 'https://api.binance.com/api/v3/exchangeInfo';
   private readonly pricesUrl = 'https://api.binance.com/api/v3/ticker/price';
-  private readonly tradeSignalSocketUrl = `ws://${this.baseUrl}/${ApiUrls.TRADE_SIGNALS}`;
+  private readonly tradeSignalSocketUrl = `ws://${this.baseUrl}${ApiUrls.TRADE_SIGNALS}`;
 
   private binanceSocketUrl(cryptoPair: string): string {
     return `wss://stream.binance.com:9443/ws/${cryptoPair?.toLowerCase()}@ticker`;
@@ -27,11 +29,23 @@ export class BinanceService {
     return `wss://stream.binance.com:9443/ws/${cryptoPair?.toLowerCase()}@depth`;
   }
 
-  constructor(private http: HttpClient, @Inject('BASE_URL') baseUrl: string) { console.log(baseUrl) }
+  constructor(private http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
+    this.hubConnection = new signalR.HubConnectionBuilder()
+      .withUrl(`https://localhost:7213/CryptoHub`, {
+        skipNegotiation: true,
+        transport: signalR.HttpTransportType.WebSockets
+      })
+      .withAutomaticReconnect()
+      .build();
+
+    this.hubConnection.start().catch(err => console.error(err));
+  }
 
   getCryptoPriceUpdates(crypto: string): Observable<any> {
-    const socket = webSocket(this.binanceSocketUrl(crypto));
-    return socket;
+    return this.http.post(`binance/subscribe`, {
+      symbol: crypto,
+      type: 'ticker'
+    });
   }
 
   getCryptoCandleData(crypto: string, interval: string): Observable<any> {
@@ -48,6 +62,18 @@ export class BinanceService {
     );
 
     return socket;
+  }
+
+  onPriceUpdates(callback: (data: any) => void) {
+    this.hubConnection.on('Receive_ticker', callback);
+  }
+
+  onCandleData(callback: (data: any) => void, interval: string) {
+    this.hubConnection.on('Receive_kline', callback);
+  }
+
+  onOrderBook(callback: (data: any) => void) {
+    this.hubConnection.on('Receive_depth', callback);
   }
 
   getCryptocurrencies(): Observable<Currency[]> {

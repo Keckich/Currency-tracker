@@ -6,6 +6,7 @@ import { Constants } from '../../shared/constants.value';
 import { TradesService } from '../../core/services/trades.service';
 import { CommonModule } from '@angular/common';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
+import { Routes } from '../../shared/constants.value';
 
 @Component({
   selector: 'app-trades',
@@ -31,6 +32,7 @@ export class TradesComponent implements OnInit {
   length: number = 0;
   pageIndex: number = 0;
   pageSize: number = 10;
+  Routes = Routes;
 
   ngOnInit(): void {
     this.fetchTrades(this.pageIndex, this.pageSize);

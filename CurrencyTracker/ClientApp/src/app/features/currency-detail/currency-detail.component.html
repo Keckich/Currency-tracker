@@ -2,7 +2,7 @@
   <app-order-book class="w-1/5 mr-10" [currencyPair]="currencyPair"></app-order-book>
   <div class="grid mb-6 w-4/5">
     <app-chart [currencyPair]="currencyPair" (intervalChange)="onIntervalChange($event)"></app-chart>
-    <app-trade-signal></app-trade-signal>
+    <!--<app-trade-signal></app-trade-signal>-->
     <app-trades [trades]="trades"></app-trades>
   </div>
 </section>

@@ -9,11 +9,15 @@ import { OrderBookComponent } from '../order-book/order-book.component';
 import { PredictionService } from '../../core/services/prediction.service';
 import { ChartInterval } from '../../shared/shared.enum';
 import { TradeSignalComponent } from '../trade-signal/trade-signal.component';
+import { BehaviorSubject, Observable, filter, map } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-currency-detail',
   standalone: true,
   imports: [
+    CommonModule,
     ChartComponent,
     TradesComponent,
     OrderBookComponent,
@@ -26,21 +30,19 @@ export class CurrencyDetailComponent implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private routeService = inject(RouteService);
   private predictionService = inject(PredictionService);
+  private router = inject(Router);
 
   trades!: Trade[];
-  currencyPair: string = '';
+  currencyPair!: string;
   selectedInterval: ChartInterval = ChartInterval.S1;
 
   ngOnInit(): void {
-    this.currencyPair = this.loadCurrency();
-    this.predictionService.getHammerPrediction(this.currencyPair, this.selectedInterval).subscribe(data => {
-      console.log(data)
-    });
+    this.loadCurrency();
   }
-
-  loadCurrency(): string {
-    const id = this.routeService.getParams(this.activatedRoute.snapshot.paramMap).id
-    return id || '';
+  loadCurrency(): void {
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.currencyPair = this.routeService.getParams(params).id || '';
+    });
   }
 
   handleBuy(trades: Trade[]): void {

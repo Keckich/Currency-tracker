@@ -23,7 +23,7 @@ namespace CurrencyTracker.Business.Services
             string url = data.Type switch
             {
                 "ticker" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@ticker",
-                "kline" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@kline_${data.Interval ?? "1m"}",
+                "kline" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@kline_{data.Interval ?? "1m"}",
                 "depth" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@depth",
                 _ => throw new ArgumentException("Unknown stream type", nameof(data.Type))
             };

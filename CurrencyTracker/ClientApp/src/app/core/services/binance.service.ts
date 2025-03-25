@@ -44,14 +44,30 @@ export class BinanceService {
   getCryptoPriceUpdates(crypto: string): Observable<any> {
     return this.http.post(`binance/subscribe`, {
       symbol: crypto,
-      type: 'ticker'
+      type: 'ticker',
     });
   }
 
   getCryptoCandleData(crypto: string, interval: string): Observable<any> {
+    return this.http.post(`binance/subscribe`, {
+      symbol: crypto,
+      type: 'kline',
+      interval: interval,
+    });
+  }
+
+  unsubscribeCryptoCandleData(crypto: string, interval: string): Observable<any> {
+    return this.http.post(`binance/unsubscribe`, {
+      symbol: crypto,
+      type: 'kline',
+      interval: interval,
+    });
+  }
+
+  /*getCryptoCandleData(crypto: string, interval: string): Observable<any> {
     const socket = webSocket(this.binanceCandleSocketUrl(crypto, interval));
     return socket;
-  }
+  }*/
 
   getOrderBookData(crypto: string): Observable<OrderBook> {
     const socket = webSocket<OrderBookData>(this.binanceOrderBookSocketUrl(crypto)).pipe(
@@ -68,7 +84,7 @@ export class BinanceService {
     this.hubConnection.on('Receive_ticker', callback);
   }
 
-  onCandleData(callback: (data: any) => void, interval: string) {
+  onCandleData(callback: (data: any) => void) {
     this.hubConnection.on('Receive_kline', callback);
   }
 

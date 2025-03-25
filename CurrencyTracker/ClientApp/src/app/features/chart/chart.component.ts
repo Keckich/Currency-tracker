@@ -94,19 +94,24 @@ export class ChartComponent implements OnInit, OnDestroy {
 
   createChart(): Subscription {
     return this.binanceService.getCryptoCandleData(this.currencyPair, this.selectedInterval)
-      .pipe(filter(data => data.k))
       .subscribe({
         next: data => {
-          const candle = this.createCandle(data);
-          this.upateCandleChart(candle);
+          this.binanceService.onCandleData(rawData => {
+            const data = JSON.parse(rawData);
 
-          if (this.isLoading) {
-            this.isLoading = false;
-            this.spinner.hide();
-          }
+            if (data.k) {
+              const candle = this.createCandle(data);
+              this.upateCandleChart(candle);
+
+              if (this.isLoading) {
+                this.isLoading = false;
+                this.spinner.hide();
+              }
+            }
+          })
         },
         error: error => {
-          console.log(`Error occured: ${error}`);
+          console.log(`Error occured: ${JSON.stringify(error)}`);
           this.spinner.hide();
         }
     })
@@ -143,6 +148,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   }
 
   onIntervalChange(interval: ChartInterval) {
+    this.binanceService.unsubscribeCryptoCandleData(this.currencyPair, this.selectedInterval).subscribe();
     this.selectedInterval = interval;
     this.intervalChange.emit(interval);
     this.reloadChart();

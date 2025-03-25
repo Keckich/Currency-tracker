@@ -2,6 +2,7 @@
 using CurrencyTracker.Business.Models;
 using CurrencyTracker.Business.Services.Interfaces;
 using Microsoft.AspNetCore.SignalR;
+using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text;
 
@@ -9,7 +10,7 @@ namespace CurrencyTracker.Business.Services
 {
     public class BinanceWebSocketService : IBinanceWebSocketService
     {
-        private readonly Dictionary<string, ClientWebSocket> sockets = new();
+        private readonly ConcurrentDictionary<string, ClientWebSocket> sockets = new();
         private readonly IHubContext<CryptoHub> hubContext;
 
         public BinanceWebSocketService(IHubContext<CryptoHub> hubContext)
@@ -23,7 +24,7 @@ namespace CurrencyTracker.Business.Services
             string url = data.Type switch
             {
                 "ticker" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@ticker",
-                "kline" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@kline_${data.Interval ?? "1m"}",
+                "kline" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@kline_{data.Interval ?? "1s"}",
                 "depth" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@depth",
                 _ => throw new ArgumentException("Unknown stream type", nameof(data.Type))
             };
@@ -55,7 +56,7 @@ namespace CurrencyTracker.Business.Services
             string url = data.Type switch
             {
                 "ticker" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@ticker",
-                "kline" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@kline_${data.Interval ?? "1m"}",
+                "kline" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@kline_{data.Interval ?? "1s"}",
                 "depth" => $"wss://stream.binance.com:9443/ws/{cryptoPair.ToLower()}@depth",
                 _ => throw new ArgumentException("Unknown stream type", nameof(data.Type))
             };
@@ -63,7 +64,7 @@ namespace CurrencyTracker.Business.Services
             if (sockets.TryGetValue(url, out var socket))
             {
                 await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Disconnected", CancellationToken.None);
-                sockets.Remove(url);
+                sockets.Remove(url, out _);
             }
         }
     }

@@ -12,6 +12,7 @@ import { TradeSignalComponent } from '../trade-signal/trade-signal.component';
 import { BehaviorSubject, Observable, filter, map } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { BinanceService } from '../../core/services/binance.service';
 
 @Component({
   selector: 'app-currency-detail',
@@ -30,6 +31,7 @@ export class CurrencyDetailComponent implements OnInit {
   private activatedRoute = inject(ActivatedRoute);
   private routeService = inject(RouteService);
   private predictionService = inject(PredictionService);
+  private binanceService = inject(BinanceService);
   private router = inject(Router);
 
   trades!: Trade[];
@@ -39,8 +41,10 @@ export class CurrencyDetailComponent implements OnInit {
   ngOnInit(): void {
     this.loadCurrency();
   }
+
   loadCurrency(): void {
     this.activatedRoute.paramMap.subscribe(params => {
+      this.binanceService.unsubscribeOrderBookData(this.currencyPair).subscribe();
       this.currencyPair = this.routeService.getParams(params).id || '';
     });
   }

@@ -7,6 +7,8 @@ import { OrderBookComponent } from '../order-book/order-book.component';
 import { ChartInterval } from '../../shared/shared.enum';
 import { filter } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { BinanceService } from '../../core/services/binance.service';
 
 @Component({
   selector: 'app-currency-detail',
@@ -22,6 +24,9 @@ import { CommonModule } from '@angular/common';
 })
 export class CurrencyDetailComponent implements OnInit {
   private routeService = inject(RouteService);
+  private predictionService = inject(PredictionService);
+  private binanceService = inject(BinanceService);
+  private router = inject(Router);
 
   trades!: Trade[];
   currencyPair!: string;
@@ -31,7 +36,15 @@ export class CurrencyDetailComponent implements OnInit {
     this.routeService.params$
       .pipe(filter(params => params?.id != null))
       .subscribe(params => this.currencyPair = params!.id!);
+    //this.loadCurrency();
   }
+
+  /*loadCurrency(): void {
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.binanceService.unsubscribeOrderBookData(this.currencyPair).subscribe();
+      this.currencyPair = this.routeService.getParams(params).id || '';
+    });
+  }*/
 
   handleBuy(trades: Trade[]): void {
     this.trades = trades;

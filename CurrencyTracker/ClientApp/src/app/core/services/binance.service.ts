@@ -64,20 +64,20 @@ export class BinanceService {
     });
   }
 
-  /*getCryptoCandleData(crypto: string, interval: string): Observable<any> {
-    const socket = webSocket(this.binanceCandleSocketUrl(crypto, interval));
-    return socket;
-  }*/
+  getOrderBookData(crypto: string): Observable<any> {
+      return this.http.post(`binance/subscribe`, {
+        symbol: crypto,
+        type: 'depth',
+      });
+    }
 
-  getOrderBookData(crypto: string): Observable<OrderBook> {
-    const socket = webSocket<OrderBookData>(this.binanceOrderBookSocketUrl(crypto)).pipe(
-      map(data => ({
-        asks: data.a.map(([price, amount]) => ({ price, amount })).slice(0, 10).sort((a, b) => b.price - a.price),
-        bids: data.b.map(([price, amount]) => ({ price, amount })).slice(0, 10).sort((a, b) => b.price - a.price),
-      }))
-    );
-
-    return socket;
+  unsubscribeOrderBookData(crypto: string): Observable<any> | void {
+    if (crypto) {
+    return this.http.post(`binance/unsubscribe`, {
+      symbol: crypto,
+      type: 'depth',
+    });
+  }
   }
 
   onPriceUpdates(callback: (data: any) => void) {
@@ -89,7 +89,15 @@ export class BinanceService {
   }
 
   onOrderBook(callback: (data: any) => void) {
-    this.hubConnection.on('Receive_depth', callback);
+    this.hubConnection.on('Receive_depth', (rawData: any) => {
+      const data = JSON.parse(rawData);
+      const transformedData: OrderBook = {
+        asks: data.a.map(([price, amount]: [number, number]) => ({ price, amount })).slice(0, 10).sort((a: Order, b: Order) => b.price - a.price),
+        bids: data.b.map(([price, amount]: [number, number]) => ({ price, amount })).slice(0, 10).sort((a: Order, b: Order) => b.price - a.price),
+      };
+
+      callback(transformedData);
+    });
   }
 
   getCryptocurrencies(): Observable<Currency[]> {

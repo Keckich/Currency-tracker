@@ -3,7 +3,7 @@ import { ApexAxisChartSeries, ApexChart, ApexPlotOptions, ApexTitleSubtitle, Ape
 import { BinanceService } from '../../core/services/binance.service';
 import { Observable, Subscription, filter } from 'rxjs';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { CandleData, ChartData, Trade } from '../../shared/shared.model';
+import { CandleData, ChartData, RouteParams, Trade } from '../../shared/shared.model';
 import { ChartIntervals } from '../../shared/constants.value';
 import { TradesService } from '../../core/services/trades.service';
 import { FormsModule } from '@angular/forms';
@@ -23,6 +23,7 @@ import { IntervalListComponent } from '../interval-list/interval-list.component'
 import { ChartInterval } from '../../shared/shared.enum';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { RouteService } from '../../core/services/route.service';
 
 @Component({
   selector: 'app-chart',
@@ -48,6 +49,7 @@ export class ChartComponent implements OnInit, OnDestroy {
   private binanceService = inject(BinanceService);
   private tradesService = inject(TradesService);
   private spinner = inject(NgxSpinnerService);
+  private routeService = inject(RouteService);
   private chartSubscription: Subscription = new Subscription;
 
   readonly Routes = Routes;
@@ -71,11 +73,23 @@ export class ChartComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.routeService.params$
+      .subscribe(params => {
+        this.loadData(params)
+      });
+  }
+
+  loadData(params: RouteParams | null): void {
+    this.isLoading = true;
+    if (params?.id) {
+      this.currencyPair = params?.id!;
+    }
+
     this.spinner.show();
     this.chartSeries[0].name = this.getChartTitle();
     this.chartOptions.title.text = this.getChartTitle();
-    
-    this.chartSubscription = this.createChart();
+
+    this.reloadChart();
   }
 
   createChart(): Subscription {

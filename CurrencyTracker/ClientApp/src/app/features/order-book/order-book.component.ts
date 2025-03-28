@@ -5,7 +5,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { Constants } from '../../shared/constants.value';
 import { CommonModule } from '@angular/common';
 import { Order } from '../../shared/shared.model';
-import { Subscription } from 'rxjs';
+import { Subscription, filter } from 'rxjs';
+import { RouteService } from '../../core/services/route.service';
 
 @Component({
   selector: 'app-order-book',
@@ -20,6 +21,7 @@ import { Subscription } from 'rxjs';
 })
 export class OrderBookComponent implements OnInit, OnDestroy {
   private binanceService = inject(BinanceService);
+  private routeService = inject(RouteService);
   private socketSubscription?: Subscription;
 
   bids: Order[] = [];
@@ -28,7 +30,12 @@ export class OrderBookComponent implements OnInit, OnDestroy {
   @Input() currencyPair!: string;
 
   ngOnInit(): void {
-    this.loadData(); 
+    this.routeService.params$
+      .pipe(filter(params => params?.id != null))
+      .subscribe(params => {
+        this.currencyPair = params!.id!
+        this.loadData();
+      });
   }
 
   loadData(): void {

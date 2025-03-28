@@ -1,4 +1,6 @@
-﻿using CurrencyTracker.Business.Models;
+﻿using CurrencyTracker.Business.Helpers;
+using CurrencyTracker.Business.Models;
+using CurrencyTracker.Business.Services;
 using CurrencyTracker.Business.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,32 +10,43 @@ namespace CurrencyTracker.Controllers
     [Route("[controller]")]
     public class TradeSignalController : ControllerBase
     {
-        private readonly ITradeSignalWebSocket tradeSignalWebSocket;
+        private readonly IBinanceWebSocketService binanceWebSocketService;
 
-        public TradeSignalController(ITradeSignalWebSocket tradeSignalWebSocket)
+        private readonly ICandlestickPatternAnalyzer candlestickPatternAnalyzer;
+
+        public TradeSignalController(IBinanceWebSocketService binanceWebSocketService, ICandlestickPatternAnalyzer candlestickPatternAnalyzer)
         {
-            this.tradeSignalWebSocket = tradeSignalWebSocket;
+            this.binanceWebSocketService = binanceWebSocketService;
+            this.candlestickPatternAnalyzer = candlestickPatternAnalyzer;
         }
 
-        [HttpGet("/trade-signals")]
-        public async Task Get()
+        [HttpPost("subscribe")]
+        public async Task<IActionResult> Subscribe(
+            [FromBody] BinanceSocketRequest data)
         {
-            if (HttpContext.WebSockets.IsWebSocketRequest)
-            {
-                using var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-                await tradeSignalWebSocket.HandleWebSocketAsync(webSocket);
-            }
-            else
-            {
-                HttpContext.Response.StatusCode = 400;
-            }
+            if (string.IsNullOrWhiteSpace(data.Symbol) || string.IsNullOrWhiteSpace(data.Type))
+                return BadRequest(new { message = "Symbol and type are required" });
+
+            if (data.Type == "kline" && string.IsNullOrWhiteSpace(data.Interval))
+                return BadRequest(new { message = "Interval is required for kline" });
+
+            //TODO: create BackgroundService
+            _ = Task.Run(async () => await binanceWebSocketService.ConnectToTradeSignalAsync(data));
+
+            return Ok(new { message = $"Subscribed to {data.Symbol} {data.Type} trade signal updates" });
         }
 
-        [HttpPost("send")]
-        public async Task<IActionResult> SendSignal([FromBody] TradeSignalRequest request)
+        [HttpPost("unsubscribe")]
+        public async Task<IActionResult> Unsubscribe(
+            [FromBody] BinanceSocketRequest data)
         {
-            await tradeSignalWebSocket.SendTradeSignalAsync(request.Signal);
-            return Ok(new { message = "Trade signal sent", signal = request.Signal });
+            if (string.IsNullOrWhiteSpace(data.Symbol) || string.IsNullOrWhiteSpace(data.Type))
+                return BadRequest(new { message = "Symbol and type are required" });
+
+            //TODO: remove keyPart param
+            _ = Task.Run(async () => await binanceWebSocketService.DisconnectFromStreamAsync(data, "signal"));
+
+            return Ok(new { message = $"Unsubscribed from {data.Symbol} {data.Type} trade signal updates" });
         }
     }
 }

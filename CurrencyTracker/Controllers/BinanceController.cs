@@ -24,8 +24,7 @@ namespace CurrencyTracker.Controllers
 
             if (data.Type == "kline" && string.IsNullOrWhiteSpace(data.Interval))
                 return BadRequest(new { message = "Interval is required for kline" });
-
-            //string streamType = data.Type == "kline" ? $"{data.Type}_{data.Interval}" : data.Type;
+            
             await binanceWebSocketService.ConnectToStreamAsync(data);
 
             return Ok(new { message = $"Subscribed to {data.Symbol} {data.Type} updates" });
@@ -38,8 +37,7 @@ namespace CurrencyTracker.Controllers
             if (string.IsNullOrWhiteSpace(data.Symbol) || string.IsNullOrWhiteSpace(data.Type))
                 return BadRequest(new { message = "Symbol and type are required" });
 
-            //string streamType = data.Type == "kline" ? $"{data.Type}_{data.Interval}" : data.Type;
-            await binanceWebSocketService.DisconnectFromStreamAsync(data);
+            await binanceWebSocketService.DisconnectFromStreamAsync(data, "data");
 
             return Ok(new { message = $"Unsubscribed from {data.Symbol} {data.Type} updates" });
         }

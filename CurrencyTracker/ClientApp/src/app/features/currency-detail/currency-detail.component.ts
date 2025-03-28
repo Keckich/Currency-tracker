@@ -44,7 +44,7 @@ export class CurrencyDetailComponent implements OnInit {
 
   loadCurrency(): void {
     this.activatedRoute.paramMap.subscribe(params => {
-      this.binanceService.unsubscribeOrderBookData(this.currencyPair).subscribe();
+      this.binanceService.unsubscribeOrderBookData(this.currencyPair)?.subscribe();
       this.currencyPair = this.routeService.getParams(params).id || '';
     });
   }

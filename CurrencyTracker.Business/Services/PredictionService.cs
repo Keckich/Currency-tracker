@@ -3,6 +3,7 @@ using CurrencyTracker.Business.Extensions;
 using CurrencyTracker.Business.Helpers;
 using CurrencyTracker.Business.Models;
 using CurrencyTracker.Business.Services.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.ML;
 using Microsoft.ML.Data;
 
@@ -12,14 +13,17 @@ namespace CurrencyTracker.Business.Services
     {
         private readonly IIndicatorService indicatorService;
 
-        public PredictionService(IIndicatorService indicatorService)
+        private readonly IServiceScopeFactory scopeFactory;
+
+        public PredictionService(IIndicatorService indicatorService, IServiceScopeFactory scopeFactory)
         {
             this.indicatorService = indicatorService;
+            this.scopeFactory = scopeFactory;
         }
 
         public PatternPrediction PredictPattern(IEnumerable<Candlestick> candles, CandlestickPattern pattern)
         {
-            var patternInfo = PatternHelper.GetPatternCheckers()[pattern];
+            var patternInfo = PatternHelper.GetPatternCheckers(scopeFactory)[pattern];
             var patternSize = patternInfo.PatternSize;
 
             if (candles.Count() < patternSize)
@@ -67,7 +71,7 @@ namespace CurrencyTracker.Business.Services
             return new PatternPrediction { PatternName = "Unknown", Probability = 0 };
         }
 
-        public TradeSignal GenerateTradeSignal(List<Candlestick> candles)
+        public TradeSignal GenerateTradeSignal(IList<Candlestick> candles)
         {
             if (candles.Count < 26)
                 return new TradeSignal { Type = TradeSignalType.Neutral, Confidence = 0 };

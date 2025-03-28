@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, map, of, shareReplay, switchMap, tap } from 'rxjs';
 import { webSocket } from 'rxjs/webSocket';
-import { Currency, Order, OrderBook, OrderBookData } from '../../shared/shared.model';
+import { Currency, Order, OrderBook, OrderBookData, TradeSignal } from '../../shared/shared.model';
 import { ApiUrls } from '../../shared/constants.value';
 import * as signalR from '@microsoft/signalr';
 
@@ -65,19 +65,19 @@ export class BinanceService {
   }
 
   getOrderBookData(crypto: string): Observable<any> {
-      return this.http.post(`binance/subscribe`, {
-        symbol: crypto,
-        type: 'depth',
-      });
-    }
-
-  unsubscribeOrderBookData(crypto: string): Observable<any> | void {
-    if (crypto) {
-    return this.http.post(`binance/unsubscribe`, {
+    return this.http.post(`binance/subscribe`, {
       symbol: crypto,
       type: 'depth',
     });
   }
+
+  unsubscribeOrderBookData(crypto: string): Observable<any> | void {
+    if (crypto) {
+      return this.http.post(`binance/unsubscribe`, {
+        symbol: crypto,
+        type: 'depth',
+      });
+    }
   }
 
   onPriceUpdates(callback: (data: any) => void) {
@@ -134,7 +134,26 @@ export class BinanceService {
     );
   }
 
-  getTradeSignals(): Observable<{ signal: string }> {
-    return webSocket<{ signal: string }>(this.tradeSignalSocketUrl);
+  getTradeSignals(crypto: string, interval: string): Observable<any> {
+    return this.http.post(`tradesignal/subscribe`, {
+      symbol: crypto,
+      type: 'kline',
+      interval: interval,
+    });
+  }
+
+  unsubscribeTradeSignals(crypto: string, interval: string): Observable<any> {
+    return this.http.post(`tradesignal/unsubscribe`, {
+      symbol: crypto,
+      type: 'kline',
+      interval: interval,
+    });
+  }
+
+  onTradeSignalData(callback: (data: TradeSignal) => void) {
+    this.hubConnection.on('ReceiveTradeSignal', (rawData: any) => {
+      const data = JSON.parse(rawData);
+      callback(data);
+    });
   }
 }

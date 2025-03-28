@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using CurrencyTracker.Business.Data;
 using CurrencyTracker.Business.Hubs;
+using CurrencyTracker.Common;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddSignalR();
 builder.Services.AddApplicationServices();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
@@ -38,6 +40,7 @@ builder.Services.AddCors(options =>
             .SetIsOriginAllowed(_ => true));
 });
 var app = builder.Build();
+DependencyResolver.Initialize(app.Services);
 app.UseWebSockets();
 app.UseCors("CorsPolicy");
 

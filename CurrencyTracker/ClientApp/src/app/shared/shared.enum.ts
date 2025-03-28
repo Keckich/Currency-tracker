@@ -20,3 +20,9 @@ export enum PnLInterval {
   D21 = 21,
   D30 = 30,
 }
+
+export enum TradeSignalType {
+  Buy = 0,
+  Sell = 1,
+  Neutral = 2,
+}

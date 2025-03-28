@@ -2,7 +2,7 @@ import { AnalysisResult, Trade } from "./shared.model";
 import { ApexChart, ApexFill, ApexMarkers, ApexPlotOptions, ApexStroke, ApexTitleSubtitle, ApexTooltip, ApexXAxis, ApexYAxis } from 'ng-apexcharts';
 
 import { nameof } from 'ts-simple-nameof';
-import { ChartInterval, PnLInterval } from "./shared.enum";
+import { ChartInterval, PnLInterval, TradeSignalType } from "./shared.enum";
 import { inject } from "@angular/core";
 
 export const Constants = {
@@ -33,6 +33,9 @@ export const Constants = {
   CANDLE_CHART_SIZE: 100,
   PNL_CHART_TITLE: 'PnL Data',
   PNL_CHART_Y_TEXT: 'Balance (USD)',
+  WAITING_SIGNAL: 'Waiting for signal...',
+  CONNECTION_LOST_SIGNAL: 'Connection lost!',
+  TRADE_SIGNAL: 'Sell/Buy signal: {0} with {1}% confidence',
 }
 
 export const Routes = {
@@ -69,6 +72,12 @@ export const PnLIntervals: Record<PnLInterval, string> = {
   [PnLInterval.D14]: $localize`:@@pnlIntervalD14:14d`,
   [PnLInterval.D21]: $localize`:@@pnlIntervalD21:21d`,
   [PnLInterval.D30]: $localize`:@@pnlIntervalD30:30d`,
+}
+
+export const TradeSignals: Record<number, string> = {
+  [TradeSignalType.Buy]: $localize`:@@signalBuy:Buy`,
+  [TradeSignalType.Sell]: $localize`:@@signalSell:Sell`,
+  [TradeSignalType.Neutral]: $localize`:@@signalNeutral:Neutral`,
 }
 
 export const AnalysisRecommenations = {

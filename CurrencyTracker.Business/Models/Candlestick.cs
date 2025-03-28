@@ -4,6 +4,8 @@
     {
         public DateTime OpenTime { get; set; }
 
+        public DateTime CloseTime { get; set; }
+
         //float is for ML model
         public float Open { get; set; }
 

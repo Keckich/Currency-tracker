@@ -1,4 +1,5 @@
 import { ValidatorFn } from "@angular/forms"
+import { TradeSignalType } from "./shared.enum"
 
 export interface Trade {
   id: number,
@@ -79,6 +80,11 @@ export interface OrderBook {
 export interface OrderBookData {
   b: [number, number][];
   a: [number, number][];
+}
+
+export interface TradeSignal {
+  Type: TradeSignalType,
+  Confidence: number,
 }
 
 export class RouteParams {

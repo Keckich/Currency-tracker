@@ -32,9 +32,10 @@ export class OrderBookComponent implements OnInit, OnDestroy {
   }
 
   loadData(): void {
+    this.binanceService.unsubscribeOrderBookData(this.currencyPair)?.subscribe();
     this.socketSubscription?.unsubscribe();
 
-    this.socketSubscription = this.binanceService.getOrderBookData(this.currencyPair)?.subscribe();
+    this.socketSubscription = this.binanceService.getOrderBookData(this.currencyPair).subscribe();
     this.binanceService.onOrderBook(data => {
       this.bids = data.bids;
       this.asks = data.asks;
@@ -42,7 +43,7 @@ export class OrderBookComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.binanceService.unsubscribeOrderBookData(this.currencyPair).subscribe();
+    this.binanceService.unsubscribeOrderBookData(this.currencyPair)?.subscribe();
     this.socketSubscription?.unsubscribe();
   }
 }

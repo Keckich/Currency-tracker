@@ -6,6 +6,8 @@ namespace CurrencyTracker.Business.Services.Interfaces
     {
         Task ConnectToStreamAsync(BinanceSocketRequest data);
 
-        Task DisconnectFromStreamAsync(BinanceSocketRequest data);
+        Task ConnectToTradeSignalAsync(BinanceSocketRequest data);
+
+        Task DisconnectFromStreamAsync(BinanceSocketRequest data, string keyPart);
     }
 }

@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, map, of, shareReplay, switchMap, tap } from 'rxjs';
 import { webSocket } from 'rxjs/webSocket';
 import { Currency, Order, OrderBook, OrderBookData, TradeSignal } from '../../shared/shared.model';
-import { ApiUrls } from '../../shared/constants.value';
+import { ApiUrlResources, ApiUrls } from '../../shared/constants.value';
 import * as signalR from '@microsoft/signalr';
 
 @Injectable({
@@ -15,19 +15,8 @@ export class BinanceService {
   private currenciesCache: BehaviorSubject<Currency[] | null> = new BehaviorSubject<Currency[] | null>(null);
   private readonly exchangeInfoUrl = 'https://api.binance.com/api/v3/exchangeInfo';
   private readonly pricesUrl = 'https://api.binance.com/api/v3/ticker/price';
-  private readonly tradeSignalSocketUrl = `ws://${this.baseUrl}${ApiUrls.TRADE_SIGNALS}`;
-
-  private binanceSocketUrl(cryptoPair: string): string {
-    return `wss://stream.binance.com:9443/ws/${cryptoPair?.toLowerCase()}@ticker`;
-  }
-
-  private binanceCandleSocketUrl(cryptoPair: string, interval: string): string {
-    return `wss://stream.binance.com:9443/ws/${cryptoPair?.toLowerCase()}@kline_${interval}`;
-  }
-
-  private binanceOrderBookSocketUrl(cryptoPair: string): string {
-    return `wss://stream.binance.com:9443/ws/${cryptoPair?.toLowerCase()}@depth`;
-  }
+  private readonly binanceUrl = ApiUrls.BINANCE;
+  private readonly tradeSignalUrl = ApiUrls.TRADE_SIGNAL;
 
   constructor(private http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -42,14 +31,14 @@ export class BinanceService {
   }
 
   getCryptoPriceUpdates(crypto: string): Observable<any> {
-    return this.http.post(`binance/subscribe`, {
+    return this.http.post(`${this.binanceUrl}/${ApiUrlResources.SUBSCRIBE}`, {
       symbol: crypto,
       type: 'ticker',
     });
   }
 
   getCryptoCandleData(crypto: string, interval: string): Observable<any> {
-    return this.http.post(`binance/subscribe`, {
+    return this.http.post(`${this.binanceUrl}/${ApiUrlResources.SUBSCRIBE}`, {
       symbol: crypto,
       type: 'kline',
       interval: interval,
@@ -57,7 +46,7 @@ export class BinanceService {
   }
 
   unsubscribeCryptoCandleData(crypto: string, interval: string): Observable<any> {
-    return this.http.post(`binance/unsubscribe`, {
+    return this.http.post(`${this.binanceUrl}/${ApiUrlResources.UNSUBSCRIBE}`, {
       symbol: crypto,
       type: 'kline',
       interval: interval,
@@ -65,7 +54,7 @@ export class BinanceService {
   }
 
   getOrderBookData(crypto: string): Observable<any> {
-    return this.http.post(`binance/subscribe`, {
+    return this.http.post(`${this.binanceUrl}/${ApiUrlResources.SUBSCRIBE}`, {
       symbol: crypto,
       type: 'depth',
     });
@@ -73,7 +62,7 @@ export class BinanceService {
 
   unsubscribeOrderBookData(crypto: string): Observable<any> | void {
     if (crypto) {
-      return this.http.post(`binance/unsubscribe`, {
+      return this.http.post(`${this.binanceUrl}/${ApiUrlResources.UNSUBSCRIBE}`, {
         symbol: crypto,
         type: 'depth',
       });
@@ -81,11 +70,17 @@ export class BinanceService {
   }
 
   onPriceUpdates(callback: (data: any) => void) {
-    this.hubConnection.on('Receive_ticker', callback);
+    this.hubConnection.on('Receive_ticker', (rawData: any) => {
+      const data = JSON.parse(rawData);
+      callback(data);
+    });
   }
 
   onCandleData(callback: (data: any) => void) {
-    this.hubConnection.on('Receive_kline', callback);
+    this.hubConnection.on('Receive_kline', (rawData: any) => {
+      const data = JSON.parse(rawData);
+      callback(data);
+    });
   }
 
   onOrderBook(callback: (data: any) => void) {
@@ -135,7 +130,7 @@ export class BinanceService {
   }
 
   getTradeSignals(crypto: string, interval: string): Observable<any> {
-    return this.http.post(`tradesignal/subscribe`, {
+    return this.http.post(`${this.tradeSignalUrl}/${ApiUrlResources.SUBSCRIBE}`, {
       symbol: crypto,
       type: 'kline',
       interval: interval,
@@ -143,7 +138,7 @@ export class BinanceService {
   }
 
   unsubscribeTradeSignals(crypto: string, interval: string): Observable<any> {
-    return this.http.post(`tradesignal/unsubscribe`, {
+    return this.http.post(`${this.tradeSignalUrl}/${ApiUrlResources.UNSUBSCRIBE}`, {
       symbol: crypto,
       type: 'kline',
       interval: interval,

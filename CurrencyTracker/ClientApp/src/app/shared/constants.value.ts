@@ -48,12 +48,15 @@ export const ApiUrls = {
   TRADES: 'trades',
   ORDER_BOOK: 'orderbook',
   PATTERN_ANALYZER: 'patternanalyzer',
-  TRADE_SIGNALS: 'trade-signals',
+  BINANCE: 'binance',
+  TRADE_SIGNAL: 'tradesignal',
 }
 
 export const ApiUrlResources = {
   PAGINATED: 'paginated',
-  PNL: 'pnl'
+  PNL: 'pnl',
+  SUBSCRIBE: 'subscribe',
+  UNSUBSCRIBE: 'unsubscribe',
 }
 
 export const ChartIntervals: Record<ChartInterval, string> = {

@@ -82,9 +82,7 @@ export class ChartComponent implements OnInit, OnDestroy {
     return this.binanceService.getCryptoCandleData(this.currencyPair, this.selectedInterval)
       .subscribe({
         next: data => {
-          this.binanceService.onCandleData(rawData => {
-            const data = JSON.parse(rawData);
-
+          this.binanceService.onCandleData(data => {
             if (data.k) {
               const candle = this.createCandle(data);
               this.upateCandleChart(candle);

@@ -100,7 +100,7 @@ namespace CurrencyTracker.Business.Services
             }).ToList() ?? Enumerable.Empty<Candlestick>();
         }
 
-        public async Task<IEnumerable<Candlestick>> GetHistoricalData(string symbol, string interval, int limit = 5000)
+        /*public async Task<IEnumerable<Candlestick>> GetHistoricalData(string symbol, string interval, int limit = 5000)
         {
             var httpClient = new HttpClient();
             var allCandlesticks = new List<Candlestick>();
@@ -141,6 +141,48 @@ namespace CurrencyTracker.Business.Services
             }
 
             return allCandlesticks.Take(limit).OrderBy(c => c.OpenTime);
+        }*/
+
+        public async Task<IEnumerable<Candlestick>> GetHistoricalData(string symbol, string interval, int limit = 5000)
+        {
+            var httpClient = new HttpClient();
+            var allCandlesticks = new List<Candlestick>();
+            long? endTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+            while (allCandlesticks.Count < limit)
+            {
+                int fetchLimit = Math.Min(1000, limit - allCandlesticks.Count);
+                var url = $"https://api.binance.com/api/v3/klines?symbol={symbol}&interval={interval}&limit={fetchLimit}&endTime={endTime}";
+
+                var response = await httpClient.GetStringAsync(url);
+                var json = Newtonsoft.Json.JsonConvert.DeserializeObject<List<List<object>>>(response);
+
+                if (json == null || !json.Any())
+                {
+                    break;
+                }
+
+                var candlesticks = json.Select(data => new Candlestick
+                {
+                    OpenTime = DateTimeOffset.FromUnixTimeMilliseconds(Convert.ToInt64(data[0])).DateTime,
+                    Open = ParseHelper.TryParseFloat(data[1]),
+                    High = ParseHelper.TryParseFloat(data[2]),
+                    Low = ParseHelper.TryParseFloat(data[3]),
+                    Close = ParseHelper.TryParseFloat(data[4]),
+                    Volume = ParseHelper.TryParseFloat(data[5]),
+                }).ToList();
+
+                allCandlesticks.InsertRange(0, candlesticks);
+
+                endTime = ToUnixTimestamp(candlesticks.First().OpenTime) - 1;
+
+                if (candlesticks.Count < fetchLimit)
+                {
+                    break;
+                }
+            }
+
+            return allCandlesticks.TakeLast(limit).OrderBy(c => c.OpenTime);
         }
 
         private string GetDailyClosingPricesUrl(string symbol, int days)

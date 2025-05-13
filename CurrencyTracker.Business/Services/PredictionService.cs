@@ -1,11 +1,14 @@
-﻿using CurrencyTracker.Business.Enums;
+﻿using CurrencyTracker.Business.Models.Enums;
 using CurrencyTracker.Business.Extensions;
 using CurrencyTracker.Business.Helpers;
 using CurrencyTracker.Business.Models;
+using CurrencyTracker.Business.Models.Indicators;
 using CurrencyTracker.Business.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.ML;
 using Microsoft.ML.Data;
+using CurrencyTracker.Indicators;
+using Skender.Stock.Indicators;
 
 namespace CurrencyTracker.Business.Services
 {
@@ -135,6 +138,63 @@ namespace CurrencyTracker.Business.Services
             if (sellSignal) return new TradeSignal { Type = TradeSignalType.Sell, Confidence = confidence };
 
             return new TradeSignal { Type = TradeSignalType.Neutral, Confidence = 0 };
+        }
+
+        public IEnumerable<IndicatorSnapshot> GenerateSignals(IEnumerable<Candlestick> candles)
+        {
+            var quotes = IndicatorCalculator.ConvertToQuotes(candles);
+
+            var rsi = quotes.GetRsi(14).ToDictionary(r => r.Date);
+            var ema = quotes.GetEma(20).ToDictionary(e => e.Date);
+            var macd = quotes.GetMacd().ToDictionary(m => m.Date);
+            var boll = quotes.GetBollingerBands().ToDictionary(b => b.Date);
+            var roc = quotes.GetRoc(10).ToDictionary(r => r.Date); // instead of Momentum
+
+            var snapshots = new List<IndicatorSnapshot>();
+
+            foreach (var candle in candles)
+            {
+                var date = candle.CloseTime;
+
+                var snapshot = new IndicatorSnapshot
+                {
+                    Date = date,
+                    Rsi = rsi.TryGetValue(date, out var rsiVal) ? rsiVal.Rsi : null,
+                    Ema = ema.TryGetValue(date, out var emaVal) ? emaVal.Ema : null,
+                    Macd = macd.TryGetValue(date, out var macdVal) ? macdVal.Macd : null,
+                    MacdSignal = macd.TryGetValue(date, out var macdSig) ? macdSig.Signal : null,
+                    BollingerUpper = boll.TryGetValue(date, out var bollVal) ? bollVal.UpperBand : null,
+                    BollingerLower = boll.TryGetValue(date, out var bollVal2) ? bollVal2.LowerBand : null,
+                    Momentum = roc.TryGetValue(date, out var rocVal) ? rocVal.Roc : null,
+                    ClosePrice = candle.Close,
+                };
+
+                snapshot.Signal = GetSignal(snapshot);
+                snapshots.Add(snapshot);
+            }
+
+            return snapshots;
+        }
+
+        private TradeSignalType GetSignal(IndicatorSnapshot snapshot)
+        {
+            if (snapshot.Rsi == null || snapshot.Macd == null || snapshot.MacdSignal == null || snapshot.Ema == null || snapshot.ClosePrice == null)
+                return TradeSignalType.Neutral;
+
+            var isOversold = snapshot.Rsi < 30;
+            var isOverbought = snapshot.Rsi > 70;
+            var macdCrossUp = snapshot.Macd > snapshot.MacdSignal;
+            var macdCrossDown = snapshot.Macd < snapshot.MacdSignal;
+            var priceBelowEma = snapshot.ClosePrice < snapshot.Ema;
+            var priceAboveEma = snapshot.ClosePrice > snapshot.Ema;
+
+            if (isOversold && macdCrossUp && priceAboveEma)
+                return TradeSignalType.Buy;
+
+            if (isOverbought && macdCrossDown && priceBelowEma)
+                return TradeSignalType.Sell;
+
+            return TradeSignalType.Neutral;
         }
     }
 }

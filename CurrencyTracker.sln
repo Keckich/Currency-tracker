@@ -9,7 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyTracker.Business", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyTracker.MLTrainer", "CurrencyTracker.MLTrainer\CurrencyTracker.MLTrainer.csproj", "{8CA807BD-BA20-4AAA-A8B2-37ACBB3CE60D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyTracker.Common", "CurrencyTracker.Common\CurrencyTracker.Common.csproj", "{3FAC78D9-CBCA-4FAF-997A-E36555B3C1EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyTracker.Common", "CurrencyTracker.Common\CurrencyTracker.Common.csproj", "{3FAC78D9-CBCA-4FAF-997A-E36555B3C1EF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CurrencyTracker.Indicators", "CurrencyTracker.Indicators\CurrencyTracker.Indicators.csproj", "{6AB0EBE6-E844-45B9-A509-C87E343F31CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CurrencyTracker.Business.Models", "CurrencyTracker.Business.Models\CurrencyTracker.Business.Models.csproj", "{0496F9EE-6E1F-487C-9F52-3BF5221CF894}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{3FAC78D9-CBCA-4FAF-997A-E36555B3C1EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FAC78D9-CBCA-4FAF-997A-E36555B3C1EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FAC78D9-CBCA-4FAF-997A-E36555B3C1EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6AB0EBE6-E844-45B9-A509-C87E343F31CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AB0EBE6-E844-45B9-A509-C87E343F31CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AB0EBE6-E844-45B9-A509-C87E343F31CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AB0EBE6-E844-45B9-A509-C87E343F31CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0496F9EE-6E1F-487C-9F52-3BF5221CF894}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0496F9EE-6E1F-487C-9F52-3BF5221CF894}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0496F9EE-6E1F-487C-9F52-3BF5221CF894}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0496F9EE-6E1F-487C-9F52-3BF5221CF894}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

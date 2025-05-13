@@ -1,7 +1,5 @@
-﻿using Candlestick_Patterns;
-using CurrencyTracker.Business.Models;
+﻿using CurrencyTracker.Business.Models;
 using CurrencyTracker.Business.Services.Interfaces;
-using OHLC_Candlestick_Patterns;
 
 namespace CurrencyTracker.Business.Services
 {
@@ -13,17 +11,17 @@ namespace CurrencyTracker.Business.Services
 
         private readonly IIndicatorService indicatorService;
 
-        private readonly Signals signals;
+        /*private readonly Signals signals;
 
-        private readonly IAccuracyTrials accuracy;
+        private readonly IAccuracyTrials accuracy;*/
 
         public CandlestickPatternAnalyzer(IBinanceService binanceService, IIndicatorService indicatorService)
         {
             this.binanceService = binanceService;
             this.indicatorService = indicatorService;
 
-            signals = new Signals();
-            accuracy = new AccuracyTrials();
+            /*signals = new Signals();
+            accuracy = new AccuracyTrials();*/
         }
 
         public bool IsHammer(Candlestick candle)
@@ -427,7 +425,7 @@ namespace CurrencyTracker.Business.Services
             return isAllBearish && isLowerCloses && hasSmallShadows;
         }
 
-        public void AnalyzePatterns(IEnumerable<Candlestick> candlesticks)
+        /*public void AnalyzePatterns(IEnumerable<Candlestick> candlesticks)
         {
             var dataOhlcv = candlesticks
                 .Select(c => new OhlcvObject
@@ -486,14 +484,14 @@ namespace CurrencyTracker.Business.Services
 
         private void LogAccuracyResult(List<OhlcvObject> ohlcList, string pattern)
         {
-            /*var accuracyPercentageSummary = accuracy.GetAverPercentPatternAccuracy(ohlcList, pattern);
+            var accuracyPercentageSummary = accuracy.GetAverPercentPatternAccuracy(ohlcList, pattern);
             Console.WriteLine($"{pattern}:");
             Console.WriteLine($"Accuracy percentage summary comparing to end of data set result: {0}", accuracyPercentageSummary.AccuracyToEndClose);
             Console.WriteLine($"Accuracy percentage summary comparing to average close result: {0}", accuracyPercentageSummary.AccuracyToAverageClose);
 
             var accuracyForSelectedPattern30CandlesAhead = accuracy.GetAverPercentPatternAccuracy(ohlcList, pattern, 30);
             Console.WriteLine($"Accuracy percentage summary 30 candles ahead comparing to end of data set result: {0}", accuracyForSelectedPattern30CandlesAhead.AccuracyToEndClose);
-            Console.WriteLine($"Accuracy percentage summary 30 candles ahead comparing to average close result: {0}\n", accuracyForSelectedPattern30CandlesAhead.AccuracyToAverageClose);*/
+            Console.WriteLine($"Accuracy percentage summary 30 candles ahead comparing to average close result: {0}\n", accuracyForSelectedPattern30CandlesAhead.AccuracyToAverageClose);
 
             var accuracyPercentageSummary = accuracy.GetAverPercentPatternAccuracy(ohlcList, pattern);
             Console.WriteLine($"{pattern}:");
@@ -503,6 +501,6 @@ namespace CurrencyTracker.Business.Services
             var accuracyForSelectedPattern30CandlesAhead = accuracy.GetAverPercentPatternAccuracy(ohlcList, pattern, 30);
             Console.WriteLine("Accuracy percentage summary 30 candles ahead comparing to end of data set result: {0}", accuracyForSelectedPattern30CandlesAhead.AccuracyToEndClose);
             Console.WriteLine("Accuracy percentage summary 30 candles ahead comparing to average close result: {0}\n", accuracyForSelectedPattern30CandlesAhead.AccuracyToAverageClose);
-        }
+        }*/
     }
 }

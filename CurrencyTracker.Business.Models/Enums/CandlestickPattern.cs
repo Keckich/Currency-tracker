@@ -1,4 +1,4 @@
-﻿namespace CurrencyTracker.Business.Enums
+﻿namespace CurrencyTracker.Business.Models.Enums
 {
     public enum CandlestickPattern
     {

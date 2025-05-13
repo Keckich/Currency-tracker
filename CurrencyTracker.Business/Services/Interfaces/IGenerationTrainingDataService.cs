@@ -1,4 +1,4 @@
-﻿using CurrencyTracker.Business.Enums;
+﻿using CurrencyTracker.Business.Models.Enums;
 using CurrencyTracker.Business.Models;
 
 namespace CurrencyTracker.Business.Services.Interfaces

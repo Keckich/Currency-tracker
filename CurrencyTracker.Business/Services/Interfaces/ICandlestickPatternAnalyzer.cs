@@ -48,6 +48,6 @@ namespace CurrencyTracker.Business.Services.Interfaces
 
         bool IsFourBlackCrows(IList<Candlestick> candles);
 
-        void AnalyzePatterns(IEnumerable<Candlestick> candlesticks);
+        //void AnalyzePatterns(IEnumerable<Candlestick> candlesticks);
     }
 }

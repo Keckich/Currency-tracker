@@ -9,6 +9,8 @@ import { filter } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { BinanceService } from '../../core/services/binance.service';
+import { PredictionService } from '../../core/services/prediction.service';
+import { TradeSignalComponent } from '../trade-signal/trade-signal.component';
 
 @Component({
   selector: 'app-currency-detail',
@@ -18,6 +20,7 @@ import { BinanceService } from '../../core/services/binance.service';
     ChartComponent,
     TradesComponent,
     OrderBookComponent,
+    TradeSignalComponent,
   ],
   templateUrl: './currency-detail.component.html',
   styleUrl: './currency-detail.component.css'

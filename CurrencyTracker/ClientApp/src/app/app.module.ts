@@ -19,6 +19,7 @@ import { Routes } from './shared/constants.value';
 import { TradeAnalyticsComponent } from './features/trade-analytics/trade-analytics.component';
 import { tradeAnalyticsGuard } from './core/guards/trade-analytics.guard';
 import { AccessDeniedComponent } from './features/access-denied/access-denied.component';
+import { BacktestComponent } from './features/backtest/backtest.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { AccessDeniedComponent } from './features/access-denied/access-denied.co
       { path: `${Routes.CURRENCY}/:id`, component: CurrencyDetailComponent },
       { path: `${Routes.ANALYTICS}`, component: TradeAnalyticsComponent, canActivate: [tradeAnalyticsGuard] },
       { path: `${Routes.ACCESS_DENIED}`, component: AccessDeniedComponent },
+      { path: `${Routes.BACKTEST}`, component: BacktestComponent },
     ])
   ],
   providers: [

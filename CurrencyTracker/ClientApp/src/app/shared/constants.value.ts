@@ -41,7 +41,8 @@ export const Constants = {
 export const Routes = {
   CURRENCY: 'currency',
   ANALYTICS: 'analytics',
-  ACCESS_DENIED: 'access-denied'
+  ACCESS_DENIED: 'access-denied',
+  BACKTEST: 'backtest',
 }
 
 export const ApiUrls = {

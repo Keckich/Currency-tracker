@@ -1,0 +1,19 @@
+<div>
+  <h2>Dataset tests</h2>
+  <button (click)="runBacktest()" class="btn btn-primary" [disabled]="isLoading">
+    Run backtest
+  </button>
+
+  <mat-progress-bar *ngIf="isLoading" mode="indeterminate" class="my-4"></mat-progress-bar>
+
+  <div>
+    <h3 class="mt-4 text-lg font-semibold">Results:</h3>
+    <ul>
+      <li>Result balance: ${{ result.finalBalance | number:'1.2-2' }}</li>
+      <li>Profit: {{ result.profitPercent | number:'1.2-2' }}%</li>
+      <li>Total trades: {{ result.totalTrades }}</li>
+      <li>Win rate: {{ (result.winningTrades / result.totalTrades) * 100 | number:'1.0-0' }}%</li>
+      <li>Max drawdown: {{ result.maxDrawdown | number:'1.2-2' }}%</li>
+    </ul>
+  </div>
+</div>

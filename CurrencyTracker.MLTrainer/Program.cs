@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using CurrencyTracker.Business.Models;
-using CurrencyTracker.Business.Enums;
+using CurrencyTracker.Business.Models.Enums;
 using CurrencyTracker.Common;
 
 namespace MLTrainer

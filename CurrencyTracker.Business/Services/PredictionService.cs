@@ -176,6 +176,33 @@ namespace CurrencyTracker.Business.Services
             return snapshots;
         }
 
+        public TradeSignalType GenerateSignal(IEnumerable<Candlestick> candles)
+        {
+            var quotes = IndicatorCalculator.ConvertToQuotes(candles);
+            var lastQuote = quotes.Last();
+
+            var rsi = quotes.GetRsi(14).LastOrDefault();
+            var ema = quotes.GetEma(20).LastOrDefault();
+            var macd = quotes.GetMacd().LastOrDefault();
+            var boll = quotes.GetBollingerBands().LastOrDefault();
+            var roc = quotes.GetRoc(10).LastOrDefault();
+
+            var snapshot = new IndicatorSnapshot
+            {
+                Date = lastQuote.Date,
+                Rsi = rsi?.Rsi,
+                Ema = ema?.Ema,
+                Macd = macd?.Macd,
+                MacdSignal = macd?.Signal,
+                BollingerUpper = boll?.UpperBand,
+                BollingerLower = boll?.LowerBand,
+                Momentum = roc?.Roc,
+                ClosePrice = (double)lastQuote.Close,
+            };
+
+            return GetSignal(snapshot);
+        }
+
         private TradeSignalType GetSignal(IndicatorSnapshot snapshot)
         {
             if (snapshot.Rsi == null || snapshot.Macd == null || snapshot.MacdSignal == null || snapshot.Ema == null || snapshot.ClosePrice == null)

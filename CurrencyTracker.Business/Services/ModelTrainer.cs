@@ -73,7 +73,7 @@ namespace CurrencyTracker.Business.Services
 
         public async Task TrainModels()
         {
-            var candleDataXRP = (await binanceService.GetHistoricalData("XRPUSDC", "15m", 22000)).ToList();
+            var candleDataXRP = (await binanceService.GetHistoricalData("XRPUSDC", "15m", limit: 22000)).ToList();
             foreach (var pattern in Enum.GetValues<CandlestickPattern>())
             {
                 var preparedData = generationTrainingDataService.PreparePatternTrainingData(candleDataXRP, pattern);

@@ -143,11 +143,18 @@ namespace CurrencyTracker.Business.Services
             return allCandlesticks.Take(limit).OrderBy(c => c.OpenTime);
         }*/
 
-        public async Task<IEnumerable<Candlestick>> GetHistoricalData(string symbol, string interval, int limit = 5000)
+        public async Task<IEnumerable<Candlestick>> GetHistoricalData(string symbol, string interval, DateTime? start = null, DateTime? end = null, int limit = 5000)
         {
             var httpClient = new HttpClient();
             var allCandlesticks = new List<Candlestick>();
-            long? endTime = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+            long? startTime = start.HasValue
+                ? new DateTimeOffset(start.Value).ToUnixTimeMilliseconds()
+                : null;
+
+            long? endTime = end.HasValue
+                ? new DateTimeOffset(end.Value).ToUnixTimeMilliseconds()
+                : DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
             while (allCandlesticks.Count < limit)
             {
@@ -172,7 +179,16 @@ namespace CurrencyTracker.Business.Services
                     Volume = ParseHelper.TryParseFloat(data[5]),
                 }).ToList();
 
+                if (start.HasValue)
+                {
+                    candlesticks = candlesticks.Where(c => c.OpenTime >= start.Value).ToList();
+                }
+
                 allCandlesticks.InsertRange(0, candlesticks);
+
+                var oldestCandle = candlesticks.FirstOrDefault();
+                if (oldestCandle == null || (start.HasValue && oldestCandle.OpenTime <= start.Value))
+                    break;
 
                 endTime = ToUnixTimestamp(candlesticks.First().OpenTime) - 1;
 

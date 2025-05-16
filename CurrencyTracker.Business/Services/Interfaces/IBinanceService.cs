@@ -12,6 +12,6 @@ namespace CurrencyTracker.Business.Services.Interfaces
 
         Task<IEnumerable<Candlestick>> GetHistoricalData(string symbol, string interval);
 
-        Task<IEnumerable<Candlestick>> GetHistoricalData(string symbol, string interval, int limit = 5000);
+        Task<IEnumerable<Candlestick>> GetHistoricalData(string symbol, string interval, DateTime? start = null, DateTime? end = null, int limit = 5000);
     }
 }

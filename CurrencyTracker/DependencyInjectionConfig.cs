@@ -17,6 +17,7 @@ namespace CurrencyTracker
             services.AddSingleton<IIndicatorService, IndicatorService>();
             //services.AddScoped<ITradeSignalWebSocket, TradeSignalWebSocket>();
             services.AddSingleton<IBinanceWebSocketService, BinanceWebSocketService>();
+            services.AddScoped<IBacktestService, BacktestService>();
         }
     }
 }

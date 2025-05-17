@@ -18,6 +18,7 @@ const PROXY_CONFIG = [
       "/binance",
       "/tradesignal",
       "/cryptoHub",
+      "/backtest",
    ],
     proxyTimeout: 10000,
     target: target,
